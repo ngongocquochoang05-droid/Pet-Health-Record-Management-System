@@ -14,32 +14,43 @@
 
 ```text
 FRONTEND/
-├── index.html
-├── pages/
-│   ├── dang-nhap.html
-│   ├── danh-gia.html
-│   ├── dat-lich.html
-│   ├── dich-vu.html
-│   └── phu-kien.html
-└── assets/
-    ├── css/
-    │   └── frontend-ui.css
-    └── js/
-        ├── home.js
-        ├── login.js
-        ├── reveal.js
-        └── tailwind-config.js
+├── TEAM_GUIDE.md
+├── customer/
+│   ├── index.html
+│   ├── pages/
+│   └── assets/
+├── admin/
+│   ├── index.html
+│   └── assets/
+└── staff/
+    ├── index.html
+    └── assets/
 ```
 
-## Cách Mở Dự Án
+## Cách Mở Giao Diện
 
-Mở trực tiếp file:
+Mở trực tiếp file theo khu vực:
 
 ```text
-FRONTEND/index.html
+FRONTEND/customer/index.html
+FRONTEND/admin/index.html
+FRONTEND/staff/index.html
 ```
 
 Không cần cài thêm thư viện, không cần chạy server dev và không cần bước build.
+
+Các khu vực làm việc riêng:
+
+- `FRONTEND/customer/`: giao diện khách hàng.
+- `FRONTEND/admin/`: giao diện admin, gồm quản lý hệ thống, quản lý nhân viên, báo cáo và thống kê.
+- `FRONTEND/staff/`: giao diện nhân viên cửa hàng, gồm quản lý khách hàng, lịch hẹn, hồ sơ thú cưng, đăng ký dịch vụ, kiểm tra thanh toán và quản lý sản phẩm.
+- `FRONTEND/TEAM_GUIDE.md`: quy tắc phân công folder cho nhóm.
+
+Tài khoản demo ở giao diện đăng nhập:
+
+- Khách hàng: `minhnguyen@gmail.com` / `customer123`
+- Nhân viên: `staff@mypuppy.vn` / `staff123`
+- Admin: `admin@mypuppy.vn` / `admin123`
 
 ## File Cấu Hình Giữ Lại
 
@@ -47,8 +58,7 @@ Các file `package.json`, `package-lock.json`, `next.config.mjs`, `postcss.confi
 
 ## Cách Chỉnh Giao Diện
 
-- Chỉnh giao diện dùng chung tại `FRONTEND/assets/css/frontend-ui.css`.
-- Chỉnh animation scroll tại `FRONTEND/assets/js/reveal.js`.
-- Chỉnh tương tác landing page và admin demo tại `FRONTEND/assets/js/home.js`.
-- Chỉnh form đăng nhập tại `FRONTEND/assets/js/login.js`.
-- Chỉnh nội dung từng trang trong các file `.html` ở `FRONTEND/` và `FRONTEND/pages/`.
+- Thành viên customer chỉ chỉnh trong `FRONTEND/customer/`.
+- Thành viên admin chỉ chỉnh trong `FRONTEND/admin/`.
+- Thành viên staff chỉ chỉnh trong `FRONTEND/staff/`.
+- Nếu cần sửa file ngoài folder của mình, hãy thống nhất với nhóm trước.

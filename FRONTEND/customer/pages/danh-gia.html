@@ -41,7 +41,11 @@
               <a href="phu-kien.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Phụ kiện</a>
               <a href="danh-gia.html" class="rounded-full bg-white px-5 py-2.5 font-semibold text-slate-950">Đánh giá</a>
             </nav>
-            <a href="dang-nhap.html" class="hero-fade-delay rounded-full bg-white px-5 py-3 font-semibold text-slate-950 shadow-lg transition hover:bg-sky-50">Đăng nhập</a>
+            <div class="hero-fade-delay flex items-center gap-3">
+              <span data-auth-customer class="hidden rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md"><span data-customer-name>Khách hàng</span></span>
+              <a href="dang-nhap.html" class="rounded-full bg-white px-5 py-3 font-semibold text-slate-950 shadow-lg transition hover:bg-sky-50">Đăng nhập</a>
+              <button data-auth-customer data-customer-logout data-logout-target="../index.html" type="button" class="hidden rounded-full border border-white/15 bg-white/10 px-5 py-3 font-semibold text-white backdrop-blur-md transition hover:bg-white/15">Đăng xuất</button>
+            </div>
           </header>
           <div class="py-20 text-center text-white md:py-28">
             <p class="hero-fade text-sm font-semibold uppercase tracking-[0.45em] text-sky-300">Phản hồi khách hàng</p>
@@ -94,5 +98,6 @@
     </section>
   </main>
   <script src="../assets/js/reveal.js"></script>
+  <script src="../assets/js/customer-auth.js"></script>
 </body>
 </html>

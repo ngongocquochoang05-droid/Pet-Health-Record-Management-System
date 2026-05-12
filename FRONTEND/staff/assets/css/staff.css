@@ -1,0 +1,165 @@
+:root {
+  color-scheme: dark;
+}
+
+.staff-shell {
+  background:
+    linear-gradient(135deg, rgba(2, 6, 23, 0.92), rgba(15, 23, 42, 0.82)),
+    url("https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1800&q=80") center/cover fixed;
+}
+
+.login-card {
+  animation: staffPanelIn 0.55s ease both;
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-mark__icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: 1.15rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0284c7;
+}
+
+.brand-mark__icon svg {
+  width: 1.55rem;
+  height: 1.55rem;
+}
+
+.brand-mark strong,
+.brand-mark small {
+  display: block;
+}
+
+.brand-mark strong {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.brand-mark small {
+  margin-top: 0.25rem;
+  color: rgba(125, 211, 252, 0.9);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.nav-item {
+  display: block;
+  border-radius: 1rem;
+  padding: 0.95rem 1rem;
+  color: rgba(255, 255, 255, 0.68);
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.nav-item:hover,
+.nav-item--active {
+  background: rgba(56, 189, 248, 0.14);
+  color: #7dd3fc;
+}
+
+.metric-card,
+.staff-panel {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.75rem;
+  background: rgba(255, 255, 255, 0.07);
+  padding: 1.5rem;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+}
+
+.metric-card p,
+.staff-panel p {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.metric-card strong {
+  display: block;
+  margin-top: 1.1rem;
+  font-size: 2.35rem;
+  line-height: 1;
+}
+
+.metric-card span,
+.staff-panel span {
+  display: block;
+  margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.58);
+  line-height: 1.7;
+}
+
+.metric-card--blue strong {
+  color: #7dd3fc;
+}
+
+.metric-card--yellow strong {
+  color: #facc15;
+}
+
+.staff-panel h2 {
+  margin-top: 1rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.status {
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.status--pending {
+  background: rgba(250, 204, 21, 0.15);
+  color: #fde047;
+}
+
+.status--ok {
+  background: rgba(56, 189, 248, 0.15);
+  color: #7dd3fc;
+}
+
+.status--done {
+  background: rgba(74, 222, 128, 0.15);
+  color: #86efac;
+}
+
+.action-button {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.55rem 0.9rem;
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: 800;
+  transition: 0.2s ease;
+}
+
+.action-button:hover,
+.action-button.is-updated {
+  background: rgba(74, 222, 128, 0.16);
+  color: #86efac;
+}
+
+@keyframes staffPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
