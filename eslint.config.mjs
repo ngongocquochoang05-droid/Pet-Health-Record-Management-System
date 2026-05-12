@@ -1,14 +1,2 @@
-import nextVitals from "eslint-config-next/core-web-vitals";
-
-const config = [
-  ...nextVitals,
-  {
-    ignores: [
-      ".next/**",
-      "node_modules/**",
-      "FrontEnd/**",
-    ],
-  },
-];
-
-export default config;
+// Reserved for future linting setup. The current UI is static HTML/CSS/JavaScript.
+export default [];

@@ -1,125 +1,54 @@
 # MyPuppy Frontend
 
-Frontend hiện tại của dự án `MyPuppy` đã được chuyển sang `React + Next.js` để bạn tiếp tục customize giao diện trước, sau đó mới nối backend.
-
-## Mục tiêu hiện tại
-
-- Hoàn thiện landing page và các page con bằng cấu trúc frontend hiện đại
-- Giữ giao diện premium hiện có, nhưng dễ mở rộng hơn cho backend sau này
-- Tách rõ page, component và style để tối ưu SEO, maintainability và tốc độ phát triển
+`MyPuppy` là giao diện frontend tĩnh cho web app chăm sóc thú cưng, sử dụng HTML, CSS và JavaScript thuần.
 
 ## Tech Stack
 
-- `Next.js 16` với `App Router`
-- `React 19`
-- `Tailwind CSS 4`
-- `CSS thuần` cho phần UI dùng chung
+- `HTML5`
+- `CSS3`
+- `JavaScript`
+- `Tailwind CSS CDN`
 - `Google Fonts`
-  - `Inter`
-  - `Playfair Display`
 
-## Cấu trúc thư mục
+## Cấu Trúc Thư Mục
 
 ```text
-app/
-├── page.js
-├── dich-vu/page.js
-├── dat-lich/page.js
-├── danh-gia/page.js
-├── globals.css
-└── layout.js
-
-components/
-├── booking-page-client.jsx
-├── home-page-client.jsx
-├── icons.jsx
-├── reviews-page-client.jsx
-├── service-page-client.jsx
-├── site-logo.jsx
-├── subpage-layout.jsx
-└── use-reveal-on-scroll.js
-
-FrontEnd/
+FRONTEND/
 ├── index.html
-├── assets/css/frontend-ui.css
-└── pages/
-
-package.json
-next.config.mjs
-postcss.config.mjs
-jsconfig.json
+├── pages/
+│   ├── dang-nhap.html
+│   ├── danh-gia.html
+│   ├── dat-lich.html
+│   ├── dich-vu.html
+│   └── phu-kien.html
+└── assets/
+    ├── css/
+    │   └── frontend-ui.css
+    └── js/
+        ├── home.js
+        ├── login.js
+        ├── reveal.js
+        └── tailwind-config.js
 ```
 
-## Chức năng frontend hiện có
+## Cách Mở Dự Án
 
-- Landing page chính tại route `/`
-- Page `Dịch vụ` tại `/dich-vu`
-- Page `Đặt lịch` tại `/dat-lich`
-- Page `Đánh giá` tại `/danh-gia`
-- Giao diện `Admin Dashboard` hiển thị sau khi đăng nhập từ landing page
-- Animation scroll reveal cho landing page và page con
-- Logo `MyPuppy` dùng chung giữa landing page và admin page
-- SEO metadata và JSON-LD cơ bản cho trang chủ
+Mở trực tiếp file:
 
-## File quan trọng
-
-- [app/page.js](./app/page.js)
-  - Route trang chủ
-
-- [components/home-page-client.jsx](./components/home-page-client.jsx)
-  - Chứa landing page, modal đăng nhập admin và admin dashboard
-
-- [components/service-page-client.jsx](./components/service-page-client.jsx)
-  - Giao diện trang dịch vụ
-
-- [components/booking-page-client.jsx](./components/booking-page-client.jsx)
-  - Giao diện trang đặt lịch
-
-- [components/reviews-page-client.jsx](./components/reviews-page-client.jsx)
-  - Giao diện trang đánh giá
-
-- [app/globals.css](./app/globals.css)
-  - CSS global của Next.js
-  - Import thêm style UI dùng chung
-
-- [FrontEnd/assets/css/frontend-ui.css](./FrontEnd/assets/css/frontend-ui.css)
-  - File CSS UI dùng chung được tái sử dụng từ bản frontend cũ
-
-## Cách chạy dự án
-
-```bash
-npm run dev
+```text
+FRONTEND/index.html
 ```
 
-Sau đó mở:
+Không cần cài thêm thư viện, không cần chạy server dev và không cần bước build.
 
-- `http://localhost:3000`
+## File Cấu Hình Giữ Lại
 
-Build production:
+Các file `package.json`, `package-lock.json`, `next.config.mjs`, `postcss.config.mjs`, `eslint.config.mjs` và `jsconfig.json` được giữ lại ở root để dự phòng cho giai đoạn sau. Hiện tại giao diện chính vẫn chỉ dùng HTML, CSS và JavaScript trong thư mục `FRONTEND`.
 
-```bash
-npm run build
-```
+## Cách Chỉnh Giao Diện
 
-## Cách chỉnh giao diện
-
-Nếu muốn chỉnh style dùng chung:
-
-- [app/globals.css](./app/globals.css)
-- [FrontEnd/assets/css/frontend-ui.css](./FrontEnd/assets/css/frontend-ui.css)
-
-Nếu muốn chỉnh bố cục hoặc nội dung từng trang:
-
-- [components/home-page-client.jsx](./components/home-page-client.jsx)
-- [components/service-page-client.jsx](./components/service-page-client.jsx)
-- [components/booking-page-client.jsx](./components/booking-page-client.jsx)
-- [components/reviews-page-client.jsx](./components/reviews-page-client.jsx)
-
-## Ghi chú
-
-- Thư mục [FrontEnd](./FrontEnd) hiện được giữ lại như bản frontend tĩnh cũ để tham chiếu.
-- Frontend mới đang chạy bằng `Next.js`, nên từ bây giờ bạn nên ưu tiên chỉnh trong `app/` và `components/`.
-- Luồng hiện tại vẫn đúng định hướng của bạn:
-  - Frontend trước
-  - Backend sau
-  - Ưu tiên UI/UX trước khi nối dữ liệu động
+- Chỉnh giao diện dùng chung tại `FRONTEND/assets/css/frontend-ui.css`.
+- Chỉnh animation scroll tại `FRONTEND/assets/js/reveal.js`.
+- Chỉnh tương tác landing page và admin demo tại `FRONTEND/assets/js/home.js`.
+- Chỉnh form đăng nhập tại `FRONTEND/assets/js/login.js`.
+- Chỉnh nội dung từng trang trong các file `.html` ở `FRONTEND/` và `FRONTEND/pages/`.

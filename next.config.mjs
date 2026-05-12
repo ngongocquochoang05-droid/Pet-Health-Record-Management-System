@@ -1,15 +1,4 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        pathname: "/**",
-      },
-    ],
-  },
-};
+// Reserved for a future migration. The current UI uses static HTML/CSS/JavaScript only.
+const nextConfig = {};
 
 export default nextConfig;
