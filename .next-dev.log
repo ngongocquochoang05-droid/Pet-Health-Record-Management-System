@@ -1,0 +1,62 @@
+
+> dev
+> next dev -p 3002
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3002
+- Network:       http://26.102.240.196:3002
+✓ Ready in 476ms
+Creating turbopack project { dir: 'E:\\DoAnCNTT02', testMode: true }
+
+ GET / 200 in 2.0s (next.js: 1830ms, application-code: 185ms)
+ GET / 200 in 66ms (next.js: 8ms, application-code: 58ms)
+ GET /dich-vu 200 in 256ms (next.js: 238ms, application-code: 18ms)
+ GET /dat-lich 200 in 275ms (next.js: 250ms, application-code: 25ms)
+ GET /danh-gia 200 in 299ms (next.js: 283ms, application-code: 16ms)
+ GET / 200 in 21ms (next.js: 3ms, application-code: 18ms)
+ GET / 200 in 47ms (next.js: 2ms, application-code: 45ms)
+ GET /dich-vu 200 in 35ms (next.js: 5ms, application-code: 30ms)
+ GET /dat-lich 200 in 40ms (next.js: 7ms, application-code: 33ms)
+ GET /danh-gia 200 in 44ms (next.js: 6ms, application-code: 39ms)
+ GET / 200 in 31ms (next.js: 4ms, application-code: 27ms)
+✓ Compiled in 212ms
+✓ Compiled in 37ms
+ GET / 200 in 88ms (next.js: 53ms, application-code: 35ms)
+ GET / 200 in 95ms (next.js: 2ms, application-code: 93ms)
+ GET /dich-vu 200 in 49ms (next.js: 14ms, application-code: 34ms)
+ GET /dat-lich 200 in 47ms (next.js: 13ms, application-code: 34ms)
+ GET /danh-gia 200 in 53ms (next.js: 14ms, application-code: 39ms)
+ GET / 200 in 36ms (next.js: 4ms, application-code: 32ms)
+ GET /dich-vu 200 in 41ms (next.js: 4ms, application-code: 37ms)
+ GET /dat-lich 200 in 34ms (next.js: 5ms, application-code: 29ms)
+ GET /danh-gia 200 in 36ms (next.js: 4ms, application-code: 31ms)
+ GET / 200 in 30ms (next.js: 4ms, application-code: 26ms)
+ GET /dich-vu 200 in 33ms (next.js: 4ms, application-code: 29ms)
+ GET /dat-lich 200 in 29ms (next.js: 3ms, application-code: 26ms)
+ GET /danh-gia 200 in 30ms (next.js: 4ms, application-code: 27ms)
+ GET / 200 in 28ms (next.js: 4ms, application-code: 24ms)
+ GET /dich-vu 200 in 39ms (next.js: 4ms, application-code: 35ms)
+ GET /dat-lich 200 in 40ms (next.js: 3ms, application-code: 36ms)
+ GET / 200 in 31ms (next.js: 4ms, application-code: 27ms)
+ GET /dich-vu 200 in 41ms (next.js: 4ms, application-code: 37ms)
+ GET /dat-lich 200 in 30ms (next.js: 4ms, application-code: 27ms)
+ GET /danh-gia 200 in 32ms (next.js: 5ms, application-code: 26ms)
+ GET / 200 in 30ms (next.js: 3ms, application-code: 27ms)
+ GET /dich-vu 200 in 40ms (next.js: 4ms, application-code: 36ms)
+ GET /dat-lich 200 in 32ms (next.js: 3ms, application-code: 29ms)
+ GET /danh-gia 200 in 33ms (next.js: 4ms, application-code: 29ms)
+ GET / 200 in 95ms (next.js: 6ms, application-code: 90ms)
+ GET / 200 in 113ms (next.js: 12ms, application-code: 100ms)
+ GET /dich-vu 200 in 40ms (next.js: 5ms, application-code: 35ms)
+ GET /dat-lich 200 in 31ms (next.js: 3ms, application-code: 27ms)
+ GET /danh-gia 200 in 32ms (next.js: 5ms, application-code: 28ms)
+ GET / 200 in 30ms (next.js: 4ms, application-code: 26ms)
+ GET / 200 in 353ms (next.js: 106ms, application-code: 246ms)
+ GET /dich-vu 200 in 23ms (next.js: 7ms, application-code: 15ms)
+ GET /dat-lich 200 in 19ms (next.js: 6ms, application-code: 13ms)
+ GET /danh-gia 200 in 21ms (next.js: 6ms, application-code: 16ms)
+ GET / 200 in 13ms (next.js: 1826µs, application-code: 12ms)
+ GET /danh-gia 200 in 13ms (next.js: 1929µs, application-code: 11ms)
+ GET / 200 in 13ms (next.js: 1872µs, application-code: 11ms)
+ GET /danh-gia 200 in 17ms (next.js: 2ms, application-code: 15ms)
+ GET / 200 in 14ms (next.js: 1679µs, application-code: 12ms)

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPuppy | Đánh Giá Khách Hàng</title>
+  <meta name="description" content="Xem đánh giá thực tế từ khách hàng đã sử dụng dịch vụ chăm sóc thú cưng của MyPuppy.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/frontend-ui.css">
+</head>
+<body class="frontend-page--subpage text-slate-900">
+  <main class="relative overflow-hidden">
+    <section class="relative min-h-[52vh] overflow-hidden">
+      <div class="absolute inset-0 bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1800&q=80');"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-slate-950/82 via-slate-900/62 to-slate-950/78"></div>
+      <div class="relative z-10 px-4 pt-6 md:px-8">
+        <div class="mx-auto max-w-7xl">
+          <header class="flex items-center justify-between gap-4">
+            <a href="../index.html" class="petcare-logo hero-fade" aria-label="MyPuppy Premium">
+              <span class="petcare-logo__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="7.2" cy="7.1" r="2.05"></circle>
+                  <circle cx="12" cy="5.7" r="1.9"></circle>
+                  <circle cx="16.7" cy="7.4" r="2.05"></circle>
+                  <circle cx="18.1" cy="12.2" r="1.8"></circle>
+                  <path d="M12.1 19.7c-1.2 0-2.1-.44-2.86-1.06-.54-.43-.97-.7-1.63-.7-1.46 0-2.63-1.14-2.63-2.7 0-2.9 2.5-5.62 5.54-5.62 3.85 0 7.12 3.08 7.12 6.2 0 2.22-1.64 3.9-3.88 3.9-.84 0-1.38-.24-1.97-.62-.23-.15-.44-.25-.69-.25Z"></path>
+                </svg>
+              </span>
+              <span class="petcare-logo__copy">
+                <span class="petcare-logo__wordmark">MyPuppy</span>
+                <span class="petcare-logo__tag">Premium</span>
+              </span>
+            </a>
+            <nav class="hero-glass-soft-light hero-fade-delay nav-stagger hidden rounded-full border border-white/15 px-3 py-2 text-white shadow-glass lg:flex">
+              <a href="../index.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Trang chủ</a>
+              <a href="dich-vu.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Dịch vụ</a>
+              <a href="dat-lich.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Đặt lịch</a>
+              <a href="phu-kien.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Phụ kiện</a>
+              <a href="danh-gia.html" class="rounded-full bg-white px-5 py-2.5 font-semibold text-slate-950">Đánh giá</a>
+            </nav>
+            <a href="dang-nhap.html" class="hero-fade-delay rounded-full bg-white px-5 py-3 font-semibold text-slate-950 shadow-lg transition hover:bg-sky-50">Đăng nhập</a>
+          </header>
+          <div class="py-20 text-center text-white md:py-28">
+            <p class="hero-fade text-sm font-semibold uppercase tracking-[0.45em] text-sky-300">Phản hồi khách hàng</p>
+            <h1 class="hero-fade-delay mt-6 text-5xl font-bold tracking-tight md:text-6xl">Khách hàng nói gì về MyPuppy</h1>
+            <p class="hero-fade-delay-2 mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/78">
+              Hàng trăm khách hàng tin tưởng lựa chọn MyPuppy nhờ sự tận tâm, sạch sẽ và quy trình chăm sóc rõ ràng.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white px-4 py-24 md:px-8">
+      <div class="mx-auto max-w-6xl rounded-[2.75rem] border border-sky-100 bg-white px-6 py-14 shadow-[0_25px_80px_rgba(15,23,42,0.12)] md:px-10">
+        <div class="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+          <div class="reveal rounded-[2rem] bg-gradient-to-br from-sky-500 to-cyan-400 p-10 text-white shadow-[0_25px_60px_rgba(14,165,233,0.26)]">
+            <p class="text-sm font-bold uppercase tracking-[0.45em] text-white/80">Điểm trung bình</p>
+            <div class="mt-8 flex items-end gap-4">
+              <span class="text-7xl font-bold leading-none">4.9</span>
+              <span class="pb-2 text-2xl font-semibold text-white/85">/5.0</span>
+            </div>
+            <div class="mt-6 flex gap-2">
+              <svg class="h-6 w-6 fill-yellow-300 text-yellow-300" viewBox="0 0 24 24"><path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path></svg>
+              <svg class="h-6 w-6 fill-yellow-300 text-yellow-300" viewBox="0 0 24 24"><path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path></svg>
+              <svg class="h-6 w-6 fill-yellow-300 text-yellow-300" viewBox="0 0 24 24"><path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path></svg>
+              <svg class="h-6 w-6 fill-yellow-300 text-yellow-300" viewBox="0 0 24 24"><path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path></svg>
+              <svg class="h-6 w-6 fill-yellow-300 text-yellow-300" viewBox="0 0 24 24"><path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path></svg>
+            </div>
+            <p class="mt-6 text-lg leading-8 text-white/85">
+              MyPuppy được khách hàng đánh giá cao ở sự sạch sẽ, đúng hẹn và thái độ chăm sóc dịu dàng với thú cưng.
+            </p>
+          </div>
+
+          <div class="grid gap-5">
+            <article class="reveal rounded-[2rem] border border-slate-100 bg-white p-8 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+              <p class="text-lg leading-8 text-slate-600">“Bé nhà mình rất nhát nhưng đội ngũ MyPuppy cực kỳ kiên nhẫn. Sau buổi grooming lông mềm mượt và thơm rất lâu.”</p>
+              <div class="mt-6"><h3 class="text-xl font-bold text-slate-900">Phạm Minh Tuấn</h3><p class="mt-1 text-sm uppercase tracking-[0.3em] text-slate-400">Khách hàng thân thiết</p></div>
+            </article>
+            <article class="reveal rounded-[2rem] border border-slate-100 bg-white p-8 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+              <p class="text-lg leading-8 text-slate-600">“Quy trình đặt lịch rất rõ ràng, nhân viên gọi xác nhận nhanh. Bé mèo của mình được chăm sóc nhẹ nhàng và sạch sẽ.”</p>
+              <div class="mt-6"><h3 class="text-xl font-bold text-slate-900">Nguyễn Thị Lan</h3><p class="mt-1 text-sm uppercase tracking-[0.3em] text-slate-400">Khách hàng mới</p></div>
+            </article>
+            <article class="reveal rounded-[2rem] border border-slate-100 bg-white p-8 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+              <p class="text-lg leading-8 text-slate-600">“Dịch vụ spa cao cấp rất xứng đáng. Bé cún được massage, cắt móng và vệ sinh tai rất kỹ, mình hoàn toàn yên tâm.”</p>
+              <div class="mt-6"><h3 class="text-xl font-bold text-slate-900">Trần Quang Minh</h3><p class="mt-1 text-sm uppercase tracking-[0.3em] text-slate-400">Khách hàng VIP</p></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const revealElements = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+
+    revealElements.forEach((element) => observer.observe(element));
+  </script>
+</body>
+</html>

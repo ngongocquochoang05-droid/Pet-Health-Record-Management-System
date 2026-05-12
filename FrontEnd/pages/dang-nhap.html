@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPuppy | Đăng Nhập Quản Trị</title>
+  <meta name="description" content="Đăng nhập trang quản trị MyPuppy để quản lý người dùng, nhân viên và báo cáo thống kê.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/frontend-ui.css">
+</head>
+<body class="text-slate-900">
+  <main class="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-4 py-10">
+    <div
+      class="login-background-soft absolute inset-0 bg-cover bg-center"
+      style="background-image:url('https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1800&q=80');"
+    ></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-white/18 via-sky-950/40 to-slate-950/68"></div>
+
+    <section id="login-card" class="login-card-soft hero-fade relative z-10 w-full max-w-xl rounded-[1.35rem] border border-white/55 px-8 py-10 md:px-10">
+      <div class="text-center">
+        <a href="../index.html" class="petcare-logo petcare-logo--landing login-logo-on-glass mb-6" aria-label="MyPuppy Premium">
+          <span class="petcare-logo__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="7.2" cy="7.1" r="2.05"></circle>
+              <circle cx="12" cy="5.7" r="1.9"></circle>
+              <circle cx="16.7" cy="7.4" r="2.05"></circle>
+              <circle cx="18.1" cy="12.2" r="1.8"></circle>
+              <path d="M12.1 19.7c-1.2 0-2.1-.44-2.86-1.06-.54-.43-.97-.7-1.63-.7-1.46 0-2.63-1.14-2.63-2.7 0-2.9 2.5-5.62 5.54-5.62 3.85 0 7.12 3.08 7.12 6.2 0 2.22-1.64 3.9-3.88 3.9-.84 0-1.38-.24-1.97-.62-.23-.15-.44-.25-.69-.25Z"></path>
+            </svg>
+          </span>
+          <span class="petcare-logo__copy">
+            <span class="petcare-logo__wordmark"><span class="petcare-logo__pet">My</span><span class="petcare-logo__care">Puppy</span></span>
+            <span class="petcare-logo__tag">Premium</span>
+          </span>
+        </a>
+        <h1 class="text-3xl font-extrabold text-slate-950">Đăng nhập</h1>
+        <p class="mt-3 flex items-center justify-center gap-2 text-base text-slate-500">
+          <span>Chào mừng bạn quay lại!</span>
+          <svg class="h-4 w-4 text-sky-500" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="7.2" cy="7.1" r="2.05"></circle>
+            <circle cx="12" cy="5.7" r="1.9"></circle>
+            <circle cx="16.7" cy="7.4" r="2.05"></circle>
+            <circle cx="18.1" cy="12.2" r="1.8"></circle>
+            <path d="M12.1 19.7c-1.2 0-2.1-.44-2.86-1.06-.54-.43-.97-.7-1.63-.7-1.46 0-2.63-1.14-2.63-2.7 0-2.9 2.5-5.62 5.54-5.62 3.85 0 7.12 3.08 7.12 6.2 0 2.22-1.64 3.9-3.88 3.9-.84 0-1.38-.24-1.97-.62-.23-.15-.44-.25-.69-.25Z"></path>
+          </svg>
+        </p>
+      </div>
+
+      <div class="mt-9">
+        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Đăng nhập nhanh demo</p>
+        <button
+          id="admin-demo"
+          type="button"
+          class="mt-3 flex w-full items-center justify-center gap-3 rounded-2xl border border-sky-200 bg-sky-50 px-5 py-4 text-base font-semibold text-sky-700 transition hover:border-sky-300 hover:bg-sky-100"
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M16.5 19a4.5 4.5 0 0 0-9 0"></path>
+            <circle cx="12" cy="11" r="3.5"></circle>
+          </svg>
+          <span>Admin - admin@mypuppy.vn</span>
+        </button>
+      </div>
+
+      <div class="my-9 flex items-center gap-4 text-sm font-medium text-slate-400">
+        <span class="h-px flex-1 bg-slate-200"></span>
+        <span>Hoặc đăng nhập thủ công</span>
+        <span class="h-px flex-1 bg-slate-200"></span>
+      </div>
+
+      <form id="login-form" class="space-y-5">
+        <label class="block">
+          <span class="text-base font-semibold text-slate-800">Email</span>
+          <span class="mt-3 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 transition focus-within:border-white/80 focus-within:shadow-[0_14px_34px_rgba(15,23,42,0.16),inset_0_1px_0_rgba(255,255,255,0.9)]">
+            <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 6.5h16v11H4z"></path>
+              <path d="m4.8 7.2 7.2 5.4 7.2-5.4"></path>
+            </svg>
+            <input
+              id="admin-email"
+              type="email"
+              value="admin@mypuppy.vn"
+              placeholder="email@example.com"
+              class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400"
+            >
+          </span>
+        </label>
+
+        <label class="block">
+          <span class="text-base font-semibold text-slate-800">Mật khẩu</span>
+          <span class="mt-3 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 transition focus-within:border-white/80 focus-within:shadow-[0_14px_34px_rgba(15,23,42,0.16),inset_0_1px_0_rgba(255,255,255,0.9)]">
+            <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+              <path d="M8 10V7.5a4 4 0 0 1 8 0V10"></path>
+            </svg>
+            <input
+              id="admin-password"
+              type="password"
+              value="admin123"
+              placeholder="Nhập mật khẩu"
+              class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400"
+            >
+            <button id="toggle-password" type="button" class="rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-sky-600" aria-label="Hiện mật khẩu">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M2.5 12s3.3-6 9.5-6 9.5 6 9.5 6-3.3 6-9.5 6-9.5-6-9.5-6Z"></path>
+                <circle cx="12" cy="12" r="2.6"></circle>
+              </svg>
+            </button>
+          </span>
+        </label>
+
+        <p id="login-error" class="hidden text-sm font-medium text-rose-600">Thông tin đăng nhập chưa đúng. Vui lòng thử lại.</p>
+
+        <button
+          type="submit"
+          class="inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-sky-400 to-sky-600 px-6 py-4 text-lg font-bold text-white shadow-[0_14px_30px_rgba(14,165,233,0.28)] transition hover:from-sky-500 hover:to-sky-700"
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+            <path d="M14 5l7 7-7 7"></path>
+            <path d="M21 12H9"></path>
+            <path d="M5 5v14"></path>
+          </svg>
+          <span>Đăng nhập</span>
+        </button>
+      </form>
+
+      <div class="mt-8 text-center">
+        <a href="../index.html" class="text-sm font-medium text-slate-500 transition hover:text-sky-600">Quay lại Trang chủ</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const loginForm = document.getElementById("login-form");
+    const loginError = document.getElementById("login-error");
+    const adminDemo = document.getElementById("admin-demo");
+    const adminEmail = document.getElementById("admin-email");
+    const adminPassword = document.getElementById("admin-password");
+    const togglePassword = document.getElementById("toggle-password");
+
+    adminDemo.addEventListener("click", () => {
+      adminEmail.value = "admin@mypuppy.vn";
+      adminPassword.value = "admin123";
+      loginError.classList.add("hidden");
+    });
+
+    togglePassword.addEventListener("click", () => {
+      const isPassword = adminPassword.type === "password";
+      adminPassword.type = isPassword ? "text" : "password";
+      togglePassword.setAttribute("aria-label", isPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+    });
+
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const email = adminEmail.value.trim().toLowerCase();
+      const password = adminPassword.value.trim();
+
+      if (email === "admin@mypuppy.vn" && password === "admin123") {
+        sessionStorage.setItem("mypuppy_admin_logged_in", "true");
+        window.location.href = "../index.html";
+        return;
+      }
+
+      loginError.classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>

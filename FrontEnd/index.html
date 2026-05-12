@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPuppy | Đặt Lịch Chăm Sóc Thú Cưng Cao Cấp</title>
+  <meta
+    name="description"
+    content="MyPuppy cung cấp dịch vụ spa, grooming và đặt lịch chăm sóc thú cưng cao cấp với trải nghiệm trực quan, chuyên nghiệp và đáng tin cậy."
+  >
+  <meta
+    name="keywords"
+    content="mypuppy, chăm sóc thú cưng, spa thú cưng, grooming, đặt lịch thú cưng, ứng dụng thú cưng"
+  >
+  <meta property="og:title" content="MyPuppy | Đặt Lịch Chăm Sóc Thú Cưng Cao Cấp">
+  <meta
+    property="og:description"
+    content="Landing page dịch vụ chăm sóc thú cưng cao cấp kết hợp giao diện quản trị dành cho admin sau khi đăng nhập."
+  >
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "MyPuppy",
+      "description": "Dịch vụ spa, grooming và chăm sóc thú cưng cao cấp.",
+      "telephone": "0901234567",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "123 Đường Nguyễn Huệ",
+        "addressLocality": "Quận 1",
+        "addressRegion": "TP.HCM",
+        "addressCountry": "VN"
+      },
+      "priceRange": "150000-380000 VND"
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "sans-serif"],
+            display: ["Playfair Display", "serif"],
+          },
+          boxShadow: {
+            glass: "0 25px 80px rgba(15, 23, 42, 0.18)",
+            dashboard: "0 30px 80px rgba(0, 0, 0, 0.45)",
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="assets/css/frontend-ui.css">
+</head>
+<body class="frontend-page--landing text-slate-900">
+  <div id="landing-page">
+    <main id="trang-chu" class="relative min-h-screen w-full overflow-hidden">
+      <div
+        id="hero-parallax"
+        class="absolute inset-0 scale-110 bg-cover bg-center"
+        style="background-image: url('https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1800&q=80');"
+      ></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-slate-950/72 via-slate-900/45 to-slate-950/78"></div>
+      <div class="absolute left-0 top-0 h-[28rem] w-[28rem] rounded-full bg-sky-300/12 blur-3xl"></div>
+      <div class="absolute bottom-0 right-0 h-[24rem] w-[24rem] rounded-full bg-white/10 blur-3xl"></div>
+
+      <div class="relative z-10 flex min-h-screen flex-col">
+        <header class="px-4 pt-6 md:px-8">
+          <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
+            <a href="index.html" class="petcare-logo petcare-logo--landing hero-fade" aria-label="MyPuppy Premium">
+              <span class="petcare-logo__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="7.2" cy="7.1" r="2.05"></circle>
+                  <circle cx="12" cy="5.7" r="1.9"></circle>
+                  <circle cx="16.7" cy="7.4" r="2.05"></circle>
+                  <circle cx="18.1" cy="12.2" r="1.8"></circle>
+                  <path d="M12.1 19.7c-1.2 0-2.1-.44-2.86-1.06-.54-.43-.97-.7-1.63-.7-1.46 0-2.63-1.14-2.63-2.7 0-2.9 2.5-5.62 5.54-5.62 3.85 0 7.12 3.08 7.12 6.2 0 2.22-1.64 3.9-3.88 3.9-.84 0-1.38-.24-1.97-.62-.23-.15-.44-.25-.69-.25Z"></path>
+                </svg>
+              </span>
+              <span class="petcare-logo__copy">
+                <span class="petcare-logo__wordmark"><span class="petcare-logo__pet">My</span><span class="petcare-logo__care">Puppy</span></span>
+                <span class="petcare-logo__tag">Premium</span>
+              </span>
+            </a>
+
+            <nav class="hero-glass-soft-light hero-fade-delay nav-stagger hidden rounded-full border border-white/15 px-3 py-2 text-white shadow-glass lg:flex">
+              <a href="index.html" class="rounded-full bg-white px-5 py-2.5 font-semibold text-slate-950">Trang chủ</a>
+              <a href="pages/dich-vu.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Dịch vụ</a>
+              <a href="pages/dat-lich.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Đặt lịch</a>
+              <a href="pages/phu-kien.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Phụ kiện</a>
+              <a href="pages/danh-gia.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Đánh giá</a>
+            </nav>
+
+            <a
+              href="pages/dang-nhap.html"
+              class="hero-fade-delay inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 font-semibold text-slate-950 shadow-lg transition hover:bg-sky-50"
+            >
+              <svg class="h-5 w-5 text-slate-950/85" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M16.5 19a4.5 4.5 0 0 0-9 0"></path>
+                <circle cx="12" cy="11" r="3.5"></circle>
+              </svg>
+              <span>Đăng nhập</span>
+            </a>
+          </div>
+        </header>
+
+        <section class="flex flex-1 items-center px-4 pb-24 pt-8 md:px-8 md:pb-24">
+          <div class="mx-auto flex w-full max-w-7xl flex-col items-center justify-center">
+            <div class="max-w-5xl text-center text-white">
+              <p class="hero-fade text-sm font-semibold uppercase tracking-[0.45em] text-sky-300 md:text-base">
+                Premium Pet Care &amp; Wellness
+              </p>
+              <h1 class="hero-fade-delay mt-7 text-5xl font-bold leading-[0.94] tracking-tight md:text-7xl xl:text-[6.3rem]">
+                <span class="block">Nơi thú cưng</span>
+                <span class="block font-display italic text-sky-300">được yêu thương</span>
+                <span class="block">nhất.</span>
+              </h1>
+              <p class="hero-fade-delay-2 mx-auto mt-8 max-w-3xl text-lg leading-8 text-white/80 md:text-xl">
+                Hệ thống đặt lịch thông minh, đội ngũ chuyên viên chứng chỉ quốc tế. Mỗi dịch vụ là một trải nghiệm đặc biệt cho thú cưng của bạn.
+              </p>
+
+              <div class="hero-fade-delay-2 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <a
+                  href="pages/dat-lich.html"
+                  class="inline-flex min-w-[230px] items-center justify-center gap-3 whitespace-nowrap rounded-full bg-white px-8 py-4 text-lg font-semibold text-slate-950 shadow-xl transition hover:bg-sky-50"
+                >
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M16.5 19a4.5 4.5 0 0 0-9 0"></path>
+                    <circle cx="12" cy="11" r="3.5"></circle>
+                  </svg>
+                  <span>Đặt lịch ngay — Miễn phí</span>
+                </a>
+                <a
+                  href="pages/dich-vu.html"
+                  class="inline-flex min-w-[230px] items-center justify-center whitespace-nowrap rounded-full border border-white/20 bg-white/10 px-8 py-4 text-lg font-semibold text-white shadow-xl backdrop-blur-md transition hover:bg-white/15"
+                >
+                  Khám phá dịch vụ
+                </a>
+              </div>
+            </div>
+
+            <div class="hero-fade-delay-2 mt-14 w-full max-w-5xl rounded-[2rem] border border-white/15 bg-white/10 px-5 py-5 text-white shadow-glass backdrop-blur-xl md:px-8">
+              <div class="grid gap-4 text-center md:grid-cols-4">
+                <div>
+                  <p class="text-3xl font-bold">50+</p>
+                  <p class="mt-2 text-sm uppercase tracking-[0.35em] text-white/68">Giống thú cưng</p>
+                </div>
+                <div>
+                  <p class="text-3xl font-bold">15K+</p>
+                  <p class="mt-2 text-sm uppercase tracking-[0.35em] text-white/68">Lượt grooming</p>
+                </div>
+                <div>
+                  <p class="text-3xl font-bold">10K+</p>
+                  <p class="mt-2 text-sm uppercase tracking-[0.35em] text-white/68">Khách hàng hài lòng</p>
+                </div>
+                <div class="inline-flex flex-col items-center">
+                  <div class="inline-flex items-center gap-2">
+                    <p class="text-3xl font-bold">4.9</p>
+                    <svg class="h-5 w-5 fill-yellow-400 text-yellow-400" viewBox="0 0 24 24">
+                      <path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path>
+                    </svg>
+                  </div>
+                  <p class="mt-2 text-sm uppercase tracking-[0.35em] text-white/68">Đánh giá</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-fade-delay-2 mt-8 w-full max-w-6xl rounded-[2rem] border border-white/20 bg-black/30 p-3 shadow-glass backdrop-blur-xl">
+              <div class="grid gap-2 md:grid-cols-[1.2fr_1.2fr_1.15fr_auto]">
+                <label class="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-4 text-left md:border-r md:border-r-white/10">
+                  <span class="text-xs font-bold uppercase tracking-[0.3em] text-sky-300">Chọn dịch vụ</span>
+                  <select class="mt-3 w-full bg-transparent text-lg font-semibold text-white outline-none">
+                    <option class="text-slate-900">Spa</option>
+                    <option class="text-slate-900">Grooming</option>
+                    <option class="text-slate-900">Khách sạn thú cưng</option>
+                  </select>
+                </label>
+                <label class="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-4 text-left md:border-r md:border-r-white/10">
+                  <span class="text-xs font-bold uppercase tracking-[0.3em] text-sky-300">Chọn thú cưng</span>
+                  <select class="mt-3 w-full bg-transparent text-lg font-semibold text-white outline-none">
+                    <option class="text-slate-900">Chó nhỏ</option>
+                    <option class="text-slate-900">Chó lớn</option>
+                    <option class="text-slate-900">Mèo</option>
+                  </select>
+                </label>
+                <label class="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-4 text-left">
+                  <span class="text-xs font-bold uppercase tracking-[0.3em] text-sky-300">Chọn lịch</span>
+                  <input type="date" class="mt-3 w-full bg-transparent text-lg font-semibold text-white outline-none">
+                </label>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center rounded-2xl bg-sky-400 px-6 py-4 text-white transition hover:bg-sky-500"
+                  aria-label="Tìm kiếm lịch hẹn"
+                >
+                  <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="11" cy="11" r="6.5"></circle>
+                    <path d="m16 16 4.5 4.5"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <a
+              href="#dich-vu"
+              class="scroll-indicator hero-fade-delay-2 scroll-bounce mt-6 inline-flex items-center justify-center text-white transition hover:text-sky-200"
+              aria-label="Cuộn xuống"
+            >
+              <svg class="h-12 w-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                <path d="m6 9 6 6 6-6"></path>
+              </svg>
+            </a>
+
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <section id="dich-vu" class="relative bg-white px-4 py-24 md:px-8">
+      <div class="mx-auto max-w-6xl overflow-hidden rounded-[2.75rem] border border-sky-100 bg-white px-6 py-14 text-slate-900 shadow-glass md:px-10">
+        <div class="mx-auto max-w-3xl text-center reveal">
+          <p class="text-sm font-bold uppercase tracking-[0.45em] text-sky-600">Dịch vụ của chúng tôi</p>
+          <h2 class="mt-5 text-4xl font-bold tracking-tight md:text-5xl">Dịch vụ chăm sóc thú cưng toàn diện</h2>
+          <p class="mt-6 text-lg leading-8 text-slate-600">
+            MyPuppy cung cấp dịch vụ chăm sóc thú cưng cao cấp với đội ngũ chuyên viên được đào tạo bài bản, sử dụng sản phẩm chất lượng cao và thiết bị hiện đại.
+          </p>
+        </div>
+
+        <div class="mt-14 grid gap-6 lg:grid-cols-3">
+          <article class="reveal rounded-[2rem] border border-slate-100 bg-white p-10 shadow-[0_20px_50px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_25px_55px_rgba(15,23,42,0.12)]">
+            <div class="flex items-center gap-4">
+              <div class="rounded-2xl bg-sky-100 p-4 text-sky-600">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M12 4v16"></path>
+                  <path d="M8 8h6a3 3 0 0 1 0 6H10a3 3 0 0 0 0 6h6"></path>
+                </svg>
+              </div>
+              <span class="rounded-full bg-sky-50 px-4 py-2 text-sm font-bold uppercase tracking-[0.3em] text-sky-600">60 phút</span>
+            </div>
+            <h3 class="mt-8 text-3xl font-bold leading-tight">Tắm &amp; Sấy lông</h3>
+            <p class="mt-5 text-lg leading-8 text-slate-600">
+              Tắm sạch với dầu gội chuyên dụng, sấy khô hoàn toàn và làm thơm cho thú cưng. Phù hợp với mọi kích cỡ.
+            </p>
+            <p class="mt-8 text-4xl font-bold text-sky-700">150.000đ</p>
+          </article>
+
+          <article class="reveal rounded-[2rem] border border-slate-100 bg-white p-10 shadow-[0_20px_50px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 hover:shadow-[0_25px_55px_rgba(15,23,42,0.12)]">
+            <div class="flex items-center gap-4">
+              <div class="rounded-2xl bg-sky-100 p-4 text-sky-600">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="8" r="3"></circle>
+                  <path d="M6.5 19a5.5 5.5 0 0 1 11 0"></path>
+                </svg>
+              </div>
+              <span class="rounded-full bg-sky-50 px-4 py-2 text-sm font-bold uppercase tracking-[0.3em] text-sky-600">90 phút</span>
+            </div>
+            <h3 class="mt-8 text-3xl font-bold leading-tight">Cắt tỉa lông</h3>
+            <p class="mt-5 text-lg leading-8 text-slate-600">
+              Cắt tỉa lông theo yêu cầu, tạo kiểu thời trang cho thú cưng. Nhân viên lành nghề với hơn 5 năm kinh nghiệm.
+            </p>
+            <p class="mt-8 text-4xl font-bold text-sky-700">220.000đ</p>
+          </article>
+
+          <article class="reveal rounded-[2rem] border border-sky-200 bg-gradient-to-br from-sky-50 to-cyan-50 p-10 shadow-[0_20px_50px_rgba(14,165,233,0.12)] transition hover:-translate-y-1 hover:shadow-[0_25px_55px_rgba(14,165,233,0.16)]">
+            <div class="flex items-center gap-4">
+              <div class="rounded-2xl bg-sky-500 p-4 text-white">
+                <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M5 12h14"></path>
+                  <path d="M8 7h8"></path>
+                  <path d="M8 17h8"></path>
+                </svg>
+              </div>
+              <span class="rounded-full bg-white/80 px-4 py-2 text-sm font-bold uppercase tracking-[0.3em] text-sky-700">120 phút</span>
+            </div>
+            <h3 class="mt-8 text-3xl font-bold leading-tight">Spa thư giãn cao cấp</h3>
+            <p class="mt-5 text-lg leading-8 text-slate-600">
+              Gói spa toàn diện: mát-xa thư giãn, dưỡng lông bóng mượt, chăm sóc móng và làm sạch tai. Trải nghiệm sang trọng nhất.
+            </p>
+            <p class="mt-8 text-4xl font-bold text-sky-700">380.000đ</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="dat-lich" class="relative bg-white px-4 py-24 md:px-8">
+      <div class="mx-auto max-w-6xl overflow-hidden rounded-[2.75rem] border border-sky-100 bg-white px-6 py-14 shadow-glass md:px-10">
+        <div class="grid gap-8 xl:grid-cols-[1.05fr_1fr]">
+          <div class="reveal rounded-[2rem] bg-slate-50 p-8 md:p-10">
+            <p class="text-sm font-bold uppercase tracking-[0.45em] text-sky-600">Đặt lịch nhanh</p>
+            <h2 class="mt-5 text-4xl font-bold leading-tight text-slate-900 md:text-5xl">
+              Trải nghiệm đặt lịch chuyên nghiệp, rõ ràng và dễ dùng
+            </h2>
+            <p class="mt-6 text-lg leading-8 text-slate-600">
+              Từ lựa chọn dịch vụ đến xác nhận lịch hẹn, mọi thao tác đều được thiết kế để khách hàng dễ theo dõi, giảm sai sót và tăng sự tin tưởng.
+            </p>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <span class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">Xác nhận tức thì</span>
+              <span class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">Giao diện rõ ràng</span>
+              <span class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">Dễ dùng trên điện thoại</span>
+            </div>
+            <a
+              href="pages/dang-nhap.html"
+              class="mt-10 inline-flex items-center rounded-full bg-sky-500 px-6 py-3.5 font-semibold text-white transition hover:bg-sky-600"
+            >
+              Đăng nhập quản trị để quản lý hệ thống
+            </a>
+          </div>
+
+          <div class="reveal rounded-[2rem] border border-sky-100 bg-white p-8 shadow-[0_20px_50px_rgba(15,23,42,0.08)] md:p-10">
+            <p class="text-sm font-bold uppercase tracking-[0.45em] text-sky-600">Quy trình 4 bước</p>
+            <div class="mt-8 space-y-5">
+              <article class="flex gap-4 rounded-2xl bg-sky-50 px-5 py-5">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky-500 font-bold text-white">1</div>
+                <div>
+                  <h3 class="text-xl font-bold text-slate-900">Chọn dịch vụ phù hợp</h3>
+                  <p class="mt-2 text-base leading-7 text-slate-600">Spa, grooming hoặc chăm sóc chuyên sâu theo nhu cầu và giống thú cưng.</p>
+                </div>
+              </article>
+              <article class="flex gap-4 rounded-2xl bg-slate-50 px-5 py-5">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-900 font-bold text-white">2</div>
+                <div>
+                  <h3 class="text-xl font-bold text-slate-900">Điền thông tin thú cưng</h3>
+                  <p class="mt-2 text-base leading-7 text-slate-600">Kích cỡ, giống, thời gian mong muốn và các lưu ý sức khỏe cần thiết.</p>
+                </div>
+              </article>
+              <article class="flex gap-4 rounded-2xl bg-sky-50 px-5 py-5">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky-500 font-bold text-white">3</div>
+                <div>
+                  <h3 class="text-xl font-bold text-slate-900">Xác nhận nhanh</h3>
+                  <p class="mt-2 text-base leading-7 text-slate-600">Hệ thống hiển thị lịch hẹn rõ ràng để khách hàng kiểm tra trước khi gửi.</p>
+                </div>
+              </article>
+              <article class="flex gap-4 rounded-2xl bg-slate-50 px-5 py-5">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-900 font-bold text-white">4</div>
+                <div>
+                  <h3 class="text-xl font-bold text-slate-900">Admin quản lý toàn hệ thống</h3>
+                  <p class="mt-2 text-base leading-7 text-slate-600">Sau khi đăng nhập, quản trị viên có thể quản lý tài khoản người dùng, nhân viên và theo dõi báo cáo thống kê.</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="doi-ngu" class="relative bg-white px-4 py-24 md:px-8">
+      <div class="mx-auto max-w-6xl overflow-hidden rounded-[2.75rem] border border-sky-100 bg-white px-6 py-14 shadow-glass md:px-10">
+        <div class="mx-auto max-w-3xl text-center reveal">
+          <p class="text-sm font-bold uppercase tracking-[0.45em] text-sky-600">Đội ngũ chuyên gia</p>
+          <h2 class="mt-5 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">Gặp gỡ những người yêu thú cưng như bạn</h2>
+          <p class="mt-6 text-lg leading-8 text-slate-600">
+            Đội ngũ chuyên viên giàu kinh nghiệm, được đào tạo bài bản, luôn đặt sức khỏe và hạnh phúc của thú cưng lên hàng đầu.
+          </p>
+        </div>
+
+        <div class="mt-14 grid gap-6 lg:grid-cols-3">
+          <article class="reveal rounded-[2rem] border border-slate-100 bg-white p-10 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+            <p class="text-sm font-bold uppercase tracking-[0.4em] text-sky-600">Grooming &amp; Tắm sấy</p>
+            <h3 class="mt-5 text-3xl font-bold text-slate-900">Nguyễn Thị Mai</h3>
+            <p class="mt-4 text-lg leading-8 text-slate-600">
+              Chuyên gia grooming với hơn 5 năm kinh nghiệm. Yêu thích làm đẹp cho chó mèo và luôn tạo ra những kiểu tóc ấn tượng.
+            </p>
+          </article>
+          <article class="reveal rounded-[2rem] border border-sky-100 bg-gradient-to-br from-sky-50 to-cyan-50 p-10 shadow-[0_18px_45px_rgba(14,165,233,0.10)]">
+            <p class="text-sm font-bold uppercase tracking-[0.4em] text-sky-700">Sức khỏe &amp; Huấn luyện</p>
+            <h3 class="mt-5 text-3xl font-bold text-slate-900">Trần Văn Hùng</h3>
+            <p class="mt-4 text-lg leading-8 text-slate-600">
+              Bác sĩ thú y và chuyên gia huấn luyện. Có bằng thú y từ Đại học Nông Lâm TP.HCM với 7 năm kinh nghiệm thực tế.
+            </p>
+          </article>
+          <article class="reveal rounded-[2rem] border border-slate-100 bg-white p-10 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+            <p class="text-sm font-bold uppercase tracking-[0.4em] text-sky-600">Spa &amp; Chăm sóc đặc biệt</p>
+            <h3 class="mt-5 text-3xl font-bold text-slate-900">Lê Thị Hoa</h3>
+            <p class="mt-4 text-lg leading-8 text-slate-600">
+              Chuyên gia spa và chăm sóc sắc đẹp thú cưng. Được đào tạo tại Nhật Bản, mang đến trải nghiệm spa đẳng cấp nhất.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="danh-gia" class="relative bg-white px-4 py-24 md:px-8">
+      <div class="mx-auto max-w-6xl overflow-hidden rounded-[2.75rem] border border-sky-100 bg-white px-6 py-14 shadow-glass md:px-10">
+        <div class="mx-auto max-w-3xl text-center reveal">
+          <p class="text-sm font-bold uppercase tracking-[0.45em] text-sky-600">Phản hồi khách hàng</p>
+          <h2 class="mt-5 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
+            Đánh giá dịch vụ chăm sóc thú cưng từ khách hàng thực tế
+          </h2>
+          <p class="mt-6 text-lg leading-8 text-slate-600">
+            Hơn 300 phản hồi tích cực về chất lượng dịch vụ, mức độ tận tâm và sự chuyên nghiệp trong từng buổi chăm sóc.
+          </p>
+        </div>
+
+        <div class="mt-14 grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+          <div class="reveal rounded-[2rem] bg-gradient-to-br from-sky-500 to-cyan-400 p-10 text-white shadow-[0_25px_60px_rgba(14,165,233,0.26)]">
+            <p class="text-sm font-bold uppercase tracking-[0.45em] text-white/80">Điểm trung bình</p>
+            <div class="mt-8 flex items-end gap-4">
+              <span class="text-7xl font-bold leading-none">4.9</span>
+              <span class="pb-2 text-2xl font-semibold text-white/85">/5.0</span>
+            </div>
+            <div class="mt-6 flex gap-2">
+              <svg class="h-6 w-6 fill-yellow-300 text-yellow-300" viewBox="0 0 24 24"><path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path></svg>
+              <svg class="h-6 w-6 fill-yellow-300 text-yellow-300" viewBox="0 0 24 24"><path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path></svg>
+              <svg class="h-6 w-6 fill-yellow-300 text-yellow-300" viewBox="0 0 24 24"><path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path></svg>
+              <svg class="h-6 w-6 fill-yellow-300 text-yellow-300" viewBox="0 0 24 24"><path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path></svg>
+              <svg class="h-6 w-6 fill-yellow-300 text-yellow-300" viewBox="0 0 24 24"><path d="m12 2.5 2.9 5.88 6.49.94-4.69 4.57 1.1 6.46L12 17.3l-5.8 3.05 1.1-6.46L2.6 9.32l6.5-.94L12 2.5Z"></path></svg>
+            </div>
+            <p class="mt-6 text-lg leading-8 text-white/85">
+              Khách hàng đánh giá cao sự sạch sẽ, thời gian đúng hẹn và cảm giác an tâm khi gửi thú cưng tại salon.
+            </p>
+          </div>
+
+          <div class="grid gap-5">
+            <article class="reveal rounded-[2rem] border border-slate-100 bg-white p-8 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+              <p class="text-lg leading-8 text-slate-600">
+                “Bé nhà mình rất nhát nhưng các bạn chăm cực kỳ kiên nhẫn. Sau buổi grooming lông mềm mượt và thơm rất lâu.”
+              </p>
+              <div class="mt-6">
+                <h3 class="text-xl font-bold text-slate-900">Phạm Minh Tuấn</h3>
+                <p class="mt-1 text-sm uppercase tracking-[0.3em] text-slate-400">Khách hàng thân thiết</p>
+              </div>
+            </article>
+            <article class="reveal rounded-[2rem] border border-slate-100 bg-white p-8 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+              <p class="text-lg leading-8 text-slate-600">
+                “Quy trình đặt lịch rất rõ ràng, nhân viên gọi xác nhận nhanh. Bé mèo của mình được chăm sóc nhẹ nhàng và sạch sẽ.”
+              </p>
+              <div class="mt-6">
+                <h3 class="text-xl font-bold text-slate-900">Nguyễn Thị Lan</h3>
+                <p class="mt-1 text-sm uppercase tracking-[0.3em] text-slate-400">Khách hàng mới</p>
+              </div>
+            </article>
+            <article class="reveal rounded-[2rem] border border-slate-100 bg-white p-8 shadow-[0_18px_45px_rgba(15,23,42,0.08)]">
+              <p class="text-lg leading-8 text-slate-600">
+                “Dịch vụ spa cao cấp rất xứng đáng. Bé cún được massage, cắt móng và vệ sinh tai rất kỹ, mình hoàn toàn yên tâm.”
+              </p>
+              <div class="mt-6">
+                <h3 class="text-xl font-bold text-slate-900">Trần Quang Minh</h3>
+                <p class="mt-1 text-sm uppercase tracking-[0.3em] text-slate-400">Khách hàng VIP</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white px-4 pb-24 md:px-8">
+      <div class="mx-auto max-w-6xl overflow-hidden rounded-[2.75rem] bg-slate-950 px-6 py-14 text-white shadow-[0_30px_80px_rgba(15,23,42,0.20)] md:px-10">
+        <div class="grid gap-10 xl:grid-cols-[1.2fr_0.8fr] xl:items-center">
+          <div class="reveal">
+            <p class="text-sm font-bold uppercase tracking-[0.45em] text-sky-300">MyPuppy Premium</p>
+            <h2 class="mt-5 text-4xl font-bold leading-tight md:text-5xl">Thú cưng của bạn xứng đáng được trải nghiệm tốt nhất!</h2>
+            <p class="mt-6 max-w-2xl text-lg leading-8 text-white/70">
+              Đặt lịch nhanh, nhận tư vấn tận tâm và theo dõi quy trình dịch vụ rõ ràng. Với tài khoản admin, bạn còn có thể quản lý tài khoản người dùng, nhân viên và báo cáo trong cùng một giao diện.
+            </p>
+          </div>
+          <div class="reveal flex flex-col gap-4 sm:flex-row xl:flex-col">
+            <a href="pages/dat-lich.html" class="inline-flex min-w-[210px] items-center justify-center rounded-full bg-white px-8 py-4 text-xl font-semibold text-slate-950 transition hover:bg-sky-50">
+              Đặt lịch miễn phí
+            </a>
+            <a href="tel:0901234567" class="inline-flex min-w-[210px] items-center justify-center rounded-full border border-white/15 bg-white/10 px-8 py-4 text-xl font-semibold text-white backdrop-blur-md transition hover:bg-white/15">
+              0901 234 567
+            </a>
+          </div>
+        </div>
+        <div class="mt-10 grid gap-4 text-sm font-medium text-white/65 md:grid-cols-4">
+          <p>Hủy lịch miễn phí 24h</p>
+          <p>Bảo hiểm thú cưng</p>
+          <p>Xác nhận tức thì</p>
+          <p>Hỗ trợ 7 ngày/tuần</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="admin-dashboard" class="hidden h-screen w-full overflow-hidden bg-slate-950 text-white">
+    <div
+      class="flex h-screen w-full relative overflow-hidden bg-cover bg-center"
+      style="background-image: url('https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1800&q=80');"
+    >
+      <div class="absolute inset-0 bg-gradient-to-br from-gray-900/90 via-black/80 to-black/90"></div>
+      <div class="absolute -left-20 top-20 h-72 w-72 rounded-full bg-sky-400/10 blur-3xl"></div>
+      <div class="absolute bottom-10 right-10 h-96 w-96 rounded-full bg-cyan-300/10 blur-3xl"></div>
+
+      <div class="relative z-10 flex h-full w-full">
+        <aside class="flex w-64 flex-col border-r border-white/10 bg-black/40 backdrop-blur-lg">
+          <div class="border-b border-white/10 p-6">
+            <a href="#" class="petcare-logo petcare-logo--admin petcare-logo--sidebar" aria-label="MyPuppy Quản trị">
+              <span class="petcare-logo__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="7.2" cy="7.1" r="2.05"></circle>
+                  <circle cx="12" cy="5.7" r="1.9"></circle>
+                  <circle cx="16.7" cy="7.4" r="2.05"></circle>
+                  <circle cx="18.1" cy="12.2" r="1.8"></circle>
+                  <path d="M12.1 19.7c-1.2 0-2.1-.44-2.86-1.06-.54-.43-.97-.7-1.63-.7-1.46 0-2.63-1.14-2.63-2.7 0-2.9 2.5-5.62 5.54-5.62 3.85 0 7.12 3.08 7.12 6.2 0 2.22-1.64 3.9-3.88 3.9-.84 0-1.38-.24-1.97-.62-.23-.15-.44-.25-.69-.25Z"></path>
+                </svg>
+              </span>
+              <span class="petcare-logo__copy">
+                <span class="petcare-logo__wordmark"><span class="petcare-logo__pet">My</span><span class="petcare-logo__care">Puppy</span></span>
+                <span class="petcare-logo__tag">Quản trị</span>
+              </span>
+            </a>
+          </div>
+
+          <nav class="flex-1 px-4 py-6">
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="flex items-center gap-3 rounded-r-lg border-l-4 border-sky-400 bg-sky-500/20 px-4 py-3 font-medium text-sky-300">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M3 10.5 12 3l9 7.5"></path>
+                    <path d="M5.5 9.5V21h13V9.5"></path>
+                  </svg>
+                  <span>Tổng quan</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="flex items-center gap-3 rounded-lg px-4 py-3 text-white/70 transition hover:bg-white/5 hover:text-white">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3.5" y="5" width="17" height="15" rx="2.5"></rect>
+                    <path d="M8 3.5v3"></path>
+                    <path d="M16 3.5v3"></path>
+                    <path d="M3.5 9.5h17"></path>
+                  </svg>
+                  <span>Tài khoản người dùng</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="flex items-center gap-3 rounded-lg px-4 py-3 text-white/70 transition hover:bg-white/5 hover:text-white">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5v14"></path>
+                    <rect x="4" y="4" width="16" height="16" rx="4"></rect>
+                  </svg>
+                  <span>Nhân viên</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="flex items-center gap-3 rounded-lg px-4 py-3 text-white/70 transition hover:bg-white/5 hover:text-white">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M16.5 19a4.5 4.5 0 0 0-9 0"></path>
+                    <circle cx="12" cy="11" r="3.5"></circle>
+                    <path d="M5 19h14"></path>
+                  </svg>
+                  <span>Phân quyền</span>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="flex items-center gap-3 rounded-lg px-4 py-3 text-white/70 transition hover:bg-white/5 hover:text-white">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M4 19.5h16"></path>
+                    <path d="M7 16V10"></path>
+                    <path d="M12 16V6"></path>
+                    <path d="M17 16v-3"></path>
+                  </svg>
+                  <span>Báo cáo</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+          <div class="p-4">
+            <button
+              id="logout-admin"
+              type="button"
+              class="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80 transition hover:bg-white/10 hover:text-white"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M10 17l-5-5 5-5"></path>
+                <path d="M5 12h10"></path>
+                <path d="M14 5h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"></path>
+              </svg>
+              <span>Đăng xuất</span>
+            </button>
+          </div>
+        </aside>
+
+        <div class="flex flex-1 flex-col overflow-y-auto">
+          <header class="flex items-center justify-between border-b border-white/10 bg-black/20 p-6 backdrop-blur-md">
+            <label class="relative w-full max-w-md">
+              <span class="sr-only">Tìm kiếm trong bảng điều khiển</span>
+              <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="11" cy="11" r="6.5"></circle>
+                <path d="m16 16 4.5 4.5"></path>
+              </svg>
+              <input
+                type="search"
+                placeholder="Tìm tài khoản, nhân viên hoặc báo cáo..."
+                class="w-full rounded-full border border-white/10 bg-white/5 py-3 pl-11 pr-4 text-sm text-white placeholder:text-white/50 focus:border-sky-300/50 focus:outline-none focus:ring-2 focus:ring-sky-300/20"
+              >
+            </label>
+
+            <div class="ml-6 flex items-center gap-4">
+              <button
+                type="button"
+                class="relative rounded-full border border-white/10 bg-white/5 p-3 text-white/80 transition hover:bg-white/10 hover:text-white"
+                aria-label="Notifications"
+              >
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M6.5 9.5a5.5 5.5 0 1 1 11 0c0 6 2 7.5 2 7.5h-15s2-1.5 2-7.5"></path>
+                  <path d="M10 20a2.25 2.25 0 0 0 4 0"></path>
+                </svg>
+                <span class="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-sky-400"></span>
+              </button>
+
+              <div class="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-md">
+                <img
+                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80"
+                  alt="Administrator avatar"
+                  class="h-10 w-10 rounded-full object-cover"
+                >
+                <div class="hidden text-left md:block">
+                  <p class="text-sm font-semibold text-white">Olivia Bennett</p>
+                  <p class="text-xs text-white/55">Quản trị hệ thống</p>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <main class="flex-1 p-8">
+            <section class="space-y-8">
+              <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                <div>
+                  <p class="text-sm uppercase tracking-[0.35em] text-sky-300">Tổng quan vận hành</p>
+                  <h1 class="mt-3 text-3xl font-semibold text-white md:text-4xl">
+                    Chào mừng trở lại,
+                    <span class="font-display italic text-sky-300">Quản trị viên</span>
+                  </h1>
+                  <p class="mt-3 max-w-2xl text-sm leading-7 text-white/65 md:text-base">
+                    Quản lý tài khoản người dùng, theo dõi nhân viên, kiểm soát phân quyền và xem báo cáo thống kê trong một không gian quản trị tập trung.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center rounded-full bg-sky-400 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-300"
+                >
+                  Xuất báo cáo nhanh
+                </button>
+              </div>
+
+              <section class="grid gap-5 md:grid-cols-2 xl:grid-cols-4" aria-label="Quick statistics">
+                <article class="glass-shine relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 shadow-dashboard backdrop-blur-md">
+                  <div class="mb-8 flex items-start justify-between">
+                    <div>
+                      <p class="text-sm uppercase tracking-[0.28em] text-white/60">Tài khoản người dùng</p>
+                      <h2 class="mt-4 text-3xl font-bold text-white">1,284</h2>
+                    </div>
+                    <span class="rounded-full bg-sky-400/15 px-3 py-1 text-xs font-semibold text-sky-300">+46</span>
+                  </div>
+                  <p class="text-sm text-white/55">Tài khoản mới được tạo trong tháng này</p>
+                </article>
+
+                <article class="glass-shine relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 shadow-dashboard backdrop-blur-md">
+                  <div class="mb-8 flex items-start justify-between">
+                    <div>
+                      <p class="text-sm uppercase tracking-[0.28em] text-white/60">Nhân viên đang hoạt động</p>
+                      <h2 class="mt-4 text-3xl font-bold text-sky-300">28</h2>
+                    </div>
+                    <span class="rounded-full bg-sky-400/15 px-3 py-1 text-xs font-semibold text-sky-300">Theo ca</span>
+                  </div>
+                  <p class="text-sm text-white/55">3 nhân viên mới đang chờ cấp quyền truy cập</p>
+                </article>
+
+                <article class="glass-shine relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 shadow-dashboard backdrop-blur-md">
+                  <div class="mb-8 flex items-start justify-between">
+                    <div>
+                      <p class="text-sm uppercase tracking-[0.28em] text-white/60">Báo cáo tháng</p>
+                      <h2 class="mt-4 text-3xl font-bold text-white">12</h2>
+                    </div>
+                    <span class="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-semibold text-emerald-300">Đã tạo</span>
+                  </div>
+                  <p class="text-sm text-white/55">Bao gồm doanh thu, nhân sự và hiệu suất dịch vụ</p>
+                </article>
+
+                <article class="glass-shine relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 shadow-dashboard backdrop-blur-md">
+                  <div class="mb-8 flex items-start justify-between">
+                    <div>
+                      <p class="text-sm uppercase tracking-[0.28em] text-white/60">Yêu cầu chờ duyệt</p>
+                      <h2 class="mt-4 text-3xl font-bold text-yellow-400">4</h2>
+                    </div>
+                    <span class="rounded-full bg-yellow-400/15 px-3 py-1 text-xs font-semibold text-yellow-300">Cần xem xét</span>
+                  </div>
+                  <p class="text-sm text-white/55">Gồm yêu cầu mở tài khoản và cập nhật hồ sơ nhân viên</p>
+                </article>
+              </section>
+
+              <section class="grid gap-5 xl:grid-cols-3">
+                <article class="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-dashboard backdrop-blur-md">
+                  <p class="text-sm uppercase tracking-[0.28em] text-sky-300">Quản lý tài khoản</p>
+                  <h2 class="mt-4 text-2xl font-bold text-white">Kiểm soát người dùng hệ thống</h2>
+                  <p class="mt-4 text-sm leading-7 text-white/60">
+                    Kích hoạt, khóa, đặt lại mật khẩu và phân loại tài khoản khách hàng theo trạng thái sử dụng.
+                  </p>
+                </article>
+                <article class="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-dashboard backdrop-blur-md">
+                  <p class="text-sm uppercase tracking-[0.28em] text-sky-300">Quản lý nhân viên</p>
+                  <h2 class="mt-4 text-2xl font-bold text-white">Theo dõi đội ngũ nội bộ</h2>
+                  <p class="mt-4 text-sm leading-7 text-white/60">
+                    Cập nhật hồ sơ, chức vụ, ca làm việc và quyền truy cập của từng nhân viên trong hệ thống.
+                  </p>
+                </article>
+                <article class="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-dashboard backdrop-blur-md">
+                  <p class="text-sm uppercase tracking-[0.28em] text-sky-300">Báo cáo thống kê</p>
+                  <h2 class="mt-4 text-2xl font-bold text-white">Ra quyết định từ dữ liệu</h2>
+                  <p class="mt-4 text-sm leading-7 text-white/60">
+                    Xem báo cáo theo ngày, tuần, tháng để đánh giá hiệu suất vận hành, doanh thu và nguồn lực.
+                  </p>
+                </article>
+              </section>
+
+              <section class="rounded-2xl border border-white/10 bg-black/40 p-6 shadow-2xl backdrop-blur-md">
+                <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 class="text-xl font-semibold text-white">Hoạt động quản trị gần đây</h2>
+                    <p class="mt-1 text-sm text-white/55">Theo dõi các thay đổi liên quan đến tài khoản người dùng, nhân viên và báo cáo thống kê.</p>
+                  </div>
+                  <a href="#" class="text-sm font-medium text-sky-300 transition hover:text-sky-200">Xem tất cả</a>
+                </div>
+
+                <div class="overflow-x-auto">
+                  <table class="w-full min-w-[860px] text-left">
+                    <thead>
+                      <tr class="border-b border-white/10 text-xs uppercase tracking-[0.26em] text-white/50">
+                        <th class="pb-3 font-medium">Hạng mục</th>
+                        <th class="pb-3 font-medium">Người phụ trách</th>
+                        <th class="pb-3 font-medium">Chi tiết</th>
+                        <th class="pb-3 font-medium">Thời gian</th>
+                        <th class="pb-3 font-medium">Trạng thái</th>
+                        <th class="pb-3 font-medium">Tác vụ</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-b border-white/5 text-sm text-white/80">
+                        <td class="py-4">
+                          <div class="font-medium text-white">Tài khoản người dùng</div>
+                          <div class="mt-1 text-xs text-white/45">Mở mới tài khoản</div>
+                        </td>
+                        <td class="py-4">
+                          <div class="font-medium text-white">Nguyễn Thu Hà</div>
+                          <div class="mt-1 text-xs text-white/45">admin@mypuppy.vn</div>
+                        </td>
+                        <td class="py-4">Kích hoạt tài khoản cho khách hàng mới và gửi email xác nhận.</td>
+                        <td class="py-4">05/05/2026 · 10:30</td>
+                        <td class="py-4">
+                          <span class="inline-flex rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-semibold text-yellow-300">Chờ duyệt</span>
+                        </td>
+                        <td class="py-4">
+                          <button type="button" class="text-white/60 transition hover:text-white" aria-label="Chỉnh sửa hoạt động quản trị">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                              <circle cx="5" cy="12" r="1.8"></circle>
+                              <circle cx="12" cy="12" r="1.8"></circle>
+                              <circle cx="19" cy="12" r="1.8"></circle>
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="border-b border-white/5 text-sm text-white/80">
+                        <td class="py-4">
+                          <div class="font-medium text-white">Nhân viên</div>
+                          <div class="mt-1 text-xs text-white/45">Cập nhật hồ sơ</div>
+                        </td>
+                        <td class="py-4">
+                          <div class="font-medium text-white">Trần Văn Hùng</div>
+                          <div class="mt-1 text-xs text-white/45">Quản lý nhân sự</div>
+                        </td>
+                        <td class="py-4">Điều chỉnh ca làm việc và phân quyền cho nhân viên grooming mới.</td>
+                        <td class="py-4">05/05/2026 · 13:15</td>
+                        <td class="py-4">
+                          <span class="inline-flex rounded-full bg-sky-500/20 px-3 py-1 text-xs font-semibold text-sky-300">Đã xác nhận</span>
+                        </td>
+                        <td class="py-4">
+                          <button type="button" class="text-white/60 transition hover:text-white" aria-label="Chỉnh sửa hoạt động quản trị">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                              <circle cx="5" cy="12" r="1.8"></circle>
+                              <circle cx="12" cy="12" r="1.8"></circle>
+                              <circle cx="19" cy="12" r="1.8"></circle>
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr class="text-sm text-white/80">
+                        <td class="py-4">
+                          <div class="font-medium text-white">Báo cáo thống kê</div>
+                          <div class="mt-1 text-xs text-white/45">Tổng hợp tháng</div>
+                        </td>
+                        <td class="py-4">
+                          <div class="font-medium text-white">Lê Minh Quân</div>
+                          <div class="mt-1 text-xs text-white/45">Phòng vận hành</div>
+                        </td>
+                        <td class="py-4">Xuất báo cáo doanh thu, hiệu suất nhân viên và tỷ lệ người dùng hoạt động.</td>
+                        <td class="py-4">04/05/2026 · 16:45</td>
+                        <td class="py-4">
+                          <span class="inline-flex rounded-full bg-green-500/20 px-3 py-1 text-xs font-semibold text-green-400">Hoàn thành</span>
+                        </td>
+                        <td class="py-4">
+                          <button type="button" class="text-white/60 transition hover:text-white" aria-label="Chỉnh sửa hoạt động quản trị">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                              <circle cx="5" cy="12" r="1.8"></circle>
+                              <circle cx="12" cy="12" r="1.8"></circle>
+                              <circle cx="19" cy="12" r="1.8"></circle>
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="login-modal" class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 px-4 opacity-0 transition duration-300">
+    <div class="absolute inset-0" data-close-modal></div>
+    <div class="relative z-10 w-full max-w-md rounded-[2rem] border border-white/15 bg-white/90 p-8 shadow-[0_35px_120px_rgba(15,23,42,0.30)] backdrop-blur-xl">
+      <button
+        type="button"
+        class="absolute right-5 top-5 rounded-full p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+        data-close-modal
+        aria-label="Đóng"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M6 6l12 12"></path>
+          <path d="M18 6 6 18"></path>
+        </svg>
+      </button>
+
+      <div>
+        <p class="text-sm font-bold uppercase tracking-[0.45em] text-sky-600">Đăng nhập quản trị</p>
+        <h2 class="mt-4 text-3xl font-bold text-slate-900">Đăng nhập quản trị</h2>
+        <p class="mt-3 text-base leading-7 text-slate-600">
+          Sau khi đăng nhập bằng tài khoản quản trị, giao diện người dùng của admin sẽ hiển thị ngay trên cùng trang.
+        </p>
+      </div>
+
+      <form id="login-form" class="mt-8 space-y-5">
+        <label class="block">
+          <span class="text-sm font-semibold text-slate-700">Email</span>
+          <input
+            id="admin-email"
+            type="email"
+            value="admin@mypuppy.vn"
+            class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-slate-900 outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
+          >
+        </label>
+        <label class="block">
+          <span class="text-sm font-semibold text-slate-700">Mật khẩu</span>
+          <input
+            id="admin-password"
+            type="password"
+            value="admin123"
+            class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-slate-900 outline-none transition focus:border-sky-400 focus:ring-4 focus:ring-sky-100"
+          >
+        </label>
+        <div class="rounded-2xl bg-sky-50 px-4 py-3 text-sm leading-6 text-sky-800">
+          Tài khoản mẫu: <strong>admin@mypuppy.vn</strong><br>
+          Mật khẩu mẫu: <strong>admin123</strong>
+        </div>
+        <p id="login-error" class="hidden text-sm font-medium text-rose-600">Thông tin đăng nhập chưa đúng. Vui lòng thử lại.</p>
+        <button
+          type="submit"
+          class="inline-flex w-full items-center justify-center rounded-2xl bg-slate-950 px-6 py-4 font-semibold text-white transition hover:bg-slate-800"
+        >
+          Vào giao diện quản trị
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const revealElements = document.querySelectorAll(".reveal");
+    const heroParallax = document.getElementById("hero-parallax");
+    const landingPage = document.getElementById("landing-page");
+    const adminDashboard = document.getElementById("admin-dashboard");
+    const loginModal = document.getElementById("login-modal");
+    const loginForm = document.getElementById("login-form");
+    const loginError = document.getElementById("login-error");
+    const openLoginButtons = [
+      document.getElementById("open-login"),
+      document.getElementById("open-login-inline"),
+    ];
+    const closeModalTargets = document.querySelectorAll("[data-close-modal]");
+    const logoutAdmin = document.getElementById("logout-admin");
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+
+    revealElements.forEach((element) => observer.observe(element));
+
+    function updateScrollEffects() {
+      const scrollTop = window.scrollY;
+      if (heroParallax) {
+        heroParallax.style.transform = `translateY(${scrollTop * 0.18}px) scale(1.1)`;
+      }
+    }
+
+    function openModal() {
+      loginModal.classList.remove("pointer-events-none", "opacity-0");
+      loginModal.classList.add("opacity-100");
+      loginError.classList.add("hidden");
+      document.body.classList.add("overflow-hidden");
+    }
+
+    function closeModal() {
+      loginModal.classList.add("pointer-events-none", "opacity-0");
+      loginModal.classList.remove("opacity-100");
+      document.body.classList.remove("overflow-hidden");
+    }
+
+
+    function showAdminDashboard() {
+      landingPage.classList.add("hidden");
+      adminDashboard.classList.remove("hidden");
+      document.body.classList.remove("overflow-hidden");
+      window.scrollTo({ top: 0, behavior: "auto" });
+      if (window.location.hash) {
+        history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+      }
+      closeModal();
+    }
+
+    function showLandingPage() {
+      sessionStorage.removeItem("mypuppy_admin_logged_in");
+      adminDashboard.classList.add("hidden");
+      landingPage.classList.remove("hidden");
+      if (window.location.hash) {
+        history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    openLoginButtons.forEach((button) => {
+      if (button) {
+        button.addEventListener("click", openModal);
+      }
+    });
+
+    closeModalTargets.forEach((target) => {
+      target.addEventListener("click", closeModal);
+    });
+
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const email = document.getElementById("admin-email").value.trim().toLowerCase();
+      const password = document.getElementById("admin-password").value.trim();
+
+      if (email === "admin@mypuppy.vn" && password === "admin123") {
+        showAdminDashboard();
+      } else {
+        loginError.classList.remove("hidden");
+      }
+    });
+
+    logoutAdmin.addEventListener("click", showLandingPage);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    });
+
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+
+    window.addEventListener("load", () => {
+      if (sessionStorage.getItem("mypuppy_admin_logged_in") === "true") {
+        showAdminDashboard();
+        return;
+      }
+
+      if (!landingPage.classList.contains("hidden")) {
+        if (window.location.hash) {
+          history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        updateScrollEffects();
+      }
+    });
+
+    updateScrollEffects();
+    window.addEventListener("scroll", updateScrollEffects, { passive: true });
+  </script>
+</body>
+</html>
