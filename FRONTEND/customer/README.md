@@ -16,4 +16,4 @@ Folder dành cho thành viên phụ trách giao diện khách hàng.
 
 ## Phạm Vi
 
-Landing page, dịch vụ, đặt lịch, phụ kiện, đánh giá và form đăng nhập.
+Landing page, dịch vụ, đặt lịch, phụ kiện, đánh giá, form đăng nhập và form đăng ký.

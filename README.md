@@ -13,6 +13,13 @@
 ## Cấu Trúc Thư Mục
 
 ```text
+BACKEND/
+├── TEAM_GUIDE.md
+├── admin/
+├── staff/
+├── customer/
+└── shared/
+
 FRONTEND/
 ├── TEAM_GUIDE.md
 ├── customer/
@@ -26,6 +33,14 @@ FRONTEND/
     ├── index.html
     └── assets/
 ```
+
+## Phân Chia Công Việc
+
+- `FRONTEND/`: giao diện người dùng, chia riêng `customer`, `admin`, `staff`.
+- `BACKEND/`: xử lý bên trong/API sau này, chia riêng `customer`, `admin`, `staff`.
+- `BACKEND/shared/`: phần dùng chung như config, database, middleware và utils.
+
+Mỗi thành viên nên làm đúng folder được phân công để tránh conflict và tránh sửa nhầm phần của người khác.
 
 ## Cách Mở Giao Diện
 
@@ -56,6 +71,7 @@ Các khu vực làm việc riêng:
 - `FRONTEND/admin/`: giao diện admin, gồm quản lý hệ thống, quản lý nhân viên, báo cáo và thống kê.
 - `FRONTEND/staff/`: giao diện nhân viên cửa hàng, gồm quản lý khách hàng, lịch hẹn, hồ sơ thú cưng, đăng ký dịch vụ, kiểm tra thanh toán và quản lý sản phẩm.
 - `FRONTEND/TEAM_GUIDE.md`: quy tắc phân công folder cho nhóm.
+- `BACKEND/TEAM_GUIDE.md`: quy tắc phân công backend cho nhóm.
 
 Tài khoản demo ở giao diện đăng nhập:
 
