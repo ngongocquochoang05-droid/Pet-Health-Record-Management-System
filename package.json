@@ -4,7 +4,7 @@
   "private": true,
   "description": "Static HTML, CSS and JavaScript frontend for MyPuppy.",
   "scripts": {
-    "start": "echo Open FRONTEND/index.html in your browser",
-    "check": "echo Static frontend project - no build step required"
+    "start": "echo Open FRONTEND/customer/index.html in your browser",
+    "check": "echo Static frontend project - no build step required. Vercel serves FRONTEND as outputDirectory."
   }
 }

@@ -39,6 +39,17 @@ FRONTEND/staff/index.html
 
 Không cần cài thêm thư viện, không cần chạy server dev và không cần bước build.
 
+## Deploy Vercel
+
+Repo đã có `vercel.json` để Vercel deploy đúng frontend tĩnh:
+
+- `outputDirectory`: `FRONTEND`
+- Không chạy install command
+- Không chạy build command
+- URL `/` tự chuyển sang `/customer/index.html`
+
+Khi import từ GitHub lên Vercel, có thể để framework là `Other` hoặc để Vercel đọc cấu hình từ `vercel.json`.
+
 Các khu vực làm việc riêng:
 
 - `FRONTEND/customer/`: giao diện khách hàng.
