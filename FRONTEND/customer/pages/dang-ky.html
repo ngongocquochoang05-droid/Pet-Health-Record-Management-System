@@ -52,7 +52,7 @@
       </div>
     </section>
 
-    <section class="auth-card auth-card--clerk hero-fade-delay mx-auto w-full max-w-lg rounded-[1.4rem] border border-sky-100 bg-white/95 px-8 py-10 shadow-[0_28px_90px_rgba(15,23,42,0.10)] md:px-10">
+    <section class="auth-card auth-card--custom hero-fade-delay mx-auto w-full max-w-lg rounded-[1.4rem] border border-sky-100 bg-white/95 px-8 py-10 shadow-[0_28px_90px_rgba(15,23,42,0.10)] md:px-10">
       <div class="text-center lg:hidden">
         <a href="../index.html" class="auth-brand mb-8 justify-center" aria-label="MyPuppy Premium">
           <span class="auth-brand__icon" aria-hidden="true">
@@ -82,28 +82,7 @@
         </p>
       </div>
 
-      <div class="clerk-auth-shell mt-9">
-        <div id="clerk-loading" class="auth-clerk-loading">
-          Dang tai bao mat dang ky MyPuppy...
-        </div>
-        <div id="clerk-sign-up"></div>
-        <p id="clerk-error" class="hidden rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">
-          Chua tai duoc Clerk. Hay mo trang bang Live Server hoac localhost, khong mo truc tiep bang file://.
-        </p>
-      </div>
-
-      <form id="register-form" class="mt-9 hidden space-y-5" aria-hidden="true">
-        <label class="block">
-          <span class="text-base font-semibold text-slate-800">Họ và tên</span>
-          <span class="auth-input mt-3">
-            <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M16.5 19a4.5 4.5 0 0 0-9 0"></path>
-              <circle cx="12" cy="11" r="3.5"></circle>
-            </svg>
-            <input id="register-name" type="text" value="Nguyễn Văn A" placeholder="Nguyễn Văn A" class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400">
-          </span>
-        </label>
-
+      <form id="register-form" class="mt-9 space-y-5">
         <label class="block">
           <span class="text-base font-semibold text-slate-800">Email</span>
           <span class="auth-input mt-3">
@@ -111,17 +90,7 @@
               <path d="M4 6.5h16v11H4z"></path>
               <path d="m4.8 7.2 7.2 5.4 7.2-5.4"></path>
             </svg>
-            <input id="register-email" type="email" value="email@example.com" placeholder="email@example.com" class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400">
-          </span>
-        </label>
-
-        <label class="block">
-          <span class="text-base font-semibold text-slate-800">Số điện thoại</span>
-          <span class="auth-input mt-3">
-            <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M22 16.9v2.3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 3.4 2 2 0 0 1 4.1 1.2h2.3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.4 2.1L7.6 8.7a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.4c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.6 2.1Z"></path>
-            </svg>
-            <input id="register-phone" type="tel" value="0901234567" placeholder="0901234567" class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400">
+            <input id="register-email" type="email" autocomplete="email" placeholder="email@example.com" class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400">
           </span>
         </label>
 
@@ -132,7 +101,7 @@
               <rect x="5" y="10" width="14" height="10" rx="2"></rect>
               <path d="M8 10V7.5a4 4 0 0 1 8 0V10"></path>
             </svg>
-            <input id="register-password" type="password" value="customer123" placeholder="Ít nhất 6 ký tự" class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400">
+            <input id="register-password" type="password" autocomplete="new-password" placeholder="Tối thiểu 8 ký tự" class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400">
             <button id="toggle-register-password" type="button" class="rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-sky-600" aria-label="Hiện mật khẩu">
               <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M2.5 12s3.3-6 9.5-6 9.5 6 9.5 6-3.3 6-9.5 6-9.5-6-9.5-6Z"></path>
@@ -149,22 +118,61 @@
               <rect x="5" y="10" width="14" height="10" rx="2"></rect>
               <path d="M8 10V7.5a4 4 0 0 1 8 0V10"></path>
             </svg>
-            <input id="register-confirm" type="password" value="customer123" placeholder="Nhập lại mật khẩu" class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400">
+            <input id="register-confirm" type="password" autocomplete="new-password" placeholder="Nhập lại mật khẩu" class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400">
           </span>
         </label>
 
-        <p id="register-error" class="hidden text-sm font-medium text-rose-600">Vui lòng kiểm tra lại thông tin đăng ký.</p>
-        <p id="register-success" class="hidden text-sm font-medium text-emerald-600">Tạo tài khoản thành công. Đang chuyển về trang chủ...</p>
+        <p id="register-error" class="hidden rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">
+          Vui lòng kiểm tra lại thông tin đăng ký.
+        </p>
 
-        <button type="submit" class="auth-submit">
+        <button id="register-submit" type="submit" class="auth-submit">
           Tạo tài khoản miễn phí
         </button>
       </form>
 
-      <p class="mt-8 hidden text-center text-base text-slate-500" aria-hidden="true">
-        Đã có tài khoản?
-        <a href="dang-nhap.html" class="font-bold text-sky-600 transition hover:text-sky-700">Đăng nhập</a>
-      </p>
+      <form id="register-verify-form" class="mt-9 hidden space-y-5">
+        <p class="rounded-2xl border border-sky-100 bg-sky-50 px-4 py-3 text-sm font-semibold text-sky-700">
+          MyPuppy đã gửi mã xác minh đến email của bạn. Nhập mã để hoàn tất đăng ký.
+        </p>
+        <label class="block">
+          <span class="text-base font-semibold text-slate-800">Mã xác minh email</span>
+          <span class="auth-input mt-3">
+            <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 6.5h16v11H4z"></path>
+              <path d="m4.8 7.2 7.2 5.4 7.2-5.4"></path>
+            </svg>
+            <input id="register-code" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="Nhập mã 6 số" class="w-full bg-transparent text-base text-slate-900 outline-none placeholder:text-slate-400">
+          </span>
+        </label>
+        <button id="register-verify-submit" type="submit" class="auth-submit">
+          Xác minh tài khoản
+        </button>
+      </form>
+
+      <div class="auth-divider">
+        <span></span>
+        <p>hoặc</p>
+        <span></span>
+      </div>
+
+      <button id="google-register" type="button" class="auth-social-button">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#4285F4" d="M21.6 12.23c0-.78-.07-1.53-.2-2.23H12v4.22h5.38a4.6 4.6 0 0 1-1.99 3.02v2.5h3.22c1.88-1.73 2.99-4.28 2.99-7.51Z"></path>
+          <path fill="#34A853" d="M12 22c2.7 0 4.96-.9 6.61-2.26l-3.22-2.5c-.9.6-2.03.95-3.39.95-2.6 0-4.8-1.75-5.59-4.11H3.08v2.59A10 10 0 0 0 12 22Z"></path>
+          <path fill="#FBBC05" d="M6.41 14.08A6.03 6.03 0 0 1 6.09 12c0-.72.12-1.42.32-2.08V7.33H3.08A10 10 0 0 0 2 12c0 1.61.39 3.13 1.08 4.47l3.33-2.39Z"></path>
+          <path fill="#EA4335" d="M12 5.81c1.46 0 2.78.5 3.82 1.49l2.86-2.86C16.95 2.83 14.7 2 12 2a10 10 0 0 0-8.92 5.33l3.33 2.59C7.2 7.56 9.4 5.81 12 5.81Z"></path>
+        </svg>
+        <span>Đăng ký bằng Google</span>
+      </button>
+
+      <div class="mt-7 text-center">
+        <p class="text-base text-slate-500">
+          Đã có tài khoản?
+          <a href="dang-nhap.html" class="font-bold text-sky-600 transition hover:text-sky-700">Đăng nhập</a>
+        </p>
+        <a href="../index.html" class="mt-5 inline-flex text-sm font-medium text-slate-400 transition hover:text-sky-600">Quay lại Trang chủ</a>
+      </div>
     </section>
   </main>
   <script src="../../shared/auth/clerk-config.js"></script>

@@ -1,15 +1,28 @@
 const loginForm = document.getElementById("login-form");
+const loginVerifyForm = document.getElementById("login-verify-form");
 const loginEmail = document.getElementById("login-email");
 const loginPassword = document.getElementById("login-password");
+const loginCode = document.getElementById("login-code");
 const loginError = document.getElementById("login-error");
 const loginSubmit = document.getElementById("login-submit");
+const loginVerifySubmit = document.getElementById("login-verify-submit");
 const googleLogin = document.getElementById("google-login");
 const togglePassword = document.getElementById("toggle-password");
 
-function setLoading(isLoading) {
-  if (loginSubmit) {
-    loginSubmit.disabled = isLoading;
-    loginSubmit.textContent = isLoading ? "Đang đăng nhập..." : "Đăng nhập";
+let pendingSignIn = null;
+
+function setLoading(isLoading, target = "login") {
+  const button = target === "verify" ? loginVerifySubmit : loginSubmit;
+
+  if (button) {
+    button.disabled = isLoading;
+    button.textContent = isLoading
+      ? target === "verify"
+        ? "Dang xac minh..."
+        : "Dang dang nhap..."
+      : target === "verify"
+        ? "Xac minh va dang nhap"
+        : "Dang nhap";
   }
 
   if (googleLogin) {
@@ -20,7 +33,7 @@ function setLoading(isLoading) {
 function showError(message) {
   if (!loginError) return;
 
-  loginError.textContent = message || "Thông tin đăng nhập chưa đúng. Vui lòng thử lại.";
+  loginError.textContent = message || "Thong tin dang nhap chua dung. Vui long thu lai.";
   loginError.classList.remove("hidden");
 }
 
@@ -35,26 +48,55 @@ function getClerkErrorMessage(error) {
     error?.errors?.[0]?.longMessage ||
     error?.errors?.[0]?.message ||
     error?.message ||
-    "Không thể đăng nhập. Vui lòng thử lại."
+    "Khong the dang nhap. Vui long thu lai."
   );
 }
 
 async function completeLogin(clerk, signInAttempt) {
   if (signInAttempt?.status !== "complete" || !signInAttempt?.createdSessionId) {
-    showError("Tài khoản cần xác minh thêm trước khi đăng nhập.");
-    return;
+    return false;
   }
 
   await clerk.setActive({ session: signInAttempt.createdSessionId });
-  const user = clerk.user || clerk.session?.user;
 
-  if (!user) {
-    window.location.href = window.MyPuppyAuth.routes.customer();
+  try {
+    await clerk.load();
+  } catch (error) {
+    console.warn("Unable to reload Clerk after setActive:", error);
+  }
+
+  const user = clerk.user || clerk.session?.user || signInAttempt.userData;
+  const session = window.MyPuppyAuth.rememberSession(user);
+  window.MyPuppyAuth.redirectToRole(session.role);
+  return true;
+}
+
+function getEmailCodeFactor(signInAttempt) {
+  const factors = [
+    ...(signInAttempt?.supportedSecondFactors || []),
+    ...(signInAttempt?.supportedFirstFactors || []),
+  ];
+
+  return factors.find((factor) => factor.strategy === "email_code");
+}
+
+async function showEmailVerificationStep(signInAttempt) {
+  const emailCodeFactor = getEmailCodeFactor(signInAttempt);
+
+  if (!emailCodeFactor || typeof signInAttempt.prepareSecondFactor !== "function") {
+    showError("Tai khoan can xac minh them. Hay kiem tra email, mat khau hoac cai dat Clerk.");
     return;
   }
 
-  const session = window.MyPuppyAuth.rememberSession(user);
-  window.MyPuppyAuth.redirectToRole(session.role);
+  await signInAttempt.prepareSecondFactor({
+    strategy: "email_code",
+    emailAddressId: emailCodeFactor.emailAddressId,
+  });
+
+  pendingSignIn = signInAttempt;
+  loginForm.classList.add("hidden");
+  loginVerifyForm.classList.remove("hidden");
+  loginCode.focus();
 }
 
 async function handleEmailPasswordLogin(event) {
@@ -62,7 +104,7 @@ async function handleEmailPasswordLogin(event) {
   hideError();
 
   if (!window.MyPuppyAuth) {
-    showError("Chưa tải được cấu hình đăng nhập MyPuppy.");
+    showError("Chua tai duoc cau hinh dang nhap MyPuppy.");
     return;
   }
 
@@ -70,7 +112,7 @@ async function handleEmailPasswordLogin(event) {
   const password = loginPassword.value.trim();
 
   if (!email || !password) {
-    showError("Vui lòng nhập đầy đủ email và mật khẩu.");
+    showError("Vui long nhap day du email va mat khau.");
     return;
   }
 
@@ -82,8 +124,11 @@ async function handleEmailPasswordLogin(event) {
       identifier: email,
       password,
     });
+    const isComplete = await completeLogin(clerk, signInAttempt);
 
-    await completeLogin(clerk, signInAttempt);
+    if (!isComplete) {
+      await showEmailVerificationStep(signInAttempt);
+    }
   } catch (error) {
     console.error("Email/password sign-in failed:", error);
     showError(getClerkErrorMessage(error));
@@ -92,11 +137,50 @@ async function handleEmailPasswordLogin(event) {
   }
 }
 
+async function handleEmailVerification(event) {
+  event.preventDefault();
+  hideError();
+
+  if (!pendingSignIn) {
+    showError("Phien dang nhap da het han. Vui long nhap lai email va mat khau.");
+    loginVerifyForm.classList.add("hidden");
+    loginForm.classList.remove("hidden");
+    return;
+  }
+
+  const code = loginCode.value.trim();
+
+  if (!code) {
+    showError("Vui long nhap ma xac minh email.");
+    return;
+  }
+
+  setLoading(true, "verify");
+
+  try {
+    const clerk = await window.MyPuppyAuth.loadClerk();
+    const signInAttempt = await pendingSignIn.attemptSecondFactor({
+      strategy: "email_code",
+      code,
+    });
+    const isComplete = await completeLogin(clerk, signInAttempt);
+
+    if (!isComplete) {
+      showError("Ma xac minh chua dung hoac tai khoan can xac minh them.");
+    }
+  } catch (error) {
+    console.error("Email verification failed:", error);
+    showError(getClerkErrorMessage(error));
+  } finally {
+    setLoading(false, "verify");
+  }
+}
+
 async function handleGoogleLogin() {
   hideError();
 
   if (!window.MyPuppyAuth) {
-    showError("Chưa tải được cấu hình đăng nhập MyPuppy.");
+    showError("Chua tai duoc cau hinh dang nhap MyPuppy.");
     return;
   }
 
@@ -119,7 +203,7 @@ async function handleGoogleLogin() {
 
 async function initLoginPage() {
   if (!window.MyPuppyAuth) {
-    showError("Chưa tải được cấu hình đăng nhập MyPuppy.");
+    showError("Chua tai duoc cau hinh dang nhap MyPuppy.");
     return;
   }
 
@@ -129,7 +213,7 @@ async function initLoginPage() {
     if (window.location.href.includes("__clerk_status")) {
       await clerk.handleRedirectCallback({
         signInUrl: window.MyPuppyAuth.routes.login(),
-        signUpUrl: `${window.MyPuppyAuth.appPath("customer/pages/dang-ky.html")}`,
+        signUpUrl: window.MyPuppyAuth.appPath("customer/pages/dang-ky.html"),
         signInForceRedirectUrl: window.MyPuppyAuth.routes.customer(),
         signUpForceRedirectUrl: window.MyPuppyAuth.routes.customer(),
       });
@@ -149,6 +233,10 @@ if (loginForm) {
   loginForm.addEventListener("submit", handleEmailPasswordLogin);
 }
 
+if (loginVerifyForm) {
+  loginVerifyForm.addEventListener("submit", handleEmailVerification);
+}
+
 if (googleLogin) {
   googleLogin.addEventListener("click", handleGoogleLogin);
 }
@@ -157,7 +245,7 @@ if (togglePassword && loginPassword) {
   togglePassword.addEventListener("click", () => {
     const isPassword = loginPassword.type === "password";
     loginPassword.type = isPassword ? "text" : "password";
-    togglePassword.setAttribute("aria-label", isPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+    togglePassword.setAttribute("aria-label", isPassword ? "An mat khau" : "Hien mat khau");
   });
 }
 
