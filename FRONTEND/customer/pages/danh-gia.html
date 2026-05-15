@@ -43,7 +43,7 @@
             </nav>
             <div class="hero-fade-delay flex items-center gap-3">
               <span data-auth-customer class="hidden rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md"><span data-customer-name>Khách hàng</span></span>
-              <a href="dang-nhap.html" class="rounded-full bg-white px-5 py-3 font-semibold text-slate-950 shadow-lg transition hover:bg-sky-50">Đăng nhập</a>
+              <a href="dang-nhap.html" data-guest-only class="rounded-full bg-white px-5 py-3 font-semibold text-slate-950 shadow-lg transition hover:bg-sky-50">Đăng nhập</a>
               <button data-auth-customer data-customer-logout data-logout-target="../index.html" type="button" class="hidden rounded-full border border-white/15 bg-white/10 px-5 py-3 font-semibold text-white backdrop-blur-md transition hover:bg-white/15">Đăng xuất</button>
             </div>
           </header>
@@ -98,6 +98,7 @@
     </section>
   </main>
   <script src="../assets/js/reveal.js"></script>
+  <script src="../../shared/auth/clerk-config.js"></script>
   <script src="../assets/js/customer-auth.js"></script>
 </body>
 </html>

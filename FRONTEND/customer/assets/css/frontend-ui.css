@@ -307,6 +307,66 @@ body {
   color: #64748b !important;
 }
 
+.auth-card--clerk {
+  overflow: visible;
+  padding: 2rem !important;
+}
+
+.auth-card--custom {
+  padding: 2rem !important;
+}
+
+.clerk-auth-shell {
+  display: flex;
+  min-height: auto;
+  justify-content: center;
+}
+
+.clerk-auth-shell > div:not(.auth-clerk-loading) {
+  width: 100%;
+}
+
+.clerk-auth-shell .cl-rootBox,
+.clerk-auth-shell .cl-cardBox,
+.clerk-auth-shell .cl-card {
+  width: 100% !important;
+}
+
+.clerk-auth-shell .cl-cardBox,
+.clerk-auth-shell .cl-card {
+  max-width: 28rem !important;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.clerk-auth-shell .cl-card {
+  padding: 0 !important;
+}
+
+.clerk-auth-shell .cl-footer {
+  border-top: 1px solid rgba(226, 232, 240, 0.9) !important;
+  background: transparent !important;
+}
+
+.clerk-auth-shell .cl-footerAction {
+  padding-bottom: 0 !important;
+}
+
+.auth-clerk-loading {
+  display: grid;
+  min-height: 12rem;
+  place-items: center;
+  border: 1px solid rgba(14, 165, 233, 0.16);
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, rgba(240, 249, 255, 0.94), rgba(255, 255, 255, 0.96));
+  color: #0369a1;
+  font-weight: 800;
+  text-align: center;
+}
+
 .auth-demo {
   display: flex;
   width: 100%;
@@ -394,6 +454,56 @@ body {
   transform: translateY(-1px);
   background: linear-gradient(135deg, #0ea5e9, #0284c7);
   box-shadow: 0 20px 38px rgba(14, 165, 233, 0.32);
+}
+
+.auth-submit:disabled,
+.auth-social-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.75rem 0;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.auth-divider span {
+  height: 1px;
+  flex: 1;
+  background: #e2e8f0;
+}
+
+.auth-social-button {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border: 1px solid #dbe4ef;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 0.95rem 1.25rem;
+  color: #334155;
+  font-size: 1rem;
+  font-weight: 800;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 14px 32px rgba(15, 23, 42, 0.08);
+  transition: 0.2s ease;
+}
+
+.auth-social-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(56, 189, 248, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 18px 38px rgba(14, 165, 233, 0.12);
 }
 
 .auth-benefit {

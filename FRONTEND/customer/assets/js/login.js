@@ -1,83 +1,156 @@
 const loginForm = document.getElementById("login-form");
+const loginEmail = document.getElementById("login-email");
+const loginPassword = document.getElementById("login-password");
 const loginError = document.getElementById("login-error");
-const adminDemo = document.getElementById("admin-demo");
-const staffDemo = document.getElementById("staff-demo");
-const customerDemo = document.getElementById("customer-demo");
-const loginEmail = document.getElementById("admin-email");
-const loginPassword = document.getElementById("admin-password");
+const loginSubmit = document.getElementById("login-submit");
+const googleLogin = document.getElementById("google-login");
 const togglePassword = document.getElementById("toggle-password");
 
-const demoAccounts = {
-  customer: {
-    email: "minhnguyen@gmail.com",
-    password: "customer123",
-    name: "Minh Nguyễn",
-    redirect: "../index.html",
-  },
-  staff: {
-    email: "staff@mypuppy.vn",
-    password: "staff123",
-    name: "Mai Groomer",
-    redirect: "../../staff/index.html",
-  },
-  admin: {
-    email: "admin@mypuppy.vn",
-    password: "admin123",
-    name: "Quản trị viên",
-    redirect: "../../admin/index.html",
-  },
-};
-
-function clearSessions() {
-  sessionStorage.removeItem("mypuppy_customer_logged_in");
-  sessionStorage.removeItem("mypuppy_customer_name");
-  sessionStorage.removeItem("mypuppy_staff_logged_in");
-  sessionStorage.removeItem("mypuppy_staff_name");
-  sessionStorage.removeItem("mypuppy_admin_logged_in");
-}
-
-function loginAs(role) {
-  const account = demoAccounts[role];
-  if (!account) return;
-
-  clearSessions();
-
-  if (role === "customer") {
-    sessionStorage.setItem("mypuppy_customer_logged_in", "true");
-    sessionStorage.setItem("mypuppy_customer_name", account.name);
+function setLoading(isLoading) {
+  if (loginSubmit) {
+    loginSubmit.disabled = isLoading;
+    loginSubmit.textContent = isLoading ? "Đang đăng nhập..." : "Đăng nhập";
   }
 
-  if (role === "staff") {
-    sessionStorage.setItem("mypuppy_staff_logged_in", "true");
-    sessionStorage.setItem("mypuppy_staff_name", account.name);
+  if (googleLogin) {
+    googleLogin.disabled = isLoading;
+  }
+}
+
+function showError(message) {
+  if (!loginError) return;
+
+  loginError.textContent = message || "Thông tin đăng nhập chưa đúng. Vui lòng thử lại.";
+  loginError.classList.remove("hidden");
+}
+
+function hideError() {
+  if (loginError) {
+    loginError.classList.add("hidden");
+  }
+}
+
+function getClerkErrorMessage(error) {
+  return (
+    error?.errors?.[0]?.longMessage ||
+    error?.errors?.[0]?.message ||
+    error?.message ||
+    "Không thể đăng nhập. Vui lòng thử lại."
+  );
+}
+
+async function completeLogin(clerk, signInAttempt) {
+  if (signInAttempt?.status !== "complete" || !signInAttempt?.createdSessionId) {
+    showError("Tài khoản cần xác minh thêm trước khi đăng nhập.");
+    return;
   }
 
-  if (role === "admin") {
-    sessionStorage.setItem("mypuppy_admin_logged_in", "true");
+  await clerk.setActive({ session: signInAttempt.createdSessionId });
+  const user = clerk.user || clerk.session?.user;
+
+  if (!user) {
+    window.location.href = window.MyPuppyAuth.routes.customer();
+    return;
   }
 
-  window.location.href = account.redirect;
+  const session = window.MyPuppyAuth.rememberSession(user);
+  window.MyPuppyAuth.redirectToRole(session.role);
 }
 
-function fillDemo(role) {
-  const account = demoAccounts[role];
-  if (!account || !loginEmail || !loginPassword || !loginError) return;
+async function handleEmailPasswordLogin(event) {
+  event.preventDefault();
+  hideError();
 
-  loginEmail.value = account.email;
-  loginPassword.value = account.password;
-  loginError.classList.add("hidden");
+  if (!window.MyPuppyAuth) {
+    showError("Chưa tải được cấu hình đăng nhập MyPuppy.");
+    return;
+  }
+
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value.trim();
+
+  if (!email || !password) {
+    showError("Vui lòng nhập đầy đủ email và mật khẩu.");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const clerk = await window.MyPuppyAuth.loadClerk();
+    const signInAttempt = await clerk.client.signIn.create({
+      identifier: email,
+      password,
+    });
+
+    await completeLogin(clerk, signInAttempt);
+  } catch (error) {
+    console.error("Email/password sign-in failed:", error);
+    showError(getClerkErrorMessage(error));
+  } finally {
+    setLoading(false);
+  }
 }
 
-if (customerDemo) {
-  customerDemo.addEventListener("click", () => loginAs("customer"));
+async function handleGoogleLogin() {
+  hideError();
+
+  if (!window.MyPuppyAuth) {
+    showError("Chưa tải được cấu hình đăng nhập MyPuppy.");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const clerk = await window.MyPuppyAuth.loadClerk();
+
+    await clerk.client.signIn.authenticateWithRedirect({
+      strategy: "oauth_google",
+      redirectUrl: window.location.href,
+      redirectUrlComplete: window.MyPuppyAuth.routes.customer(),
+    });
+  } catch (error) {
+    console.error("Google sign-in failed:", error);
+    showError(getClerkErrorMessage(error));
+    setLoading(false);
+  }
 }
 
-if (staffDemo) {
-  staffDemo.addEventListener("click", () => loginAs("staff"));
+async function initLoginPage() {
+  if (!window.MyPuppyAuth) {
+    showError("Chưa tải được cấu hình đăng nhập MyPuppy.");
+    return;
+  }
+
+  try {
+    const clerk = await window.MyPuppyAuth.loadClerk();
+
+    if (window.location.href.includes("__clerk_status")) {
+      await clerk.handleRedirectCallback({
+        signInUrl: window.MyPuppyAuth.routes.login(),
+        signUpUrl: `${window.MyPuppyAuth.appPath("customer/pages/dang-ky.html")}`,
+        signInForceRedirectUrl: window.MyPuppyAuth.routes.customer(),
+        signUpForceRedirectUrl: window.MyPuppyAuth.routes.customer(),
+      });
+      return;
+    }
+
+    if (clerk.isSignedIn && clerk.user) {
+      const session = window.MyPuppyAuth.rememberSession(clerk.user);
+      window.MyPuppyAuth.redirectToRole(session.role);
+    }
+  } catch (error) {
+    console.warn("Clerk login page init failed:", error);
+  }
 }
 
-if (adminDemo) {
-  adminDemo.addEventListener("click", () => loginAs("admin"));
+if (loginForm) {
+  loginForm.addEventListener("submit", handleEmailPasswordLogin);
+}
+
+if (googleLogin) {
+  googleLogin.addEventListener("click", handleGoogleLogin);
 }
 
 if (togglePassword && loginPassword) {
@@ -88,23 +161,4 @@ if (togglePassword && loginPassword) {
   });
 }
 
-if (loginForm && loginError && loginEmail && loginPassword) {
-  loginForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const email = loginEmail.value.trim().toLowerCase();
-    const password = loginPassword.value.trim();
-    const matchedRole = Object.keys(demoAccounts).find((role) => {
-      const account = demoAccounts[role];
-      return account.email === email && account.password === password;
-    });
-
-    if (matchedRole) {
-      loginAs(matchedRole);
-      return;
-    }
-
-    loginError.classList.remove("hidden");
-  });
-}
-
-fillDemo("customer");
+initLoginPage();

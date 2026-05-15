@@ -52,7 +52,7 @@
       </div>
     </section>
 
-    <section class="auth-card hero-fade-delay mx-auto w-full max-w-xl rounded-[1.4rem] border border-sky-100 bg-white/95 px-8 py-10 shadow-[0_28px_90px_rgba(15,23,42,0.10)] md:px-10">
+    <section class="auth-card auth-card--clerk hero-fade-delay mx-auto w-full max-w-lg rounded-[1.4rem] border border-sky-100 bg-white/95 px-8 py-10 shadow-[0_28px_90px_rgba(15,23,42,0.10)] md:px-10">
       <div class="text-center lg:hidden">
         <a href="../index.html" class="auth-brand mb-8 justify-center" aria-label="MyPuppy Premium">
           <span class="auth-brand__icon" aria-hidden="true">
@@ -82,7 +82,17 @@
         </p>
       </div>
 
-      <form id="register-form" class="mt-9 space-y-5">
+      <div class="clerk-auth-shell mt-9">
+        <div id="clerk-loading" class="auth-clerk-loading">
+          Dang tai bao mat dang ky MyPuppy...
+        </div>
+        <div id="clerk-sign-up"></div>
+        <p id="clerk-error" class="hidden rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">
+          Chua tai duoc Clerk. Hay mo trang bang Live Server hoac localhost, khong mo truc tiep bang file://.
+        </p>
+      </div>
+
+      <form id="register-form" class="mt-9 hidden space-y-5" aria-hidden="true">
         <label class="block">
           <span class="text-base font-semibold text-slate-800">Họ và tên</span>
           <span class="auth-input mt-3">
@@ -151,12 +161,13 @@
         </button>
       </form>
 
-      <p class="mt-8 text-center text-base text-slate-500">
+      <p class="mt-8 hidden text-center text-base text-slate-500" aria-hidden="true">
         Đã có tài khoản?
         <a href="dang-nhap.html" class="font-bold text-sky-600 transition hover:text-sky-700">Đăng nhập</a>
       </p>
     </section>
   </main>
+  <script src="../../shared/auth/clerk-config.js"></script>
   <script src="../assets/js/register.js"></script>
 </body>
 </html>

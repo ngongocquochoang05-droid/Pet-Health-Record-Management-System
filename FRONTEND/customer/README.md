@@ -1,19 +1,36 @@
 # Customer UI
 
-Folder dành cho thành viên phụ trách giao diện khách hàng.
+Folder danh cho thanh vien phu trach giao dien khach hang cua MyPuppy.
 
-## Được Chỉnh
+## Duoc Chinh
 
 - `index.html`
 - `pages/`
 - `assets/css/`
 - `assets/js/`
 
-## Không Chỉnh
+## Khong Chinh
 
-- Không chỉnh `../admin/`
-- Không chỉnh `../staff/`
+- Khong chinh `../admin/`
+- Khong chinh `../staff/`
 
-## Phạm Vi
+## Pham Vi
 
-Landing page, dịch vụ, đặt lịch, phụ kiện, đánh giá, form đăng nhập và form đăng ký.
+Landing page, dich vu, dat lich, phu kien, danh gia, form dang nhap va form dang ky.
+
+## Clerk Auth
+
+- Cau hinh Clerk dung chung nam tai `../shared/auth/clerk-config.js`.
+- Chi dung `Publishable Key` o frontend. Khong dua `Secret Key` vao HTML/CSS/JS.
+- Chay web bang localhost hoac Live Server. Khong mo trang auth bang `file://`.
+- Trang dang nhap: `pages/dang-nhap.html`.
+- Trang dang ky: `pages/dang-ky.html`.
+- Gan role tren Clerk Dashboard bang `publicMetadata`.
+
+```json
+{
+  "role": "customer"
+}
+```
+
+Role hop le: `customer`, `staff`, `admin`.
