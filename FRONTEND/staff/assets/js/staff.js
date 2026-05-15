@@ -80,6 +80,21 @@ if (staffLogout) {
   });
 }
 
+const staffNavLinks = document.querySelectorAll(".nav-item");
+function setActiveStaffNav() {
+  const currentPage = window.location.pathname.split("/").pop();
+  staffNavLinks.forEach((link) => {
+    const linkPage = link.getAttribute("href").split("/").pop();
+    if (linkPage === currentPage) {
+      link.classList.add("nav-item--active");
+    } else {
+      link.classList.remove("nav-item--active");
+    }
+  });
+}
+
+setActiveStaffNav();
+
 document.querySelectorAll("[data-staff-action]").forEach((button) => {
   button.addEventListener("click", () => {
     button.textContent = "Da cap nhat";
