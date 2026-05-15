@@ -1,0 +1,12 @@
+{
+  "name": "mypuppy-admin-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Admin backend API module for MyPuppy.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "check": "node --check server.js && node --check routes/adminRoutes.js && node --check controllers/systemController.js && node --check controllers/userController.js && node --check controllers/staffController.js && node --check controllers/reportController.js && node --check services/systemService.js && node --check services/userService.js && node --check services/staffService.js && node --check services/reportService.js && node --check services/errors.js && node --check models/adminRepository.js && node --check models/adminStore.js"
+  }
+}

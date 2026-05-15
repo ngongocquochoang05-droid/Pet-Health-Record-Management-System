@@ -67,13 +67,128 @@
   color: #7dd3fc;
 }
 
+.staff-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4.9rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.88);
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.9rem 1.2rem;
+  color: #101828;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+}
+
+.staff-topbar__welcome h1 {
+  margin: 0;
+  color: #101828;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+}
+
+.staff-topbar__welcome span {
+  color: #0f172a;
+}
+
+.staff-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.staff-topbar__icon {
+  position: relative;
+  display: grid;
+  width: 2.45rem;
+  height: 2.45rem;
+  place-items: center;
+  border: 1px solid #e6edf5;
+  border-radius: 0.85rem;
+  background: #fff;
+  color: #101828;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.055);
+  transition: 180ms ease;
+}
+
+.staff-topbar__icon:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #0ea5e9;
+  transform: translateY(-1px);
+}
+
+.staff-topbar__icon svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.staff-topbar__icon--notify::after {
+  position: absolute;
+  top: 0.58rem;
+  right: 0.58rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: #ef4444;
+  content: "";
+}
+
+.staff-topbar__profile {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-left: 0.25rem;
+  border-radius: 1rem;
+  padding: 0.25rem 0.45rem 0.25rem 0.25rem;
+  color: #101828;
+  transition: 180ms ease;
+}
+
+.staff-topbar__profile:hover {
+  background: #f8fafc;
+}
+
+.staff-topbar__profile img {
+  width: 2.55rem;
+  height: 2.55rem;
+  border-radius: 0.85rem;
+  object-fit: cover;
+}
+
+.staff-topbar__profile strong,
+.staff-topbar__profile small {
+  display: block;
+}
+
+.staff-topbar__profile strong {
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.staff-topbar__profile small {
+  margin-top: 0.15rem;
+  color: #667085;
+  font-size: 0.74rem;
+}
+
+.staff-topbar__profile svg {
+  width: 1rem;
+  height: 1rem;
+  color: #98a2b3;
+}
+
 .metric-card,
 .staff-panel {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1.75rem;
-  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 1.45rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.065)),
+    rgba(15, 23, 42, 0.38);
   padding: 1.5rem;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
   backdrop-filter: blur(18px);
 }
 
@@ -150,6 +265,22 @@
 .action-button.is-updated {
   background: rgba(74, 222, 128, 0.16);
   color: #86efac;
+}
+
+@media (max-width: 760px) {
+  .staff-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .staff-topbar__actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .staff-topbar__profile {
+    margin-left: 0;
+  }
 }
 
 @keyframes staffPanelIn {
