@@ -20,15 +20,9 @@ async function initCustomerAuth() {
     try {
       const clerk = await window.MyPuppyAuth.loadClerk();
 
-      if (clerk.isSignedIn && clerk.user) {
+      if (clerk.isSignedIn && clerk.user && window.MyPuppyAuth.getUserRole(clerk.user) === "customer") {
         const session = window.MyPuppyAuth.rememberSession(clerk.user);
-
-        if (session.role !== "customer") {
-          window.MyPuppyAuth.redirectToRole(session.role);
-          return;
-        }
-
-        isLoggedIn = session.role === "customer";
+        isLoggedIn = true;
         name = session.name;
       }
     } catch (error) {

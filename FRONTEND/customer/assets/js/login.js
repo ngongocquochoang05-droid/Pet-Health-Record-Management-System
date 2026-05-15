@@ -10,6 +10,7 @@ const googleLogin = document.getElementById("google-login");
 const togglePassword = document.getElementById("toggle-password");
 
 let pendingSignIn = null;
+const redirectAfterAuthKey = "mypuppy_redirect_after_auth";
 
 function setLoading(isLoading, target = "login") {
   const button = target === "verify" ? loginVerifySubmit : loginSubmit;
@@ -189,10 +190,12 @@ async function handleGoogleLogin() {
   try {
     const clerk = await window.MyPuppyAuth.loadClerk();
 
+    sessionStorage.setItem(redirectAfterAuthKey, "true");
+
     await clerk.client.signIn.authenticateWithRedirect({
       strategy: "oauth_google",
       redirectUrl: window.location.href,
-      redirectUrlComplete: window.MyPuppyAuth.routes.customer(),
+      redirectUrlComplete: window.MyPuppyAuth.routes.login(),
     });
   } catch (error) {
     console.error("Google sign-in failed:", error);
@@ -209,18 +212,22 @@ async function initLoginPage() {
 
   try {
     const clerk = await window.MyPuppyAuth.loadClerk();
+    const shouldRedirectAfterAuth = sessionStorage.getItem(redirectAfterAuthKey) === "true";
 
     if (window.location.href.includes("__clerk_status")) {
+      sessionStorage.setItem(redirectAfterAuthKey, "true");
+
       await clerk.handleRedirectCallback({
         signInUrl: window.MyPuppyAuth.routes.login(),
         signUpUrl: window.MyPuppyAuth.appPath("customer/pages/dang-ky.html"),
-        signInForceRedirectUrl: window.MyPuppyAuth.routes.customer(),
-        signUpForceRedirectUrl: window.MyPuppyAuth.routes.customer(),
+        signInForceRedirectUrl: window.MyPuppyAuth.routes.login(),
+        signUpForceRedirectUrl: window.MyPuppyAuth.routes.login(),
       });
       return;
     }
 
-    if (clerk.isSignedIn && clerk.user) {
+    if (clerk.isSignedIn && clerk.user && shouldRedirectAfterAuth) {
+      sessionStorage.removeItem(redirectAfterAuthKey);
       const session = window.MyPuppyAuth.rememberSession(clerk.user);
       window.MyPuppyAuth.redirectToRole(session.role);
     }
