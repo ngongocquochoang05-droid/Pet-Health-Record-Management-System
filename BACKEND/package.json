@@ -1,0 +1,14 @@
+{
+  "name": "mypuppy-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend workspace for MyPuppy admin, staff and customer APIs.",
+  "scripts": {
+    "db:test": "node shared/database/test-connection.js",
+    "admin:dev": "node admin/server.js",
+    "admin:check": "node --check admin/server.js && node --check admin/models/adminRepository.js && node --check shared/config/env.js && node --check shared/database/sqlServer.js"
+  },
+  "dependencies": {
+    "mssql": "^11.0.1"
+  }
+}

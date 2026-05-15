@@ -74,20 +74,44 @@
     </aside>
 
     <section class="flex min-w-0 flex-1 flex-col">
-      <header class="flex flex-col gap-4 border-b border-white/10 bg-black/20 p-6 backdrop-blur-lg md:flex-row md:items-center md:justify-between">
-        <div>
-          <p class="text-sm font-bold uppercase tracking-[0.35em] text-sky-300">Bảng điều khiển nhân viên</p>
-          <h1 class="mt-3 text-3xl font-extrabold md:text-5xl">
-            Xin chào, <span id="staff-name" class="font-['Playfair_Display'] italic text-sky-300">Mai Groomer</span>
-          </h1>
-          <p class="mt-3 max-w-2xl text-sm leading-7 text-white/60">
-            Tập trung xử lý khách hàng, lịch hẹn, hồ sơ thú cưng, đăng ký dịch vụ, thanh toán và sản phẩm trong ca làm.
-          </p>
+      <header class="staff-topbar">
+        <div class="staff-topbar__welcome">
+          <h1>Chào mừng trở lại, <span id="staff-name">Mai Groomer</span> <span aria-hidden="true">👋</span></h1>
         </div>
-        <label class="relative w-full max-w-md">
-          <span class="sr-only">Tìm kiếm</span>
-          <input class="w-full rounded-full border border-white/10 bg-white/10 px-5 py-3 text-white placeholder:text-white/45 outline-none transition focus:border-sky-300/70 focus:bg-white/15" type="search" placeholder="Tìm khách hàng, thú cưng, lịch hẹn...">
-        </label>
+
+        <div class="staff-topbar__actions" aria-label="Công cụ nhân viên nhanh">
+          <button type="button" class="staff-topbar__icon" aria-label="Trợ giúp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M9.5 9a2.6 2.6 0 1 1 4.1 2.12c-.86.56-1.6 1.1-1.6 2.38"></path>
+              <path d="M12 17.4h.01"></path>
+            </svg>
+          </button>
+          <button type="button" class="staff-topbar__icon" aria-label="Tin nhắn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="4" y="5" width="16" height="14" rx="4"></rect>
+              <path d="m5.5 7 6.5 5 6.5-5"></path>
+            </svg>
+          </button>
+          <button type="button" class="staff-topbar__icon staff-topbar__icon--notify" aria-label="Thông báo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M18 9a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+              <path d="M10 21h4"></path>
+            </svg>
+          </button>
+
+          <div class="staff-topbar__profile">
+            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80" alt="Ảnh đại diện nhân viên">
+            <span>
+              <strong>Mai Groomer</strong>
+              <small>staff@mypuppy.vn</small>
+            </span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="m8 9 4-4 4 4"></path>
+              <path d="m16 15-4 4-4-4"></path>
+            </svg>
+          </div>
+        </div>
       </header>
 
       <div class="space-y-8 p-6 md:p-8">

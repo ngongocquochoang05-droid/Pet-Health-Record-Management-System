@@ -1,6 +1,6 @@
-# Admin UI
+# Giao Diện Quản Trị
 
-Folder dành cho thành viên phụ trách giao diện admin.
+Folder dành cho thành viên phụ trách giao diện quản trị của MyPuppy.
 
 ## Được Chỉnh
 
@@ -15,4 +15,4 @@ Folder dành cho thành viên phụ trách giao diện admin.
 
 ## Phạm Vi
 
-Dashboard quản trị, quản lý tài khoản người dùng, quản lý nhân viên, phân quyền và báo cáo thống kê.
+Bảng điều khiển quản trị, quản lý tài khoản người dùng, quản lý nhân viên, phân quyền và báo cáo thống kê.
