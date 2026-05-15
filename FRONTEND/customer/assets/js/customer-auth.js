@@ -54,4 +54,10 @@ document.querySelectorAll("[data-customer-logout]").forEach((button) => {
   });
 });
 
+document.querySelectorAll("a[href*='dang-nhap.html']").forEach((link) => {
+  link.addEventListener("click", () => {
+    sessionStorage.removeItem("mypuppy_redirect_after_auth");
+  });
+});
+
 initCustomerAuth();

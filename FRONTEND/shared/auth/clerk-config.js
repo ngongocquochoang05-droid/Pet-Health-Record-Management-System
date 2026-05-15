@@ -189,6 +189,7 @@
     sessionStorage.removeItem("mypuppy_staff_logged_in");
     sessionStorage.removeItem("mypuppy_staff_name");
     sessionStorage.removeItem("mypuppy_admin_logged_in");
+    sessionStorage.removeItem("mypuppy_redirect_after_auth");
   }
 
   function rememberSession(user) {

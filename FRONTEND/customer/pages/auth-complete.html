@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPuppy | OAuth Complete</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+  <script src="../../shared/auth/clerk-config.js"></script>
+  <script>
+    (async function () {
+      function loginUrl(status) {
+        const baseUrl = window.MyPuppyAuth.routes.login();
+        const separator = baseUrl.includes("?") ? "&" : "?";
+        return `${baseUrl}${separator}oauth=${encodeURIComponent(status)}`;
+      }
+
+      function wait(ms) {
+        return new Promise((resolve) => window.setTimeout(resolve, ms));
+      }
+
+      try {
+        if (!window.MyPuppyAuth) {
+          window.location.replace("dang-nhap.html?oauth=error");
+          return;
+        }
+
+        const clerk = await window.MyPuppyAuth.loadClerk();
+
+        for (let attempt = 0; attempt < 12; attempt += 1) {
+          await clerk.load();
+
+          if (clerk.isSignedIn && clerk.user) {
+            const session = window.MyPuppyAuth.rememberSession(clerk.user);
+            window.MyPuppyAuth.redirectToRole(session.role);
+            return;
+          }
+
+          await wait(250);
+        }
+
+        sessionStorage.removeItem("mypuppy_redirect_after_auth");
+        window.location.replace(loginUrl("error"));
+      } catch (error) {
+        console.error("OAuth completion failed:", error);
+        sessionStorage.removeItem("mypuppy_redirect_after_auth");
+        window.location.replace(loginUrl("error"));
+      }
+    })();
+  </script>
+</body>
+</html>

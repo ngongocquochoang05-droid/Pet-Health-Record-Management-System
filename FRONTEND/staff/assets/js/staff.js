@@ -61,6 +61,7 @@ async function initStaffAuth() {
 
 if (staffQuickLogin) {
   staffQuickLogin.addEventListener("click", () => {
+    sessionStorage.removeItem("mypuppy_redirect_after_auth");
     window.location.href = "../customer/pages/dang-nhap.html";
   });
 }
