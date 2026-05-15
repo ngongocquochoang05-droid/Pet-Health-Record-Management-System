@@ -73,6 +73,9 @@ body {
   animation: heroFade var(--motion-duration) var(--motion-ease) 0.24s forwards;
 }
 
+<<<<<<< HEAD
+
+=======
 .nav-stagger > * {
   opacity: 0;
   animation: heroFade 0.72s var(--motion-ease) forwards;
@@ -97,6 +100,7 @@ body {
 .nav-stagger > *:nth-child(5) {
   animation-delay: 0.5s;
 }
+>>>>>>> c448b065375ba53a9e471273387eab22cff3330c
 
 .hero-float {
   animation: floatY 7s ease-in-out infinite;
@@ -747,5 +751,814 @@ body {
     transform: translateY(8px);
   }
 }
+<<<<<<< HEAD
+/* =========================================================
+   MyPuppy Customer UI Override
+   Dán TOÀN BỘ đoạn này xuống CUỐI file frontend-ui.css
+   Chỉ chỉnh giao diện customer: trang chủ, đặt lịch, dịch vụ,
+   phụ kiện, đánh giá. Không đụng auth/admin logic.
+   ========================================================= */
+
+:root {
+  --pet-cream: #fff7ed;
+  --pet-cream-2: #fffbf4;
+  --pet-card: rgba(255, 255, 255, 0.92);
+  --pet-orange: #f59e0b;
+  --pet-orange-2: #fb923c;
+  --pet-coral: #f97316;
+  --pet-brown: #7c3f16;
+  --pet-brown-dark: #3b2414;
+  --pet-muted: #8a6f5a;
+  --pet-border: rgba(245, 158, 11, 0.18);
+  --pet-shadow: 0 24px 70px rgba(124, 63, 22, 0.13);
+  --pet-shadow-soft: 0 16px 45px rgba(124, 63, 22, 0.09);
+  --pet-focus: 0 0 0 4px rgba(245, 158, 11, 0.16);
+}
+
+/* ===== Base customer pages ===== */
+.frontend-page--landing,
+.frontend-page--subpage {
+  background:
+    radial-gradient(circle at 10% 5%, rgba(251, 146, 60, 0.16), transparent 30%),
+    radial-gradient(circle at 88% 12%, rgba(253, 186, 116, 0.18), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(254, 215, 170, 0.25), transparent 36%),
+    linear-gradient(180deg, #fff7ed 0%, #fffbf4 38%, #fffaf1 100%);
+  color: var(--pet-brown-dark);
+}
+
+.frontend-page--landing body,
+.frontend-page--subpage body,
+body.frontend-page--landing,
+body.frontend-page--subpage {
+  font-family: "Inter", sans-serif;
+}
+
+.frontend-page--landing main,
+.frontend-page--subpage main {
+  isolation: isolate;
+}
+
+/* ===== Hero: giữ ảnh chó, chỉ đổi cảm giác overlay cho ấm hơn ===== */
+.frontend-page--landing #trang-chu,
+.frontend-page--subpage main > section:first-child {
+  background: #2b1a10;
+}
+
+.frontend-page--landing #hero-parallax,
+.frontend-page--subpage main > section:first-child .absolute.inset-0.bg-cover {
+  filter: saturate(1.08) contrast(0.98) brightness(0.95);
+}
+
+.frontend-page--landing #trang-chu > .absolute.inset-0.bg-gradient-to-b,
+.frontend-page--subpage main > section:first-child .absolute.inset-0.bg-gradient-to-b {
+  background:
+    linear-gradient(180deg, rgba(43, 26, 16, 0.70) 0%, rgba(74, 43, 22, 0.46) 44%, rgba(43, 26, 16, 0.78) 100%),
+    radial-gradient(circle at 22% 28%, rgba(251, 146, 60, 0.18), transparent 36%),
+    radial-gradient(circle at 82% 72%, rgba(253, 186, 116, 0.16), transparent 34%) !important;
+}
+
+/* warm glow thay cho cảm giác xanh lạnh */
+.frontend-page--landing #trang-chu .bg-sky-300\/12,
+.frontend-page--landing #trang-chu .bg-white\/10 {
+  background: rgba(251, 146, 60, 0.16) !important;
+}
+
+/* ===== Logo ===== */
+.frontend-page--landing .petcare-logo,
+.frontend-page--subpage .petcare-logo {
+  text-decoration: none;
+}
+
+.frontend-page--landing .petcare-logo__icon,
+.frontend-page--subpage .petcare-logo__icon {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(255, 237, 213, 0.18)) !important;
+  border-color: rgba(255, 255, 255, 0.36);
+  color: #fff7ed;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.44),
+    0 18px 38px rgba(59, 36, 20, 0.26);
+}
+
+.frontend-page--landing .petcare-logo__wordmark,
+.frontend-page--subpage .petcare-logo__wordmark {
+  letter-spacing: -0.05em;
+}
+
+.frontend-page--landing .petcare-logo__tag,
+.frontend-page--subpage .petcare-logo__tag {
+  color: rgba(255, 237, 213, 0.82);
+}
+
+/* ===== Navbar glass ===== */
+.frontend-page--landing .hero-glass-soft-light,
+.frontend-page--subpage .hero-glass-soft-light {
+  background: rgba(255, 247, 237, 0.15) !important;
+  border-color: rgba(255, 237, 213, 0.24) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 18px 46px rgba(59, 36, 20, 0.18) !important;
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+}
+
+.frontend-page--landing nav a,
+.frontend-page--subpage nav a {
+  border-radius: 999px;
+}
+
+.frontend-page--landing nav a:hover,
+.frontend-page--subpage nav a:hover {
+  color: #fed7aa !important;
+  background: rgba(255, 247, 237, 0.10);
+}
+
+.frontend-page--landing nav a.bg-white,
+.frontend-page--subpage nav a.bg-white {
+  background: #fff7ed !important;
+  color: var(--pet-brown-dark) !important;
+  box-shadow: 0 10px 24px rgba(59, 36, 20, 0.12);
+}
+
+/* ===== Text màu xanh chuyển sang warm pet tone ===== */
+.frontend-page--landing .text-sky-300,
+.frontend-page--subpage .text-sky-300 {
+  color: #fed7aa !important;
+}
+
+.frontend-page--landing .text-sky-500,
+.frontend-page--landing .text-sky-600,
+.frontend-page--landing .text-sky-700,
+.frontend-page--subpage .text-sky-500,
+.frontend-page--subpage .text-sky-600,
+.frontend-page--subpage .text-sky-700 {
+  color: var(--pet-coral) !important;
+}
+
+.frontend-page--landing .text-slate-950,
+.frontend-page--landing .text-slate-900,
+.frontend-page--subpage .text-slate-950,
+.frontend-page--subpage .text-slate-900 {
+  color: var(--pet-brown-dark) !important;
+}
+
+.frontend-page--landing .text-slate-600,
+.frontend-page--subpage .text-slate-600 {
+  color: var(--pet-muted) !important;
+}
+
+.frontend-page--landing .text-slate-500,
+.frontend-page--subpage .text-slate-500 {
+  color: rgba(138, 111, 90, 0.82) !important;
+}
+
+.frontend-page--landing .text-slate-400,
+.frontend-page--subpage .text-slate-400 {
+  color: rgba(138, 111, 90, 0.62) !important;
+}
+
+/* ===== Button warm pet app ===== */
+.frontend-page--landing a.bg-white,
+.frontend-page--landing button.bg-white,
+.frontend-page--subpage a.bg-white,
+.frontend-page--subpage button.bg-white {
+  background: #fff7ed !important;
+  color: var(--pet-brown-dark) !important;
+}
+
+.frontend-page--landing .bg-slate-950,
+.frontend-page--landing button.bg-slate-950,
+.frontend-page--landing a.bg-slate-950,
+.frontend-page--subpage .bg-slate-950,
+.frontend-page--subpage button.bg-slate-950,
+.frontend-page--subpage a.bg-slate-950 {
+  background: linear-gradient(135deg, #f97316, #d97706) !important;
+  color: #ffffff !important;
+  box-shadow: 0 18px 36px rgba(217, 119, 6, 0.26);
+}
+
+.frontend-page--landing .bg-slate-950:hover,
+.frontend-page--subpage .bg-slate-950:hover,
+.frontend-page--landing button.bg-slate-950:hover,
+.frontend-page--subpage button.bg-slate-950:hover,
+.frontend-page--landing a.bg-slate-950:hover,
+.frontend-page--subpage a.bg-slate-950:hover {
+  background: linear-gradient(135deg, #ea580c, #b45309) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 22px 44px rgba(217, 119, 6, 0.32);
+}
+
+.frontend-page--landing .bg-sky-400,
+.frontend-page--landing .bg-sky-500,
+.frontend-page--subpage .bg-sky-400,
+.frontend-page--subpage .bg-sky-500 {
+  background: linear-gradient(135deg, #fb923c, #f97316) !important;
+  color: #ffffff !important;
+}
+
+.frontend-page--landing .hover\:bg-sky-50:hover,
+.frontend-page--subpage .hover\:bg-sky-50:hover {
+  background: #ffedd5 !important;
+}
+
+.frontend-page--landing .hover\:bg-sky-600:hover,
+.frontend-page--subpage .hover\:bg-sky-600:hover,
+.frontend-page--landing .hover\:bg-sky-500:hover,
+.frontend-page--subpage .hover\:bg-sky-500:hover {
+  background: #ea580c !important;
+}
+
+/* ===== Section background ===== */
+.frontend-page--landing section.bg-white,
+.frontend-page--subpage section.bg-white {
+  background:
+    radial-gradient(circle at 8% 8%, rgba(251, 146, 60, 0.08), transparent 24%),
+    radial-gradient(circle at 92% 0%, rgba(254, 215, 170, 0.16), transparent 28%),
+    linear-gradient(180deg, #fffaf1 0%, #fffbf4 100%) !important;
+}
+
+/* ===== Main content containers ===== */
+.frontend-page--landing .max-w-6xl.rounded-\[2\.75rem\],
+.frontend-page--subpage .max-w-6xl.rounded-\[2\.75rem\] {
+  border-color: var(--pet-border) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 250, 241, 0.94)) !important;
+  box-shadow: var(--pet-shadow) !important;
+}
+
+/* ===== Cards toàn customer ===== */
+.frontend-page--landing article,
+.frontend-page--subpage article,
+.frontend-page--landing .reveal.rounded-\[2rem\],
+.frontend-page--subpage .reveal.rounded-\[2rem\],
+.frontend-page--subpage .reveal.flex.h-full.flex-col {
+  border-color: rgba(245, 158, 11, 0.14) !important;
+  box-shadow: var(--pet-shadow-soft) !important;
+}
+
+.frontend-page--landing article.bg-white,
+.frontend-page--subpage article.bg-white,
+.frontend-page--subpage .reveal.flex.h-full.flex-col.bg-white {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 250, 241, 0.96)) !important;
+}
+
+.frontend-page--landing article:hover,
+.frontend-page--subpage article:hover,
+.frontend-page--subpage .reveal.flex.h-full.flex-col:hover {
+  transform: translateY(-6px);
+  border-color: rgba(249, 115, 22, 0.24) !important;
+  box-shadow: 0 28px 70px rgba(124, 63, 22, 0.16) !important;
+}
+
+/* ===== Icon boxes, badges ===== */
+.frontend-page--landing .bg-sky-50,
+.frontend-page--subpage .bg-sky-50 {
+  background: #fff1df !important;
+}
+
+.frontend-page--landing .bg-sky-100,
+.frontend-page--subpage .bg-sky-100 {
+  background: #ffedd5 !important;
+}
+
+.frontend-page--landing .border-sky-100,
+.frontend-page--landing .border-sky-200,
+.frontend-page--subpage .border-sky-100,
+.frontend-page--subpage .border-sky-200 {
+  border-color: var(--pet-border) !important;
+}
+
+.frontend-page--landing .from-sky-50,
+.frontend-page--subpage .from-sky-50 {
+  --tw-gradient-from: #fff7ed var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(255, 247, 237, 0) var(--tw-gradient-to-position) !important;
+}
+
+.frontend-page--landing .to-cyan-50,
+.frontend-page--subpage .to-cyan-50 {
+  --tw-gradient-to: #ffedd5 var(--tw-gradient-to-position) !important;
+}
+
+.frontend-page--landing .from-sky-500,
+.frontend-page--subpage .from-sky-500 {
+  --tw-gradient-from: #f97316 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(249, 115, 22, 0) var(--tw-gradient-to-position) !important;
+}
+
+.frontend-page--landing .to-cyan-400,
+.frontend-page--subpage .to-cyan-400 {
+  --tw-gradient-to: #f59e0b var(--tw-gradient-to-position) !important;
+}
+
+.frontend-page--landing .fill-yellow-300,
+.frontend-page--subpage .fill-yellow-300,
+.frontend-page--landing .fill-yellow-400,
+.frontend-page--subpage .fill-yellow-400 {
+  fill: #facc15 !important;
+}
+
+.frontend-page--landing .text-yellow-300,
+.frontend-page--subpage .text-yellow-300,
+.frontend-page--landing .text-yellow-400,
+.frontend-page--subpage .text-yellow-400 {
+  color: #facc15 !important;
+}
+
+/* ===== Form đặt lịch / quick search ===== */
+.frontend-page--landing label,
+.frontend-page--subpage label {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.frontend-page--landing label:hover,
+.frontend-page--subpage label:hover {
+  border-color: rgba(249, 115, 22, 0.30) !important;
+  box-shadow: 0 16px 38px rgba(124, 63, 22, 0.09);
+}
+
+.frontend-page--landing select,
+.frontend-page--landing input,
+.frontend-page--subpage select,
+.frontend-page--subpage input {
+  accent-color: var(--pet-coral);
+}
+
+.frontend-page--landing select:focus,
+.frontend-page--landing input:focus,
+.frontend-page--subpage select:focus,
+.frontend-page--subpage input:focus {
+  box-shadow: var(--pet-focus);
+  border-radius: 1rem;
+}
+
+.frontend-page--landing input[type="date"]::-webkit-calendar-picker-indicator,
+.frontend-page--subpage input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: sepia(1) saturate(4) hue-rotate(340deg);
+  opacity: 0.85;
+}
+
+/* hero search bar */
+.frontend-page--landing .bg-black\/30 {
+  background: rgba(59, 36, 20, 0.38) !important;
+  border-color: rgba(255, 237, 213, 0.24) !important;
+  box-shadow: 0 26px 70px rgba(59, 36, 20, 0.28) !important;
+}
+
+.frontend-page--landing .bg-white\/\[0\.06\] {
+  background: rgba(255, 247, 237, 0.10) !important;
+}
+
+/* ===== Product page CTA strip ===== */
+.frontend-page--subpage .reveal.mt-14.flex.flex-col.items-center.justify-between {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255, 237, 213, 0.18), transparent 32%),
+    linear-gradient(135deg, #3b2414, #7c3f16) !important;
+  box-shadow: 0 26px 70px rgba(59, 36, 20, 0.20);
+}
+
+/* ===== Review score panel ===== */
+.frontend-page--landing .from-sky-500.to-cyan-400,
+.frontend-page--subpage .from-sky-500.to-cyan-400 {
+  background:
+    radial-gradient(circle at 16% 12%, rgba(255, 255, 255, 0.28), transparent 26%),
+    linear-gradient(135deg, #f97316, #f59e0b) !important;
+}
+
+/* ===== CTA cuối trang chủ ===== */
+.frontend-page--landing .bg-slate-950.px-6,
+.frontend-page--landing .bg-slate-950.px-6.py-14,
+.frontend-page--landing .bg-slate-950.text-white {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255, 237, 213, 0.18), transparent 32%),
+    radial-gradient(circle at 88% 88%, rgba(251, 146, 60, 0.16), transparent 28%),
+    linear-gradient(135deg, #3b2414 0%, #7c3f16 100%) !important;
+  box-shadow: 0 30px 90px rgba(59, 36, 20, 0.26) !important;
+}
+
+/* ===== Small polish ===== */
+.frontend-page--landing h1,
+.frontend-page--landing h2,
+.frontend-page--landing h3,
+.frontend-page--subpage h1,
+.frontend-page--subpage h2,
+.frontend-page--subpage h3 {
+  letter-spacing: -0.045em;
+}
+
+.frontend-page--landing p,
+.frontend-page--subpage p {
+  text-wrap: pretty;
+}
+
+.frontend-page--landing .rounded-\[2rem\],
+.frontend-page--subpage .rounded-\[2rem\],
+.frontend-page--landing .rounded-\[2\.75rem\],
+.frontend-page--subpage .rounded-\[2\.75rem\] {
+  overflow: hidden;
+}
+
+.scroll-indicator {
+  filter: drop-shadow(0 12px 28px rgba(249, 115, 22, 0.34));
+}
+
+/* ===== Mobile polish ===== */
+@media (max-width: 768px) {
+  .frontend-page--landing #trang-chu,
+  .frontend-page--subpage main > section:first-child {
+    min-height: 58vh;
+  }
+
+  .frontend-page--landing h1,
+  .frontend-page--subpage h1 {
+    line-height: 1.02 !important;
+  }
+
+  .frontend-page--landing .max-w-6xl.rounded-\[2\.75rem\],
+  .frontend-page--subpage .max-w-6xl.rounded-\[2\.75rem\] {
+    border-radius: 1.75rem !important;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+  }
+
+  .frontend-page--landing article,
+  .frontend-page--subpage article {
+    border-radius: 1.5rem !important;
+  }
+
+  .frontend-page--landing .hero-fade-delay.flex.items-center.gap-3,
+  .frontend-page--subpage .hero-fade-delay.flex.items-center.gap-3 {
+    gap: 0.5rem;
+  }
+
+  .frontend-page--landing [data-guest-only],
+  .frontend-page--subpage [data-guest-only],
+  .frontend-page--landing [data-customer-logout],
+  .frontend-page--subpage [data-customer-logout] {
+    padding: 0.72rem 1rem !important;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .frontend-page--landing .petcare-logo__copy,
+  .frontend-page--subpage .petcare-logo__copy {
+    display: none;
+  }
+
+  .frontend-page--landing section,
+  .frontend-page--subpage section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+/* ===== Fix căn chỉnh sau khi đổi theme ===== */
+
+/* Ẩn chữ Premium ở logo nếu còn sót */
+.frontend-page--landing .petcare-logo__tag,
+.frontend-page--subpage .petcare-logo__tag {
+  display: none !important;
+}
+
+/* Card dịch vụ: giá luôn nằm đều dưới cùng */
+.frontend-page--landing article,
+.frontend-page--subpage article {
+  display: flex;
+  flex-direction: column;
+}
+
+.frontend-page--landing article > p:last-child,
+.frontend-page--subpage article > p:last-child {
+  margin-top: auto !important;
+  padding-top: 2rem;
+}
+
+/* Riêng card sản phẩm phụ kiện không phá nút */
+.frontend-page--subpage article.flex.h-full > div:last-child {
+  margin-top: auto !important;
+}
+
+/* Căn đều block đặt lịch ảnh 4 */
+.frontend-page--landing #dat-lich .grid,
+.frontend-page--subpage .grid {
+  align-items: stretch;
+}
+
+.frontend-page--landing #dat-lich .reveal.rounded-\[2rem\],
+.frontend-page--subpage .reveal.rounded-\[2rem\] {
+  height: 100%;
+}
+
+/* Quy trình 4 bước: 1 đậm, 2 nhạt, 3 đậm, 4 nhạt */
+.frontend-page--landing #dat-lich article:nth-child(1),
+.frontend-page--landing #dat-lich article:nth-child(3),
+.frontend-page--subpage article:nth-child(1),
+.frontend-page--subpage article:nth-child(3) {
+  background: #fff1df !important;
+}
+
+.frontend-page--landing #dat-lich article:nth-child(2),
+.frontend-page--landing #dat-lich article:nth-child(4),
+.frontend-page--subpage article:nth-child(2),
+.frontend-page--subpage article:nth-child(4) {
+  background: #fffaf1 !important;
+}
+
+/* Nút số bước cùng tone cam/nâu */
+.frontend-page--landing #dat-lich article:nth-child(1) > div:first-child,
+.frontend-page--landing #dat-lich article:nth-child(3) > div:first-child,
+.frontend-page--subpage article:nth-child(1) > div:first-child,
+.frontend-page--subpage article:nth-child(3) > div:first-child {
+  background: #f97316 !important;
+  color: white !important;
+}
+
+.frontend-page--landing #dat-lich article:nth-child(2) > div:first-child,
+.frontend-page--landing #dat-lich article:nth-child(4) > div:first-child,
+.frontend-page--subpage article:nth-child(2) > div:first-child,
+.frontend-page--subpage article:nth-child(4) > div:first-child {
+  background: #7c3f16 !important;
+  color: white !important;
+}
+
+/* Xóa dòng MyPuppy Premium ở CTA cuối trang chủ */
+.frontend-page--landing section:last-of-type p.text-sm.font-bold.uppercase {
+  display: none !important;
+}
+
+/* Hồ sơ khách hàng */
+.profile-menu-item,
+.profile-menu-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 1rem;
+  padding: 1rem;
+  color: #3b2414;
+  background: #fff7ed;
+  transition: 0.2s ease;
+}
+
+.profile-menu-item {
+  justify-content: center;
+  background: #ffedd5;
+}
+
+.profile-menu-row span {
+  display: grid;
+  width: 2.6rem;
+  height: 2.6rem;
+  place-items: center;
+  border-radius: 999px;
+  background: #ffedd5;
+}
+
+.profile-menu-row b {
+  margin-left: auto;
+  font-size: 2rem;
+  line-height: 1;
+  color: #8a6f5a;
+}
+
+.profile-menu-item:hover,
+.profile-menu-row:hover {
+  background: #fed7aa;
+  transform: translateY(-1px);
+}
+/* ===== Profile Page ===== */
+
+.profile-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.96),
+    rgba(255, 247, 237, 0.94)
+  );
+
+  border: 1px solid rgba(251, 146, 60, 0.16);
+
+  box-shadow:
+    0 24px 70px rgba(59, 36, 20, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+
+  backdrop-filter: blur(18px);
+}
+
+.profile-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  border-radius: 1.25rem;
+
+  background: #fff7ed;
+
+  padding: 1rem 1.2rem;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.profile-item:hover {
+  background: #ffedd5;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 16px 35px rgba(59, 36, 20, 0.08);
+}
+
+.profile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 3rem;
+  height: 3rem;
+
+  border-radius: 999px;
+
+  background: #ffedd5;
+
+  font-size: 1.2rem;
+}
+
+.profile-title {
+  font-size: 1rem;
+  font-weight: 700;
+
+  color: #3b2414;
+}
+
+.profile-subtitle {
+  margin-top: 0.2rem;
+
+  font-size: 0.9rem;
+
+  color: #8a6a55;
+}
+/* ===== Profile Page ===== */
+
+.profile-card {
+  max-width: 620px !important;
+
+  padding: 2.3rem !important;
+
+  border-radius: 2.5rem !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.97),
+      rgba(255,247,237,0.95)
+    );
+
+  border: 1px solid rgba(251,146,60,0.14);
+
+  box-shadow:
+    0 30px 90px rgba(59,36,20,0.16),
+    inset 0 1px 0 rgba(255,255,255,0.45);
+
+  backdrop-filter: blur(18px);
+}
+
+.profile-item {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+
+  min-height: 102px;
+
+  width: 100%;
+
+  padding: 1.3rem 1.5rem;
+
+  border-radius: 1.6rem;
+
+  background: #fff7ed;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.profile-item:hover {
+  background: #ffedd5;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 18px 38px rgba(59,36,20,0.08);
+}
+
+.profile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 4rem;
+  height: 4rem;
+
+  flex-shrink: 0;
+
+  border-radius: 999px;
+
+  background: #ffedd5;
+
+  font-size: 1.5rem;
+}
+
+.profile-title {
+  font-size: 1.12rem;
+
+  font-weight: 700;
+
+  line-height: 1.3;
+
+  color: #3b2414;
+}
+
+.profile-subtitle {
+  margin-top: 0.32rem;
+
+  font-size: 0.97rem;
+
+  line-height: 1.55;
+
+  color: #8a6a55;
+}
+
+.profile-header-name {
+  font-size: 2rem;
+
+  font-weight: 800;
+
+  line-height: 1.1;
+
+  letter-spacing: -0.03em;
+
+  color: #3b2414;
+}
+
+.profile-header-role {
+  max-width: 430px;
+
+  font-size: 1rem;
+
+  line-height: 1.75;
+
+  color: #8a6a55;
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+  .profile-card {
+    padding: 1.5rem !important;
+
+    border-radius: 2rem !important;
+  }
+
+  .profile-item {
+    min-height: 90px;
+
+    padding: 1rem 1.1rem;
+  }
+
+  .profile-icon {
+    width: 3.4rem;
+    height: 3.4rem;
+
+    font-size: 1.3rem;
+  }
+
+  .profile-header-name {
+    font-size: 1.6rem;
+  }
+
+  .profile-header-role {
+    font-size: 0.93rem;
+
+    line-height: 1.6;
+  }
+}
+.profile-header-name {
+  color: #fffaf5 !important;
+
+  text-shadow:
+    0 2px 10px rgba(255,255,255,0.08),
+    0 4px 18px rgba(251,146,60,0.18);
+}
+
+.profile-customer-name {
+  color: #ffd7a3 !important;
+
+  text-shadow:
+    0 2px 12px rgba(255,215,163,0.28);
+}
+=======
 
 
+>>>>>>> c448b065375ba53a9e471273387eab22cff3330c
