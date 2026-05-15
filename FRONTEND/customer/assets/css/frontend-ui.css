@@ -73,7 +73,34 @@ body {
   animation: heroFade var(--motion-duration) var(--motion-ease) 0.24s forwards;
 }
 
+<<<<<<< HEAD
 
+=======
+.nav-stagger > * {
+  opacity: 0;
+  animation: heroFade 0.72s var(--motion-ease) forwards;
+}
+
+.nav-stagger > *:nth-child(1) {
+  animation-delay: 0.18s;
+}
+
+.nav-stagger > *:nth-child(2) {
+  animation-delay: 0.26s;
+}
+
+.nav-stagger > *:nth-child(3) {
+  animation-delay: 0.34s;
+}
+
+.nav-stagger > *:nth-child(4) {
+  animation-delay: 0.42s;
+}
+
+.nav-stagger > *:nth-child(5) {
+  animation-delay: 0.5s;
+}
+>>>>>>> c448b065375ba53a9e471273387eab22cff3330c
 
 .hero-float {
   animation: floatY 7s ease-in-out infinite;
@@ -724,6 +751,7 @@ body {
     transform: translateY(8px);
   }
 }
+<<<<<<< HEAD
 /* =========================================================
    MyPuppy Customer UI Override
    Dán TOÀN BỘ đoạn này xuống CUỐI file frontend-ui.css
@@ -1530,3 +1558,7 @@ body.frontend-page--subpage {
   text-shadow:
     0 2px 12px rgba(255,215,163,0.28);
 }
+=======
+
+
+>>>>>>> c448b065375ba53a9e471273387eab22cff3330c
