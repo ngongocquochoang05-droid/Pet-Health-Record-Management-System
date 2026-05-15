@@ -7,7 +7,6 @@ const registerCode = document.getElementById("register-code");
 const registerError = document.getElementById("register-error");
 const registerSubmit = document.getElementById("register-submit");
 const registerVerifySubmit = document.getElementById("register-verify-submit");
-const googleRegister = document.getElementById("google-register");
 const toggleRegisterPassword = document.getElementById("toggle-register-password");
 
 function setLoading(isLoading, target = "register") {
@@ -17,22 +16,18 @@ function setLoading(isLoading, target = "register") {
     button.disabled = isLoading;
     button.textContent = isLoading
       ? target === "verify"
-        ? "Đang xác minh..."
-        : "Đang tạo tài khoản..."
+        ? "Dang xac minh..."
+        : "Dang tao tai khoan..."
       : target === "verify"
-        ? "Xác minh tài khoản"
-        : "Tạo tài khoản miễn phí";
-  }
-
-  if (googleRegister) {
-    googleRegister.disabled = isLoading;
+        ? "Xac minh tai khoan"
+        : "Tao tai khoan mien phi";
   }
 }
 
 function showError(message) {
   if (!registerError) return;
 
-  registerError.textContent = message || "Vui lòng kiểm tra lại thông tin đăng ký.";
+  registerError.textContent = message || "Vui long kiem tra lai thong tin dang ky.";
   registerError.classList.remove("hidden");
 }
 
@@ -47,20 +42,21 @@ function getClerkErrorMessage(error) {
     error?.errors?.[0]?.longMessage ||
     error?.errors?.[0]?.message ||
     error?.message ||
-    "Không thể tạo tài khoản. Vui lòng thử lại."
+    "Khong the tao tai khoan. Vui long thu lai."
   );
 }
 
 async function completeRegister(clerk, signUpAttempt) {
   if (signUpAttempt?.status === "complete" && signUpAttempt?.createdSessionId) {
     await clerk.setActive({ session: signUpAttempt.createdSessionId });
-    const user = clerk.user || clerk.session?.user;
 
-    if (!user) {
-      window.location.href = window.MyPuppyAuth.routes.customer();
-      return true;
+    try {
+      await clerk.load();
+    } catch (error) {
+      console.warn("Unable to reload Clerk after setActive:", error);
     }
 
+    const user = clerk.user || clerk.session?.user || signUpAttempt.userData;
     const session = window.MyPuppyAuth.rememberSession(user);
     window.MyPuppyAuth.redirectToRole(session.role);
     return true;
@@ -74,7 +70,7 @@ async function handleRegister(event) {
   hideError();
 
   if (!window.MyPuppyAuth) {
-    showError("Chưa tải được cấu hình đăng ký MyPuppy.");
+    showError("Chua tai duoc cau hinh dang ky MyPuppy.");
     return;
   }
 
@@ -83,17 +79,17 @@ async function handleRegister(event) {
   const confirm = registerConfirm.value.trim();
 
   if (!email || !password || !confirm) {
-    showError("Vui lòng nhập đầy đủ email, mật khẩu và xác nhận mật khẩu.");
+    showError("Vui long nhap day du email, mat khau va xac nhan mat khau.");
     return;
   }
 
   if (password.length < 8) {
-    showError("Mật khẩu nên có ít nhất 8 ký tự.");
+    showError("Mat khau nen co it nhat 8 ky tu.");
     return;
   }
 
   if (password !== confirm) {
-    showError("Mật khẩu xác nhận chưa trùng khớp.");
+    showError("Mat khau xac nhan chua trung khop.");
     return;
   }
 
@@ -105,7 +101,6 @@ async function handleRegister(event) {
       emailAddress: email,
       password,
     });
-
     const isComplete = await completeRegister(clerk, signUpAttempt);
 
     if (isComplete) {
@@ -134,7 +129,7 @@ async function handleVerifyEmail(event) {
   const code = registerCode.value.trim();
 
   if (!code) {
-    showError("Vui lòng nhập mã xác minh email.");
+    showError("Vui long nhap ma xac minh email.");
     return;
   }
 
@@ -145,11 +140,10 @@ async function handleVerifyEmail(event) {
     const signUpAttempt = await clerk.client.signUp.attemptEmailAddressVerification({
       code,
     });
-
     const isComplete = await completeRegister(clerk, signUpAttempt);
 
     if (!isComplete) {
-      showError("Mã xác minh chưa đúng hoặc tài khoản cần xác minh thêm.");
+      showError("Ma xac minh chua dung hoac tai khoan can xac minh them.");
     }
   } catch (error) {
     console.error("Email verification failed:", error);
@@ -159,49 +153,14 @@ async function handleVerifyEmail(event) {
   }
 }
 
-async function handleGoogleRegister() {
-  hideError();
-
-  if (!window.MyPuppyAuth) {
-    showError("Chưa tải được cấu hình đăng ký MyPuppy.");
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const clerk = await window.MyPuppyAuth.loadClerk();
-
-    await clerk.client.signUp.authenticateWithRedirect({
-      strategy: "oauth_google",
-      redirectUrl: window.location.href,
-      redirectUrlComplete: window.MyPuppyAuth.routes.customer(),
-    });
-  } catch (error) {
-    console.error("Google sign-up failed:", error);
-    showError(getClerkErrorMessage(error));
-    setLoading(false);
-  }
-}
-
 async function initRegisterPage() {
   if (!window.MyPuppyAuth) {
-    showError("Chưa tải được cấu hình đăng ký MyPuppy.");
+    showError("Chua tai duoc cau hinh dang ky MyPuppy.");
     return;
   }
 
   try {
     const clerk = await window.MyPuppyAuth.loadClerk();
-
-    if (window.location.href.includes("__clerk_status")) {
-      await clerk.handleRedirectCallback({
-        signInUrl: window.MyPuppyAuth.routes.login(),
-        signUpUrl: window.MyPuppyAuth.appPath("customer/pages/dang-ky.html"),
-        signInForceRedirectUrl: window.MyPuppyAuth.routes.customer(),
-        signUpForceRedirectUrl: window.MyPuppyAuth.routes.customer(),
-      });
-      return;
-    }
 
     if (clerk.isSignedIn && clerk.user) {
       const session = window.MyPuppyAuth.rememberSession(clerk.user);
@@ -220,15 +179,11 @@ if (registerVerifyForm) {
   registerVerifyForm.addEventListener("submit", handleVerifyEmail);
 }
 
-if (googleRegister) {
-  googleRegister.addEventListener("click", handleGoogleRegister);
-}
-
 if (toggleRegisterPassword && registerPassword) {
   toggleRegisterPassword.addEventListener("click", () => {
     const isPassword = registerPassword.type === "password";
     registerPassword.type = isPassword ? "text" : "password";
-    toggleRegisterPassword.setAttribute("aria-label", isPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+    toggleRegisterPassword.setAttribute("aria-label", isPassword ? "An mat khau" : "Hien mat khau");
   });
 }
 
