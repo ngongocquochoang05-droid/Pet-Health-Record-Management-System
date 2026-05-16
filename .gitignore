@@ -5,6 +5,7 @@ Thumbs.db
 .env.*
 !.env.example
 !*.env.example
+!.env.local.example
 dist/
 out/
 

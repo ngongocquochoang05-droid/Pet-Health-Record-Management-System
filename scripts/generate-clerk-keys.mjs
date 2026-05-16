@@ -1,34 +1,81 @@
 // Sinh FRONTEND/shared/auth/clerk-keys.js tu bien moi truong khi build/deploy.
-// Tren Vercel: dat 2 bien moi truong CLERK_PUBLISHABLE_KEY va CLERK_FRONTEND_API_URL
-// trong project settings, sau do dat buildCommand: "node scripts/generate-clerk-keys.mjs".
+//
+// Local dev: doc tu .env.local o root project (file da gitignore).
+// Vercel: Vercel tu inject env vars CLERK_PUBLISHABLE_KEY va CLERK_FRONTEND_API_URL
+//         tu Project Settings -> Environment Variables, script chay luc build.
+//
+// vercel.json -> "buildCommand": "node scripts/generate-clerk-keys.mjs"
 
-import { writeFileSync, mkdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
 const targetPath = resolve(projectRoot, "FRONTEND/shared/auth/clerk-keys.js");
+const envLocalPath = resolve(projectRoot, ".env.local");
+
+function loadEnvLocal(filePath) {
+  if (!existsSync(filePath)) {
+    return;
+  }
+
+  const content = readFileSync(filePath, "utf8");
+  const lines = content.split(/\r?\n/);
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    if (!trimmed || trimmed.startsWith("#")) {
+      continue;
+    }
+
+    const separatorIndex = trimmed.indexOf("=");
+
+    if (separatorIndex === -1) {
+      continue;
+    }
+
+    const key = trimmed.slice(0, separatorIndex).trim();
+    let value = trimmed.slice(separatorIndex + 1).trim();
+
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    if (process.env[key] === undefined) {
+      process.env[key] = value;
+    }
+  }
+}
+
+loadEnvLocal(envLocalPath);
 
 const publishableKey = process.env.CLERK_PUBLISHABLE_KEY;
 const frontendApiUrl = process.env.CLERK_FRONTEND_API_URL;
 
 if (!publishableKey || !frontendApiUrl) {
   console.error(
-    "[generate-clerk-keys] Thieu bien moi truong CLERK_PUBLISHABLE_KEY hoac CLERK_FRONTEND_API_URL.",
+    "[generate-clerk-keys] Thieu CLERK_PUBLISHABLE_KEY hoac CLERK_FRONTEND_API_URL.",
+  );
+  console.error(
+    "[generate-clerk-keys] Local: tao file .env.local o root tu .env.local.example.",
+  );
+  console.error(
+    "[generate-clerk-keys] Deploy: dat env vars trong Project Settings cua Vercel.",
   );
   process.exit(1);
 }
 
-const safePublishableKey = JSON.stringify(publishableKey);
-const safeFrontendApiUrl = JSON.stringify(frontendApiUrl);
-
 const fileContent = `// File auto-generated boi scripts/generate-clerk-keys.mjs.
-// Khong sua tay. Dat key tai bien moi truong CLERK_PUBLISHABLE_KEY va CLERK_FRONTEND_API_URL.
+// Khong sua tay. Dat key tai .env.local (local) hoac env vars (Vercel).
 
 window.MyPuppyClerkKeys = {
-  publishableKey: ${safePublishableKey},
-  frontendApiUrl: ${safeFrontendApiUrl},
+  publishableKey: ${JSON.stringify(publishableKey)},
+  frontendApiUrl: ${JSON.stringify(frontendApiUrl)},
 };
 `;
 

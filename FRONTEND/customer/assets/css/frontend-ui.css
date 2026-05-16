@@ -1581,3 +1581,78 @@ body.frontend-page--subpage {
 }
 
 
+
+
+/* ===== Header navbar: cố định 3 cột để navbar luôn nằm chính giữa
+        và không bị nhảy giữa các page ===== */
+.frontend-page--landing header > .max-w-7xl,
+.frontend-page--landing header > .mx-auto.flex,
+.frontend-page--subpage header.flex {
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr !important;
+  align-items: center !important;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* Logo: cột trái, căn lề trái */
+.frontend-page--landing header > .max-w-7xl > a:first-child,
+.frontend-page--landing header > .mx-auto.flex > a:first-child,
+.frontend-page--subpage header.flex > a:first-child {
+  justify-self: start;
+}
+
+/* Nav: cột giữa, căn chính giữa */
+.frontend-page--landing header > .max-w-7xl > nav,
+.frontend-page--landing header > .mx-auto.flex > nav,
+.frontend-page--subpage header.flex > nav {
+  justify-self: center;
+}
+
+/* Auth area: cột phải, căn lề phải, giữ chỗ ngay cả khi rỗng
+   để layout cân giữa các page (page con không có nút Đăng nhập) */
+.frontend-page--landing header > .max-w-7xl > .hero-fade-delay.flex,
+.frontend-page--landing header > .mx-auto.flex > .hero-fade-delay.flex,
+.frontend-page--subpage header.flex > .hero-fade-delay.flex {
+  justify-self: end;
+  min-height: 3rem;
+  min-width: 1px;
+}
+
+/* Tablet/mobile: bỏ grid 3 cột để tránh tràn */
+@media (max-width: 1023px) {
+  .frontend-page--landing header > .max-w-7xl,
+  .frontend-page--landing header > .mx-auto.flex,
+  .frontend-page--subpage header.flex {
+    display: flex !important;
+    justify-content: space-between !important;
+  }
+}
+
+/* ===== Chống giật khi chuyển trang =====
+   Tắt hero-fade animation cho navbar và logo o page con
+   (vẫn giữ cho hero text/button vì đẹp hơn) ===== */
+.frontend-page--subpage header .petcare-logo.hero-fade,
+.frontend-page--subpage header nav.hero-fade-delay,
+.frontend-page--subpage header .hero-fade-delay.flex.items-center.gap-3 {
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+.frontend-page--subpage header .nav-stagger > * {
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+/* Trang chủ: navbar cũng hiện ngay, chỉ hero text fade-in */
+.frontend-page--landing header .petcare-logo.hero-fade,
+.frontend-page--landing header nav.hero-fade-delay,
+.frontend-page--landing header .hero-fade-delay.flex.items-center.gap-3 {
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+.frontend-page--landing header .nav-stagger > * {
+  opacity: 1 !important;
+  animation: none !important;
+}
