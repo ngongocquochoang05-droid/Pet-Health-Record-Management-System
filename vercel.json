@@ -1,0 +1,13 @@
+{
+  "framework": null,
+  "buildCommand": "node scripts/generate-clerk-keys.mjs",
+  "installCommand": null,
+  "outputDirectory": "FRONTEND",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/customer/index.html",
+      "permanent": false
+    }
+  ]
+}

@@ -12,3 +12,6 @@ out/
 # Clerk publishable key + frontend API URL cho local dev.
 # File duoc tao tu clerk-keys.example.js, khong commit.
 FRONTEND/shared/auth/clerk-keys.js
+
+# Auto-generated boi generate-clerk-keys.mjs, khong commit.
+FRONTEND/shared/config/api-config.js

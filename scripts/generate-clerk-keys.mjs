@@ -1,8 +1,9 @@
 // Sinh FRONTEND/shared/auth/clerk-keys.js tu bien moi truong khi build/deploy.
 //
 // Local dev: doc tu .env.local o root project (file da gitignore).
-// Production: dat env vars CLERK_PUBLISHABLE_KEY va CLERK_FRONTEND_API_URL
-//             tren server/host (vd: process manager, hosting platform).
+// Vercel: dat 2 env vars CLERK_PUBLISHABLE_KEY va CLERK_FRONTEND_API_URL
+//         trong Project Settings -> Environment Variables. Vercel se chay
+//         buildCommand "node scripts/generate-clerk-keys.mjs" theo vercel.json.
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -11,6 +12,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
 const targetPath = resolve(projectRoot, "FRONTEND/shared/auth/clerk-keys.js");
+const apiConfigPath = resolve(projectRoot, "FRONTEND/shared/config/api-config.js");
 const envLocalPath = resolve(projectRoot, ".env.local");
 
 function loadEnvLocal(filePath) {
@@ -76,5 +78,18 @@ window.MyPuppyClerkKeys = {
 
 mkdirSync(dirname(targetPath), { recursive: true });
 writeFileSync(targetPath, fileContent, "utf8");
-
 console.log("[generate-clerk-keys] Da ghi", targetPath);
+
+// API base URL cho frontend admin/staff goi backend.
+// Local: mac dinh http://localhost:4000/api/admin.
+// Vercel/production: set ADMIN_API_BASE trong Project Settings (vd: ngrok URL hoac backend cloud).
+const adminApiBase = process.env.ADMIN_API_BASE || "http://localhost:4000/api/admin";
+const apiConfigContent = `// File auto-generated boi scripts/generate-clerk-keys.mjs.
+// Khong sua tay. Dat URL backend tai bien moi truong ADMIN_API_BASE.
+
+window.MyPuppyAdminApiBase = ${JSON.stringify(adminApiBase)};
+`;
+
+mkdirSync(dirname(apiConfigPath), { recursive: true });
+writeFileSync(apiConfigPath, apiConfigContent, "utf8");
+console.log("[generate-clerk-keys] Da ghi", apiConfigPath);
