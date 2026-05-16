@@ -5,11 +5,9 @@ const reportController = require("../controllers/reportController");
 
 function getAdminPathParts(pathname) {
   const parts = pathname.split("/").filter(Boolean);
-
   if (parts[0] !== "api" || parts[1] !== "admin") {
     return null;
   }
-
   return parts.slice(2);
 }
 
@@ -18,52 +16,44 @@ async function handleAdminRoute(context) {
   const parts = getAdminPathParts(requestUrl.pathname);
 
   if (!parts) {
-    sendJson(response, 404, {
-      success: false,
-      message: "Route not found in admin backend.",
-    });
+    sendJson(response, 404, { success: false, message: "Route not found in admin backend." });
     return;
   }
 
-  const [resource, id, subResource] = parts;
+  const [resource, id, action] = parts;
 
   if (request.method === "GET" && resource === "health" && !id) {
-    systemController.getHealth(context);
-    return;
+    return systemController.getHealth(context);
   }
-
   if (request.method === "GET" && resource === "dashboard" && !id) {
-    systemController.getDashboard(context);
-    return;
+    return systemController.getDashboard(context);
   }
 
+  // Users: list, get, update role, lock/unlock. Khong co create/delete.
   if (resource === "users") {
     if (request.method === "GET" && !id) return userController.listUsers(context);
-    if (request.method === "GET" && id) return userController.getUser(context, id);
-    if (request.method === "POST" && !id) return userController.createUser(context);
-    if (request.method === "PATCH" && id) return userController.updateUser(context, id);
-    if (request.method === "DELETE" && id) return userController.deleteUser(context, id);
+    if (request.method === "GET" && id && !action) return userController.getUser(context, id);
+    if (request.method === "PATCH" && id && action === "role") {
+      return userController.updateUserRole(context, id);
+    }
+    if (request.method === "POST" && id && action === "lock") return userController.lockUser(context, id);
+    if (request.method === "POST" && id && action === "unlock") return userController.unlockUser(context, id);
   }
 
   if (resource === "staff") {
     if (request.method === "GET" && !id) return staffController.listStaff(context);
-    if (request.method === "GET" && id) return staffController.getStaffMember(context, id);
-    if (request.method === "POST" && !id) return staffController.createStaffMember(context);
-    if (request.method === "PATCH" && id) return staffController.updateStaffMember(context, id);
-    if (request.method === "DELETE" && id) return staffController.deleteStaffMember(context, id);
+    if (request.method === "GET" && id && !action) return staffController.getStaffMember(context, id);
+    if (request.method === "PATCH" && id && !action) return staffController.updateStaffMember(context, id);
+    if (request.method === "POST" && id && action === "availability") {
+      return staffController.setStaffAvailability(context, id);
+    }
   }
 
-  if (request.method === "GET" && resource === "reports" && id === "summary" && !subResource) {
-    reportController.getSummary(context);
-    return;
+  if (request.method === "GET" && resource === "reports" && id === "summary" && !action) {
+    return reportController.getSummary(context);
   }
 
-  sendJson(response, 404, {
-    success: false,
-    message: "Admin API endpoint not found.",
-  });
+  sendJson(response, 404, { success: false, message: "Admin API endpoint not found." });
 }
 
-module.exports = {
-  handleAdminRoute,
-};
+module.exports = { handleAdminRoute };

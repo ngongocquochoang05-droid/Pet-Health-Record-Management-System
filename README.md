@@ -1,24 +1,27 @@
-# MyPuppy Frontend
+# MyPuppy
 
-`MyPuppy` là giao diện frontend tĩnh cho web app chăm sóc thú cưng, sử dụng HTML, CSS và JavaScript thuần.
+`MyPuppy` là web app đặt lịch và chăm sóc thú cưng. Frontend tĩnh (HTML/CSS/JS), backend Node.js + SQL Server.
 
 ## Tech Stack
 
-- `HTML5`
-- `CSS3`
-- `JavaScript`
+- `HTML5`, `CSS3`, `JavaScript` thuần
 - `Tailwind CSS CDN`
 - `Google Fonts`
+- Backend: `Node.js` (HTTP core) + `mssql`
+- Auth: `Clerk` (Publishable Key + Secret Key cho session revoke)
+- Database: `SQL Server`
 
 ## Cấu Trúc Thư Mục
 
 ```text
 BACKEND/
 ├── TEAM_GUIDE.md
-├── admin/
-├── staff/
-├── customer/
+├── admin/         # Backend admin (đã chạy được)
+├── customer/      # Để dành cho team customer
 └── shared/
+    ├── clerk/     # Clerk Backend API helper
+    ├── config/
+    └── database/
 
 FRONTEND/
 ├── TEAM_GUIDE.md
@@ -32,56 +35,57 @@ FRONTEND/
 └── staff/
     ├── index.html
     └── assets/
+
+scripts/
+└── generate-clerk-keys.mjs   # Sinh clerk-keys.js từ .env.local
 ```
 
 ## Phân Chia Công Việc
 
 - `FRONTEND/`: giao diện người dùng, chia riêng `customer`, `admin`, `staff`.
-- `BACKEND/`: xử lý bên trong/API sau này, chia riêng `customer`, `admin`, `staff`.
-- `BACKEND/shared/`: phần dùng chung như config, database, middleware và utils.
+- `BACKEND/`: API, chia riêng `customer`, `admin`.
+- `BACKEND/shared/`: phần dùng chung như config, database, helper Clerk.
 
-Mỗi thành viên nên làm đúng folder được phân công để tránh conflict và tránh sửa nhầm phần của người khác.
+## Setup Lần Đầu
 
-## Cách Mở Giao Diện
+```bash
+# 1. Cài dependency backend
+cd BACKEND
+npm install
+cd ..
 
-Mở trực tiếp file theo khu vực:
+# 2. Tạo file env cho Clerk Publishable Key
+cp .env.local.example .env.local
+# sửa .env.local, dán Clerk Publishable Key + Frontend API URL
 
-```text
-FRONTEND/customer/index.html
-FRONTEND/admin/index.html
-FRONTEND/staff/index.html
+# 3. Sinh file clerk-keys.js cho frontend
+npm run setup
+
+# 4. Tạo BACKEND/.env từ template
+cp BACKEND/.env.example BACKEND/.env
+# sửa BACKEND/.env, dán SQL Server credentials và (optional) CLERK_SECRET_KEY
+
+# 5. Test kết nối SQL Server
+cd BACKEND
+npm run db:test
 ```
 
-Không cần cài thêm thư viện, không cần chạy server dev và không cần bước build.
+## Cách Chạy
 
-## Deploy Vercel
+**Backend** (port 4000) — VS Code task `Start Admin Backend` tự bật khi mở folder. Hoặc chạy thủ công:
 
-Repo đã có `vercel.json` để Vercel deploy đúng frontend tĩnh:
+```bash
+cd BACKEND
+node admin/server.js
+```
 
-- `outputDirectory`: `FRONTEND`
-- Không chạy install command
-- Không chạy build command
-- URL `/` tự chuyển sang `/customer/index.html`
+**Frontend** — mở `FRONTEND/customer/index.html`, `FRONTEND/admin/index.html`, hoặc `FRONTEND/staff/index.html` qua Live Server.
 
-Khi import từ GitHub lên Vercel, có thể để framework là `Other` hoặc để Vercel đọc cấu hình từ `vercel.json`.
-
-Các khu vực làm việc riêng:
-
-- `FRONTEND/customer/`: giao diện khách hàng.
-- `FRONTEND/admin/`: giao diện admin, gồm quản lý hệ thống, quản lý nhân viên, báo cáo và thống kê.
-- `FRONTEND/staff/`: giao diện nhân viên cửa hàng, gồm quản lý khách hàng, lịch hẹn, hồ sơ thú cưng, đăng ký dịch vụ, kiểm tra thanh toán và quản lý sản phẩm.
-- `FRONTEND/TEAM_GUIDE.md`: quy tắc phân công folder cho nhóm.
-- `BACKEND/TEAM_GUIDE.md`: quy tắc phân công backend cho nhóm.
-
-Tài khoản demo ở giao diện đăng nhập:
+## Tài Khoản Demo
 
 - Khách hàng: `minhnguyen@gmail.com` / `customer123`
 - Nhân viên: `staff@mypuppy.vn` / `staff123`
 - Admin: `admin@mypuppy.vn` / `admin123`
-
-## File Cấu Hình Giữ Lại
-
-Các file `package.json`, `package-lock.json`, `next.config.mjs`, `postcss.config.mjs`, `eslint.config.mjs` và `jsconfig.json` được giữ lại ở root để dự phòng cho giai đoạn sau. Hiện tại giao diện chính vẫn chỉ dùng HTML, CSS và JavaScript trong thư mục `FRONTEND`.
 
 ## Cách Chỉnh Giao Diện
 
