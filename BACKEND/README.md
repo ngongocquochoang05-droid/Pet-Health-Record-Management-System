@@ -7,14 +7,20 @@ Thư mục `BACKEND` chứa phần xử lý server-side cho MyPuppy. Hiện tạ
 ```text
 BACKEND/
 ├── TEAM_GUIDE.md
-├── admin/
+├── admin/                 # API admin (đã chạy được)
 │   ├── server.js
 │   ├── routes/
 │   ├── controllers/
 │   ├── services/
 │   └── models/
-├── customer/
+├── staff/                 # Skeleton dành cho team staff
+│   ├── routes/
+│   ├── controllers/
+│   ├── services/
+│   └── models/
+├── customer/              # Skeleton dành cho team customer
 └── shared/
+    ├── clerk/             # Clerk Backend API helper
     ├── config/
     └── database/
 ```
@@ -22,8 +28,9 @@ BACKEND/
 ## Ý Nghĩa Từng Folder
 
 - `admin/`: API admin (đã chạy được) — quản lý hệ thống, người dùng, nhân viên, báo cáo.
+- `staff/`: dành cho API nhân viên cửa hàng (lịch hẹn, thú cưng, thanh toán, sản phẩm) — bạn phụ trách.
 - `customer/`: dành cho API khách hàng (đặt lịch, dịch vụ, đánh giá) — chưa triển khai.
-- `shared/`: cấu hình env và kết nối SQL Server dùng chung.
+- `shared/`: cấu hình env, kết nối SQL Server và helper Clerk dùng chung.
 
 ## Quy Tắc
 

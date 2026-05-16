@@ -17,7 +17,8 @@
 BACKEND/
 ├── TEAM_GUIDE.md
 ├── admin/         # Backend admin (đã chạy được)
-├── customer/      # Để dành cho team customer
+├── staff/         # Skeleton cho team staff
+├── customer/      # Skeleton cho team customer
 └── shared/
     ├── clerk/     # Clerk Backend API helper
     ├── config/
@@ -43,7 +44,7 @@ scripts/
 ## Phân Chia Công Việc
 
 - `FRONTEND/`: giao diện người dùng, chia riêng `customer`, `admin`, `staff`.
-- `BACKEND/`: API, chia riêng `customer`, `admin`.
+- `BACKEND/`: API, chia riêng `customer`, `admin`, `staff`.
 - `BACKEND/shared/`: phần dùng chung như config, database, helper Clerk.
 
 ## Setup Lần Đầu
