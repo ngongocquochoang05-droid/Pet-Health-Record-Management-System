@@ -1,6 +1,6 @@
 # Backend Admin MyPuppy
 
-Folder này chỉ dành cho phần backend của quản trị viên. Không chỉnh phần `BACKEND/customer` và `BACKEND/staff` để tránh đụng công việc của các thành viên khác.
+Folder này chỉ dành cho phần backend của quản trị viên. Không chỉnh phần `BACKEND/customer` để tránh đụng công việc của thành viên khác.
 
 ## Chức Năng Đã Dựng
 
@@ -29,7 +29,7 @@ BACKEND/admin/
 │   ├── reportService.js
 │   └── errors.js
 └── models/
-    └── adminStore.js
+    └── adminRepository.js
 ```
 
 ## Cách Chạy

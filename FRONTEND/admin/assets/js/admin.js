@@ -258,7 +258,7 @@ function renderDashboard() {
       <div class="activity-panel__heading">
         <div>
           <h2>Hoạt động gần đây</h2>
-          <p>Dữ liệu được tải từ backend admin hoặc dữ liệu demo khi backend chưa chạy.</p>
+          <p>${state.backendOnline ? "Dữ liệu đang được tải trực tiếp từ SQL Server qua backend admin." : "Backend admin chưa chạy, đang hiển thị dữ liệu demo tạm thời."}</p>
         </div>
         <button type="button" data-admin-action="export-report">Xuất báo cáo</button>
       </div>

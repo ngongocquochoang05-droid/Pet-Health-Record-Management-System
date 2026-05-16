@@ -49,6 +49,17 @@
                 Xin chào,
                 <span data-customer-name>Khách hàng</span>
               </a>
+              <a
+                href="dang-nhap.html"
+                data-guest-only
+                class="inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 font-semibold text-slate-950 shadow-lg transition hover:bg-sky-50"
+                >
+                <svg class="h-5 w-5 text-slate-950/85" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M16.5 19a4.5 4.5 0 0 0-9 0"></path>
+                  <circle cx="12" cy="11" r="3.5"></circle>
+                </svg>
+                <span>Đăng nhập</span>
+              </a>
             </div>
           </header>
           <div class="py-20 text-center text-white md:py-28">
@@ -129,6 +140,7 @@
     </section>
   </main>
   <script src="../assets/js/reveal.js"></script>
+  <script src="../../shared/auth/clerk-keys.js"></script>
   <script src="../../shared/auth/clerk-config.js"></script>
   <script src="../assets/js/customer-auth.js"></script>
 </body>

@@ -1,7 +1,15 @@
 (function () {
+  const keys = window.MyPuppyClerkKeys || {};
+
+  if (!keys.publishableKey || !keys.frontendApiUrl) {
+    console.error(
+      "MyPuppy: thieu Clerk Publishable Key. Tao FRONTEND/shared/auth/clerk-keys.js dua tren clerk-keys.example.js, hoac set bien moi truong CLERK_PUBLISHABLE_KEY va CLERK_FRONTEND_API_URL khi deploy.",
+    );
+  }
+
   const config = {
-    publishableKey: "pk_test_ZGVzdGluZWQtc25ha2UtMjkuY2xlcmsuYWNjb3VudHMuZGV2JA",
-    frontendApiUrl: "https://destined-snake-29.clerk.accounts.dev",
+    publishableKey: keys.publishableKey || "",
+    frontendApiUrl: keys.frontendApiUrl || "",
     roleByEmail: {
       "admin@mypuppy.vn": "admin",
       "staff@mypuppy.vn": "staff",
