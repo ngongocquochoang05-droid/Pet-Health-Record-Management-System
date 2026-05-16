@@ -7,3 +7,7 @@ Thumbs.db
 !*.env.example
 dist/
 out/
+
+# Clerk publishable key + frontend API URL cho local dev.
+# File duoc tao tu clerk-keys.example.js, khong commit.
+FRONTEND/shared/auth/clerk-keys.js

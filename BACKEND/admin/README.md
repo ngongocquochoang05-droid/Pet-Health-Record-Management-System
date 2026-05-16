@@ -29,7 +29,7 @@ BACKEND/admin/
 │   ├── reportService.js
 │   └── errors.js
 └── models/
-    └── adminStore.js
+    └── adminRepository.js
 ```
 
 ## Cách Chạy

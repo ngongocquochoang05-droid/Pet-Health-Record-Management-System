@@ -21,6 +21,9 @@ Landing page, dich vu, dat lich, phu kien, danh gia, form dang nhap va form dang
 ## Clerk Auth
 
 - Cau hinh Clerk dung chung nam tai `../shared/auth/clerk-config.js`.
+- Publishable Key dat trong `../shared/auth/clerk-keys.js` (file da gitignore, khong commit).
+- Lan dau setup: copy `../shared/auth/clerk-keys.example.js` thanh `clerk-keys.js`, dien key.
+- Khi deploy Vercel: dat 2 bien moi truong `CLERK_PUBLISHABLE_KEY` va `CLERK_FRONTEND_API_URL` trong project settings. Build command tu dong sinh `clerk-keys.js`.
 - Chi dung `Publishable Key` o frontend. Khong dua `Secret Key` vao HTML/CSS/JS.
 - Chay web bang localhost hoac Live Server. Khong mo trang auth bang `file://`.
 - Trang dang nhap: `pages/dang-nhap.html`.
