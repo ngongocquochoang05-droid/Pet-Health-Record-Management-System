@@ -5,8 +5,6 @@
   "description": "Static HTML, CSS and JavaScript frontend for MyPuppy.",
   "scripts": {
     "start": "echo Open FRONTEND/customer/index.html in your browser",
-    "setup": "node scripts/generate-clerk-keys.mjs",
-    "build": "node scripts/generate-clerk-keys.mjs",
-    "check": "echo Static frontend project - no build step required."
+    "setup": "node scripts/generate-clerk-keys.mjs"
   }
 }

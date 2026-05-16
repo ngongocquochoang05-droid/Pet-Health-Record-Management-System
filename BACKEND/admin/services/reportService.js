@@ -1,36 +1,51 @@
 const adminRepository = require("../models/adminRepository");
 
-function countByStatus(items) {
-  return items.reduce((result, item) => {
-    result[item.status] = (result[item.status] || 0) + 1;
-    return result;
-  }, {});
-}
-
 async function getSummary() {
-  const [users, staffMembers] = await Promise.all([
-    adminRepository.listUsers(),
-    adminRepository.listStaff(),
+  const [
+    overview,
+    revenueDaily,
+    revenueMonthly,
+    revenueBreakdown,
+    appointmentBreakdown,
+    topStaff,
+    topServices,
+    topProducts,
+  ] = await Promise.all([
+    adminRepository.getOverviewMetrics(),
+    adminRepository.getRevenueByDay(14),
+    adminRepository.getRevenueByMonth(6),
+    adminRepository.getRevenueBreakdown(),
+    adminRepository.getAppointmentStatusBreakdown(1),
+    adminRepository.getTopStaffByRevenue(5),
+    adminRepository.getTopServices(5),
+    adminRepository.getTopProducts(5),
   ]);
 
   return {
     generatedAt: new Date().toISOString(),
-    users: {
-      total: users.length,
-      byStatus: countByStatus(users),
-      byRole: users.reduce((result, user) => {
-        result[user.role] = (result[user.role] || 0) + 1;
-        return result;
-      }, {}),
+    overview,
+    revenue: {
+      total: overview.totalRevenue,
+      service: revenueBreakdown.serviceRevenue,
+      product: revenueBreakdown.productRevenue,
+      daily: revenueDaily,
+      monthly: revenueMonthly,
     },
-    staff: {
-      total: staffMembers.length,
-      byStatus: countByStatus(staffMembers),
+    appointments: {
+      total: overview.totalAppointments,
+      pending: overview.pendingAppointments,
+      completed: overview.completedAppointments,
+      cancelled: overview.cancelledAppointments,
+      monthlyBreakdown: appointmentBreakdown,
+      cancellationRate:
+        overview.totalAppointments > 0
+          ? overview.cancelledAppointments / overview.totalAppointments
+          : 0,
     },
-    operations: {
-      monthlyReports: 12,
-      pendingApprovals: users.filter((user) => user.status === "pending").length,
-      satisfactionScore: 4.9,
+    rankings: {
+      topStaff,
+      topServices,
+      topProducts,
     },
   };
 }

@@ -2,94 +2,59 @@
 
 Folder này chỉ dành cho phần backend của quản trị viên. Không chỉnh phần `BACKEND/customer` để tránh đụng công việc của thành viên khác.
 
-## Chức Năng Đã Dựng
+## Chức Năng (theo yêu cầu Admin)
 
-- Quản lý hệ thống: kiểm tra trạng thái server và dữ liệu dashboard.
-- Quản lý tài khoản người dùng: xem, thêm, sửa, xóa tài khoản mẫu.
-- Quản lý nhân viên: xem, thêm, sửa, xóa nhân viên mẫu.
-- Báo cáo thống kê: tổng hợp số lượng tài khoản, nhân viên và chỉ số vận hành.
+### 1. Quản lý tài khoản
+- Xem danh sách user, tìm theo Tên / SĐT / Email.
+- Thay đổi vai trò (admin/staff/customer).
+- Khóa / mở khóa tài khoản; khi khóa, gọi Clerk để revoke session.
+- **Không** tạo mới và **không** xóa user (Clerk lo auth).
 
-## Cấu Trúc
+### 2. Quản lý nhân viên
+- Hiện tự động sau khi promote user lên Staff (tự tạo `HoSoNhanVien`).
+- Cập nhật `ChuyenMon`, `NamKinhNghiem`.
+- Bật/tắt `SanSangLamViec` để ẩn nhân viên khỏi UI khách hàng.
+
+### 3. Báo cáo thống kê
+- Doanh thu theo ngày/tháng (TongTien của HoaDon Paid).
+- Cơ cấu doanh thu Dịch vụ vs Sản phẩm.
+- Số lịch hẹn Completed/Pending/Cancelled.
+- Top 5 nhân viên theo doanh thu, top 5 dịch vụ theo lượt đặt, top 5 sản phẩm bán chạy.
+
+## API
 
 ```text
-BACKEND/admin/
-├── server.js
-├── package.json
-├── routes/
-│   └── adminRoutes.js
-├── controllers/
-│   ├── systemController.js
-│   ├── userController.js
-│   ├── staffController.js
-│   └── reportController.js
-├── services/
-│   ├── systemService.js
-│   ├── userService.js
-│   ├── staffService.js
-│   ├── reportService.js
-│   └── errors.js
-└── models/
-    └── adminRepository.js
+GET    /api/admin/health
+GET    /api/admin/dashboard
+GET    /api/admin/users?search=&role=&status=
+GET    /api/admin/users/:id
+PATCH  /api/admin/users/:id/role         body: { role: 'admin'|'staff'|'customer' }
+POST   /api/admin/users/:id/lock
+POST   /api/admin/users/:id/unlock
+GET    /api/admin/staff?search=&status=
+GET    /api/admin/staff/:id
+PATCH  /api/admin/staff/:id              body: { expertise, yearsOfExperience, status }
+POST   /api/admin/staff/:id/availability body: { status: 'active'|'on_leave'|'inactive' }
+GET    /api/admin/reports/summary
 ```
 
 ## Cách Chạy
 
 ```bash
-cd BACKEND/admin
-npm run dev
+cd BACKEND
+node admin/server.js
 ```
 
-Server mặc định chạy tại:
+Mặc định chạy ở `http://localhost:4000`. Đổi port qua biến `ADMIN_PORT`.
 
-```text
-http://localhost:4000
+VS Code đã cấu hình task `Start Admin Backend` tự khởi động khi mở folder.
+
+## Clerk Backend
+
+Để khóa user revoke được session Clerk, đặt biến môi trường trong `BACKEND/.env`:
+
+```env
+CLERK_SECRET_KEY=sk_test_...
 ```
 
-Có thể đổi port bằng biến môi trường:
-
-```bash
-set ADMIN_PORT=4100
-npm run dev
-```
-
-## API Chính
-
-```text
-GET    /api/admin/health
-GET    /api/admin/dashboard
-GET    /api/admin/users
-GET    /api/admin/users/:id
-POST   /api/admin/users
-PATCH  /api/admin/users/:id
-DELETE /api/admin/users/:id
-GET    /api/admin/staff
-GET    /api/admin/staff/:id
-POST   /api/admin/staff
-PATCH  /api/admin/staff/:id
-DELETE /api/admin/staff/:id
-GET    /api/admin/reports/summary
-```
-
-## Ví Dụ Body Tạo Tài Khoản
-
-```json
-{
-  "fullName": "Nguyen Van A",
-  "email": "vana@example.com",
-  "role": "customer",
-  "status": "pending"
-}
-```
-
-## Ví Dụ Body Tạo Nhân Viên
-
-```json
-{
-  "fullName": "Pham Thi Mai",
-  "email": "mai.staff@mypuppy.vn",
-  "phone": "0901234567",
-  "position": "Grooming Specialist",
-  "shift": "Morning",
-  "status": "active"
-}
-```
+Lấy key tại Clerk Dashboard → API Keys → Secret keys. Nếu để trống, khóa user chỉ update DB, không revoke session.

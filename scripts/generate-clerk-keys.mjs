@@ -1,10 +1,8 @@
 // Sinh FRONTEND/shared/auth/clerk-keys.js tu bien moi truong khi build/deploy.
 //
 // Local dev: doc tu .env.local o root project (file da gitignore).
-// Vercel: Vercel tu inject env vars CLERK_PUBLISHABLE_KEY va CLERK_FRONTEND_API_URL
-//         tu Project Settings -> Environment Variables, script chay luc build.
-//
-// vercel.json -> "buildCommand": "node scripts/generate-clerk-keys.mjs"
+// Production: dat env vars CLERK_PUBLISHABLE_KEY va CLERK_FRONTEND_API_URL
+//             tren server/host (vd: process manager, hosting platform).
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -62,16 +60,13 @@ if (!publishableKey || !frontendApiUrl) {
     "[generate-clerk-keys] Thieu CLERK_PUBLISHABLE_KEY hoac CLERK_FRONTEND_API_URL.",
   );
   console.error(
-    "[generate-clerk-keys] Local: tao file .env.local o root tu .env.local.example.",
-  );
-  console.error(
-    "[generate-clerk-keys] Deploy: dat env vars trong Project Settings cua Vercel.",
+    "[generate-clerk-keys] Tao file .env.local o root tu .env.local.example va dien key.",
   );
   process.exit(1);
 }
 
 const fileContent = `// File auto-generated boi scripts/generate-clerk-keys.mjs.
-// Khong sua tay. Dat key tai .env.local (local) hoac env vars (Vercel).
+// Khong sua tay. Dat key tai .env.local hoac env vars tren server.
 
 window.MyPuppyClerkKeys = {
   publishableKey: ${JSON.stringify(publishableKey)},

@@ -764,3 +764,114 @@ td:first-child {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================================================
+   Admin form controls (added for users/staff CRUD)
+   ========================================================= */
+
+.admin-input,
+.admin-select {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.55rem;
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--ink);
+  font-size: 0.9rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-input--small {
+  max-width: 5.5rem;
+}
+
+.admin-input:focus,
+.admin-select:focus {
+  outline: none;
+  border-color: var(--sky);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+.admin-select option {
+  background: #0f172a;
+  color: var(--ink);
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.metric-card--danger {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.18), rgba(127, 29, 29, 0.28));
+  border-color: rgba(248, 113, 113, 0.32);
+}
+
+/* Revenue bar (service vs product) */
+
+.revenue-bar {
+  display: flex;
+  width: 100%;
+  height: 0.85rem;
+  margin-top: 1rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.revenue-bar__service {
+  background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+  transition: width 0.4s ease;
+}
+
+.revenue-bar__product {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  transition: width 0.4s ease;
+}
+
+.revenue-legend {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.revenue-legend .dot {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  margin-right: 0.4rem;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.revenue-legend .dot--service {
+  background: #38bdf8;
+}
+
+.revenue-legend .dot--product {
+  background: #f59e0b;
+}
+
+/* Two-column layout for report tables */
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.report-grid h3,
+.activity-panel h3 {
+  margin: 0 0 0.75rem;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.activity-panel + .activity-panel {
+  margin-top: 1.25rem;
+}
