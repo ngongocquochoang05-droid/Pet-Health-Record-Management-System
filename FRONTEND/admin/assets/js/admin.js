@@ -15,12 +15,6 @@ const fallbackData = {
       activeStaff: 28,
       reportCount: 12,
     },
-    modules: [
-      { key: "auth", name: "Xác thực đăng nhập", status: "ready" },
-      { key: "users", name: "Tài khoản người dùng", status: "ready" },
-      { key: "staff", name: "Quản lý nhân viên", status: "ready" },
-      { key: "reports", name: "Báo cáo thống kê", status: "ready" },
-    ],
     recentActivities: [
       { id: "activity-001", title: "Tài khoản mới", owner: "Nguyễn Thu Hà", status: "pending", time: "10:30" },
       { id: "activity-002", title: "Cập nhật nhân viên", owner: "Trần Văn Hùng", status: "done", time: "13:15" },
@@ -192,7 +186,6 @@ function renderCurrentView() {
 
   const renderers = {
     dashboard: renderDashboard,
-    system: renderSystem,
     users: renderUsers,
     staff: renderStaff,
     reports: renderReports,
@@ -302,50 +295,6 @@ function renderActivityTable(activities) {
         <tbody>${rows}</tbody>
       </table>
     </div>
-  `;
-}
-
-function renderSystem() {
-  const modules = state.dashboard.modules || [];
-
-  return `
-    ${renderViewHeader(
-      "Quản lý hệ thống",
-      "Kiểm tra tình trạng các module lõi của backend admin.",
-      '<button type="button" class="admin-action-button" data-admin-action="reload">Kiểm tra lại</button>',
-    )}
-    <section class="activity-panel">
-      <div class="activity-panel__heading">
-        <div>
-          <h2>Trạng thái hệ thống</h2>
-          <p>${state.backendOnline ? "Backend admin đang phản hồi bình thường." : "Backend chưa chạy, đang hiển thị trạng thái demo."}</p>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Module</th>
-              <th>Mã</th>
-              <th>Trạng thái</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${modules
-              .map(
-                (module) => `
-                  <tr>
-                    <td>${escapeHtml(module.name)}</td>
-                    <td>${escapeHtml(module.key)}</td>
-                    <td><span class="${getStatusClass(module.status)}">${getStatusLabel(module.status)}</span></td>
-                  </tr>
-                `,
-              )
-              .join("")}
-          </tbody>
-        </table>
-      </div>
-    </section>
   `;
 }
 
@@ -785,7 +734,7 @@ async function initAdminPage() {
   bindAdminUi();
 
   const hashView = window.location.hash.replace("#", "");
-  if (["dashboard", "system", "users", "staff", "reports"].includes(hashView)) {
+  if (["dashboard", "users", "staff", "reports"].includes(hashView)) {
     state.currentView = hashView;
   }
 
