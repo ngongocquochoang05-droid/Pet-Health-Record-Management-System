@@ -92,6 +92,11 @@ function getFriendlyClerkErrorMessage(error) {
   const rawMessage = getClerkErrorMessage(error);
   const normalizedMessage = rawMessage.toLowerCase();
 
+  // Tai khoan tao qua Google OAuth nhung user dang nhap bang email/password.
+  if (normalizedMessage.includes("verification strategy") && normalizedMessage.includes("not valid")) {
+    return "Tài khoản này được đăng ký bằng Google nên không có mật khẩu. Vui lòng nhấn 'Tiếp tục với Google' để đăng nhập.";
+  }
+
   if (normalizedMessage.includes("verified not supported yet")) {
     return "Clerk chưa hỗ trợ bước xác minh này cho tài khoản hiện tại. Bạn hãy thử Tiếp tục với Google hoặc kiểm tra lại phương thức đăng nhập trong Clerk Dashboard.";
   }
@@ -102,6 +107,14 @@ function getFriendlyClerkErrorMessage(error) {
 
   if (normalizedMessage.includes("sign up") && normalizedMessage.includes("not allowed")) {
     return "Clerk hiện chưa cho phép tạo tài khoản mới. Hãy bật đăng ký người dùng trong Clerk Dashboard.";
+  }
+
+  if (normalizedMessage.includes("identifier") && normalizedMessage.includes("not found")) {
+    return "Email này chưa được đăng ký. Vui lòng đăng ký tài khoản hoặc kiểm tra lại email.";
+  }
+
+  if (normalizedMessage.includes("password") && normalizedMessage.includes("incorrect")) {
+    return "Mật khẩu không đúng. Vui lòng thử lại.";
   }
 
   return rawMessage;

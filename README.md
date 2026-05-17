@@ -66,31 +66,62 @@ Web app đặt lịch và chăm sóc thú cưng. Frontend tĩnh (HTML/CSS/JS), b
 - Mỗi người chỉ chỉnh trong folder được phân công.
 - Folder `BACKEND/shared/` và `FE/shared/` chỉ sửa khi cả nhóm thống nhất.
 
-## Setup Lần Đầu
+## Setup Lần Đầu (clone về và chạy)
+
+### Bước 1 — Cài tools
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [Node.js 18+](https://nodejs.org)
+- SQL Server (Express, Developer hoặc trên cloud)
+
+### Bước 2 — Tạo `BACKEND/admin/appsettings.Local.json`
+
+File này gitignore, mỗi máy phải tự tạo. Mở terminal ở root project:
 
 ```bash
-# 1. Sinh clerk-keys.js cho frontend
-cp .env.example .env
-# sửa .env, dán Clerk Publishable Key + Frontend API URL
-npm run setup
-
-# 2. Tạo appsettings.Local.json cho backend admin (file này gitignore)
-# Tạo file BACKEND/admin/appsettings.Local.json với nội dung:
-#
-# {
-#   "Clerk": {
-#     "SecretKey": "sk_test_...",         (tùy chọn - cho session revoke)
-#     "WebhookSecret": "whsec_..."        (tùy chọn - cho webhook real-time)
-#   },
-#   "ConnectionStrings": {
-#     "PetHealth": "Server=127.0.0.1,1433;Database=PetHealth;User Id=mypuppy_user;Password=YOUR_PASSWORD;TrustServerCertificate=True;Encrypt=False;"
-#   }
-# }
-#
-# Lấy SecretKey/WebhookSecret tại Clerk Dashboard → API Keys / Webhooks.
+cd BACKEND/admin
 ```
 
-## Cách Chạy
+Tạo file `appsettings.Local.json` với nội dung dưới (copy nguyên xi, sửa giá trị Server/Password cho khớp SQL Server của bạn):
+
+```json
+{
+  "Clerk": {
+    "SecretKey": "",
+    "WebhookSecret": ""
+  },
+  "ConnectionStrings": {
+    "PetHealth": "Server=127.0.0.1,1433;Database=PetHealth;User Id=mypuppy_user;Password=MyPuppy@123456;TrustServerCertificate=True;Encrypt=False;"
+  }
+}
+```
+
+`SecretKey` và `WebhookSecret` để rỗng nếu chưa cần (admin lock user vẫn chạy, chỉ là không revoke session Clerk được).
+
+### Bước 3 — Setup SQL Server
+
+- Cài SQL Server Express, mở port 1433
+- Tạo database `PetHealth`
+- Chạy `BACKEND/shared/database/create-dev-login.sql` để tạo user `mypuppy_user`
+- Import schema + seed data từ team lead (file `.bacpac` hoặc `.sql` dump)
+
+### Bước 4 — Chạy
+
+```bash
+# Backend (port 4000) — VS Code task tự bật khi mở folder
+cd BACKEND/admin
+dotnet run
+
+# Frontend — mở Live Server
+# Right-click FE/customer/index.html → Open with Live Server
+```
+
+Truy cập:
+- Khách hàng: `http://127.0.0.1:5500/customer/index.html`
+- Admin: `http://127.0.0.1:5500/admin/index.html`
+- Nhân viên: `http://127.0.0.1:5500/staff/index.html`
+
+## Cách Chạy (sau setup)
 
 **Backend admin** (port 4000) — VS Code task `Start Admin Backend` tự bật khi mở folder. Hoặc thủ công:
 

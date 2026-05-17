@@ -3,6 +3,9 @@
   Chi sua giao dien trong file nay de ap dung cho landing page va cac page con.
 */
 
+/* Định nghĩa các layer để quản lý độ ưu tiên, giúp loại bỏ !important khi override Tailwind. */
+@layer base, components, utilities, overrides;
+
 :root {
   --logo-blue-500: #3aa7ee;
   --logo-blue-400: #7dd3fc;
@@ -798,18 +801,18 @@ body {
 /* Nền section */
 .frontend-page--landing,
 .frontend-page--subpage {
-  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 35%, #f8fbff 100%) !important;
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 35%, #f8fbff 100%);
 }
 
 .frontend-page--landing section.bg-white,
 .frontend-page--subpage section.bg-white {
-  background: #ffffff !important;
+  background: #ffffff;
 }
 
 /* Chữ xanh */
 .frontend-page--landing .text-sky-300,
 .frontend-page--subpage .text-sky-300 {
-  color: #7dd3fc !important;
+  color: #7dd3fc;
 }
 
 .frontend-page--landing .text-sky-500,
@@ -818,7 +821,7 @@ body {
 .frontend-page--subpage .text-sky-500,
 .frontend-page--subpage .text-sky-600,
 .frontend-page--subpage .text-sky-700 {
-  color: #0284c7 !important;
+  color: #0284c7;
 }
 
 /* Text chính */
@@ -826,23 +829,23 @@ body {
 .frontend-page--landing .text-slate-900,
 .frontend-page--subpage .text-slate-950,
 .frontend-page--subpage .text-slate-900 {
-  color: #0f172a !important;
+  color: #0f172a;
 }
 
 .frontend-page--landing .text-slate-600,
 .frontend-page--subpage .text-slate-600 {
-  color: #475569 !important;
+  color: #475569;
 }
 
 /* Nền xanh nhạt */
 .frontend-page--landing .bg-sky-50,
 .frontend-page--subpage .bg-sky-50 {
-  background: #f0f9ff !important;
+  background: #f0f9ff;
 }
 
 .frontend-page--landing .bg-sky-100,
 .frontend-page--subpage .bg-sky-100 {
-  background: #e0f2fe !important;
+  background: #e0f2fe;
 }
 
 /* Nút / icon xanh */
@@ -850,8 +853,8 @@ body {
 .frontend-page--landing .bg-sky-500,
 .frontend-page--subpage .bg-sky-400,
 .frontend-page--subpage .bg-sky-500 {
-  background: #38bdf8 !important;
-  color: #ffffff !important;
+  background: #38bdf8;
+  color: #ffffff;
 }
 
 /* Border xanh */
@@ -859,35 +862,35 @@ body {
 .frontend-page--landing .border-sky-200,
 .frontend-page--subpage .border-sky-100,
 .frontend-page--subpage .border-sky-200 {
-  border-color: rgba(14, 165, 233, 0.18) !important;
+  border-color: rgba(14, 165, 233, 0.18);
 }
 
 /* Gradient xanh */
 .frontend-page--landing .from-sky-50,
 .frontend-page--subpage .from-sky-50 {
-  --tw-gradient-from: #f0f9ff var(--tw-gradient-from-position) !important;
-  --tw-gradient-to: rgba(240, 249, 255, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-from: #f0f9ff var(--tw-gradient-from-position);
+  --tw-gradient-to: rgba(240, 249, 255, 0) var(--tw-gradient-to-position);
 }
 
 .frontend-page--landing .to-cyan-50,
 .frontend-page--subpage .to-cyan-50 {
-  --tw-gradient-to: #ecfeff var(--tw-gradient-to-position) !important;
+  --tw-gradient-to: #ecfeff var(--tw-gradient-to-position);
 }
 
 .frontend-page--landing .from-sky-500,
 .frontend-page--subpage .from-sky-500 {
-  --tw-gradient-from: #0ea5e9 var(--tw-gradient-from-position) !important;
+  --tw-gradient-from: #0ea5e9 var(--tw-gradient-from-position);
 }
 
 .frontend-page--landing .to-cyan-400,
 .frontend-page--subpage .to-cyan-400 {
-  --tw-gradient-to: #22d3ee var(--tw-gradient-to-position) !important;
+  --tw-gradient-to: #22d3ee var(--tw-gradient-to-position);
 }
 
 /* Card không còn kem/cam */
 .frontend-page--landing article.bg-white,
 .frontend-page--subpage article.bg-white {
-  background: #ffffff !important;
+  background: #ffffff;
 }
 
 /* Hero giữ sáng xanh/trắng */
@@ -898,12 +901,12 @@ body {
     rgba(15, 23, 42, 0.72) 0%,
     rgba(15, 23, 42, 0.45) 45%,
     rgba(15, 23, 42, 0.78) 100%
-  ) !important;
+  );
 }
 
 .frontend-page--landing #hero-parallax,
 .frontend-page--subpage main > section:first-child .absolute.inset-0.bg-cover {
-  filter: none !important;
+  filter: none;
 }
 
 
@@ -914,9 +917,9 @@ body {
 .frontend-page--landing header > .max-w-7xl,
 .frontend-page--landing header > .mx-auto.flex,
 .frontend-page--subpage header.flex {
-  display: grid !important;
-  grid-template-columns: 1fr auto 1fr !important;
-  align-items: center !important;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   gap: 1rem;
   width: 100%;
 }
@@ -961,28 +964,29 @@ body {
 .frontend-page--subpage header .petcare-logo.hero-fade,
 .frontend-page--subpage header nav.hero-fade-delay,
 .frontend-page--subpage header .hero-fade-delay.flex.items-center.gap-3 {
-  opacity: 1 !important;
-  animation: none !important;
+  opacity: 1;
+  animation: none;
 }
 
 .frontend-page--subpage header .nav-stagger > * {
-  opacity: 1 !important;
-  animation: none !important;
+  opacity: 1;
+  animation: none;
 }
 
 /* Trang chủ: navbar cũng hiện ngay, chỉ hero text fade-in */
 .frontend-page--landing header .petcare-logo.hero-fade,
 .frontend-page--landing header nav.hero-fade-delay,
 .frontend-page--landing header .hero-fade-delay.flex.items-center.gap-3 {
-  opacity: 1 !important;
-  animation: none !important;
+  opacity: 1;
+  animation: none;
 }
 
 .frontend-page--landing header .nav-stagger > * {
-  opacity: 1 !important;
-  animation: none !important;
+  opacity: 1;
+  animation: none;
 }
-/* ===== Profile Page Only - White Blue Theme ===== */
+
+
 
 body:has(.profile-card) {
   background:
