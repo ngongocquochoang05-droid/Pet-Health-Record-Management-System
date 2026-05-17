@@ -8,6 +8,8 @@ Thumbs.db
 dist/
 out/
 /node_modules
+bin/
+obj/
 
 # Clerk publishable key + frontend API URL cho local dev.
 # File duoc tao tu clerk-keys.example.js, khong commit.
