@@ -15,3 +15,7 @@ FE/shared/auth/clerk-keys.js
 
 # Auto-generated boi generate-clerk-keys.mjs, khong commit.
 FE/shared/config/api-config.js
+
+# .NET build output
+**/bin/
+**/obj/
