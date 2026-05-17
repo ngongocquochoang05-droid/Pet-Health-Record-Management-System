@@ -101,22 +101,25 @@
 
   function loadScript(src, attributes = {}) {
     return new Promise((resolve, reject) => {
-      const existingScript = document.querySelector(`script[src="${src}"]`);
+      // Tim script da load tu truoc bang cach lap qua tags thay vi
+      // querySelector — vi src cua Clerk co ky tu @ khong hop le voi CSS selector.
+      const existingScript = Array.from(document.scripts).find(
+        (s) => s.src === src,
+      );
 
       if (existingScript) {
-        existingScript.addEventListener("load", resolve, { once: true });
-        existingScript.addEventListener("error", reject, { once: true });
-
         if (existingScript.dataset.loaded === "true") {
           resolve();
+          return;
         }
-
+        existingScript.addEventListener("load", resolve, { once: true });
+        existingScript.addEventListener("error", reject, { once: true });
         return;
       }
 
       const script = document.createElement("script");
       script.src = src;
-      script.defer = true;
+      script.async = true;
       script.crossOrigin = "anonymous";
       script.type = "text/javascript";
 
@@ -145,15 +148,23 @@
 
     clerkLoadPromise = (async () => {
       if (!window.Clerk) {
-        await loadScript(`${config.frontendApiUrl}/npm/@clerk/ui@1/dist/ui.browser.js`);
-        await loadScript(`${config.frontendApiUrl}/npm/@clerk/clerk-js@6/dist/clerk.browser.js`, {
-          "data-clerk-publishable-key": config.publishableKey,
-        });
+        await loadScript(
+          `${config.frontendApiUrl}/npm/@clerk/clerk-js@5/dist/clerk.browser.js`,
+          {
+            "data-clerk-publishable-key": config.publishableKey,
+          },
+        );
       }
 
-      await window.Clerk.load({
-        ui: { ClerkUI: window.__internal_ClerkUICtor },
-      });
+      if (!window.Clerk) {
+        throw new Error(
+          "MyPuppy: khong tai duoc Clerk JS. Kiem tra CLERK_FRONTEND_API_URL.",
+        );
+      }
+
+      if (!window.Clerk.loaded) {
+        await window.Clerk.load();
+      }
 
       return window.Clerk;
     })();
