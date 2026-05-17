@@ -103,4 +103,68 @@ public class ClerkClient
         using var response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
     }
+
+    /// <summary>
+    /// Goi GET /v1/users tren Clerk Backend API, paginate de lay het user.
+    /// Tra ve danh sach user JSON tho de webhook service xu ly thong nhat.
+    /// </summary>
+    public async Task<List<JsonElement>> ListAllUsersAsync()
+    {
+        if (!IsConfigured)
+        {
+            throw new InvalidOperationException(
+                "Clerk:SecretKey chua duoc cau hinh trong appsettings.json.");
+        }
+
+        var users = new List<JsonElement>();
+        const int limit = 100;
+        int offset = 0;
+
+        while (true)
+        {
+            using var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"{ClerkApiBase}/users?limit={limit}&offset={offset}&order_by=-created_at");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _secretKey);
+
+            using var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            JsonElement array;
+            if (root.ValueKind == JsonValueKind.Array)
+            {
+                array = root;
+            }
+            else if (root.TryGetProperty("data", out var data) && data.ValueKind == JsonValueKind.Array)
+            {
+                array = data;
+            }
+            else
+            {
+                break;
+            }
+
+            int count = 0;
+            foreach (var user in array.EnumerateArray())
+            {
+                // JsonElement tro vao memory cua doc - phai clone de su dung sau khi doc disposed.
+                users.Add(user.Clone());
+                count++;
+            }
+
+            if (count < limit) break;
+            offset += limit;
+            if (offset > 10_000)
+            {
+                _logger.LogWarning("Da lay {Count} user, dung lai de tranh vong lap vo han.", offset);
+                break;
+            }
+        }
+
+        return users;
+    }
 }

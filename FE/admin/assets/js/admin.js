@@ -234,6 +234,7 @@ function renderUsers() {
     ${renderViewHeader(
       "Quản lý tài khoản",
       "Tìm theo tên, số điện thoại hoặc email. Đổi vai trò hoặc khóa tài khoản.",
+      '<button type="button" class="admin-action-button" data-admin-action="sync-clerk">Đồng bộ Clerk</button>',
     )}
     <section class="activity-panel">
       ${renderUsersTable(users)}
@@ -751,10 +752,29 @@ function exportReport() {
   createToast("Đã xuất báo cáo JSON.", "success");
 }
 
+async function syncClerkUsers() {
+  if (!window.confirm("Đồng bộ tài khoản từ Clerk về database?\nThao tác này kéo toàn bộ user trên Clerk và upsert vào dbo.NguoiDung.")) {
+    return;
+  }
+
+  createToast("Đang đồng bộ Clerk...");
+  try {
+    const result = await apiRequest("/webhooks/clerk/sync", { method: "POST" });
+    const msg = `Đã đồng bộ ${result.synced}/${result.totalFromClerk} tài khoản.`
+      + (result.failed > 0 ? ` Lỗi: ${result.failed}.` : "");
+    createToast(msg, result.failed > 0 ? "warning" : "success");
+    await loadAdminData();
+    renderCurrentView();
+  } catch (error) {
+    createToast(`Đồng bộ thất bại: ${error.message}`, "error");
+  }
+}
+
 function handleAdminAction(action) {
   const actions = {
     reload: reloadData,
     "export-report": exportReport,
+    "sync-clerk": syncClerkUsers,
     help: () => createToast("Liên hệ team backend nếu cần hỗ trợ."),
     messages: () => createToast("Bạn chưa có tin nhắn quản trị mới."),
     notifications: () => {

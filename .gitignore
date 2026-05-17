@@ -19,3 +19,7 @@ FE/shared/config/api-config.js
 # .NET build output
 **/bin/
 **/obj/
+
+# .NET local secrets (Secret Key, Webhook Secret, DB password).
+# Tao file BACKEND/admin/appsettings.Local.json theo huong dan trong README.md.
+appsettings.Local.json

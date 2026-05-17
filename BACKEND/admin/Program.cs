@@ -6,6 +6,13 @@ using MyPuppy.Admin.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load appsettings.Local.json (gitignore) — chua secret key, webhook secret, DB password.
+// File nay khong bat buoc co; neu khong co thi backend chay voi config rong.
+builder.Configuration.AddJsonFile(
+    "appsettings.Local.json",
+    optional: true,
+    reloadOnChange: true);
+
 // Cho phep override port qua env var ADMIN_PORT (giu tuong thich voi setup cu).
 var adminPort = builder.Configuration["ADMIN_PORT"]
     ?? Environment.GetEnvironmentVariable("ADMIN_PORT");
@@ -43,6 +50,8 @@ builder.Services.AddSingleton<SystemService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<StaffService>();
 builder.Services.AddSingleton<ReportService>();
+builder.Services.AddSingleton<ClerkWebhookService>();
+builder.Services.AddSingleton<AuthSyncService>();
 builder.Services.AddHttpClient<ClerkClient>();
 
 var app = builder.Build();

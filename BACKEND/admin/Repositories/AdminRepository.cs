@@ -165,6 +165,59 @@ public class AdminRepository
     }
 
     /* =========================================================
+       WEBHOOK SYNC (Clerk -> SQL Server)
+       Idempotent upsert + delete cho dbo.NguoiDung
+       ========================================================= */
+
+    public async Task UpsertUserFromWebhookAsync(
+        string clerkUserId,
+        string fullName,
+        string email,
+        string phone,
+        string? role,
+        bool isActive,
+        DateTime? createdAt)
+    {
+        const string sql = @"
+            MERGE dbo.NguoiDung AS target
+            USING (SELECT @id AS MaNguoiDungClerk) AS src
+                ON target.MaNguoiDungClerk = src.MaNguoiDungClerk
+            WHEN MATCHED THEN
+                UPDATE SET
+                    HoVaTen = @fullName,
+                    Email = @email,
+                    SoDienThoai = @phone,
+                    VaiTro = COALESCE(@role, target.VaiTro),
+                    TrangThaiHoatDong = @isActive
+            WHEN NOT MATCHED THEN
+                INSERT (MaNguoiDungClerk, HoVaTen, Email, SoDienThoai, VaiTro, TrangThaiHoatDong, NgayTao)
+                VALUES (@id, @fullName, @email, @phone, COALESCE(@role, 'Customer'), @isActive, ISNULL(@createdAt, SYSUTCDATETIME()));";
+
+        var parameters = new DynamicParameters();
+        parameters.Add("id", clerkUserId);
+        parameters.Add("fullName", fullName ?? string.Empty);
+        parameters.Add("email", email ?? string.Empty);
+        parameters.Add("phone", phone ?? string.Empty);
+        parameters.Add("role", role == null ? null : ToDatabaseRole(role));
+        parameters.Add("isActive", isActive);
+        parameters.Add("createdAt", createdAt);
+
+        using var conn = CreateConnection();
+        await conn.ExecuteAsync(sql, parameters);
+    }
+
+    public async Task DeleteUserByClerkIdAsync(string clerkUserId)
+    {
+        // Xoa profile staff truoc neu co (FK), roi xoa user.
+        const string sql = @"
+            DELETE FROM dbo.HoSoNhanVien WHERE MaNhanVienClerk = @id;
+            DELETE FROM dbo.NguoiDung WHERE MaNguoiDungClerk = @id;";
+
+        using var conn = CreateConnection();
+        await conn.ExecuteAsync(sql, new { id = clerkUserId });
+    }
+
+    /* =========================================================
        STAFF
        ========================================================= */
 

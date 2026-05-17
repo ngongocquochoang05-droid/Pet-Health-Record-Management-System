@@ -211,6 +211,53 @@
     sessionStorage.removeItem("mypuppy_redirect_after_auth");
   }
 
+  function getPrimaryPhone(user) {
+    return (
+      user?.primaryPhoneNumber?.phoneNumber ||
+      user?.phoneNumbers?.[0]?.phoneNumber ||
+      ""
+    );
+  }
+
+  function getApiBase() {
+    return (window.MyPuppyAdminApiBase || "http://localhost:4000/api/admin").replace(/\/$/, "");
+  }
+
+  // Goi backend de sync user vao dbo.NguoiDung. Idempotent — goi nhieu lan
+  // khong tao trung. Khong block luong dang nhap neu backend chua chay.
+  function syncUserToBackend(user) {
+    if (!user?.id) return Promise.resolve();
+
+    const cacheKey = `mypuppy_synced_${user.id}`;
+    if (sessionStorage.getItem(cacheKey) === "true") {
+      return Promise.resolve();
+    }
+
+    const payload = {
+      clerkUserId: user.id,
+      fullName: getDisplayName(user),
+      email: getPrimaryEmail(user),
+      phone: getPrimaryPhone(user),
+      role: getUserRole(user),
+    };
+
+    return fetch(`${getApiBase()}/auth/sync`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => {
+        if (response.ok) {
+          sessionStorage.setItem(cacheKey, "true");
+        } else {
+          console.warn("MyPuppy: backend tu choi sync user, status", response.status);
+        }
+      })
+      .catch((error) => {
+        console.warn("MyPuppy: khong sync duoc user vao backend (backend co the chua chay).", error);
+      });
+  }
+
   function rememberSession(user) {
     const role = getUserRole(user);
     const name = getDisplayName(user);
@@ -232,6 +279,9 @@
     if (role === "admin") {
       sessionStorage.setItem("mypuppy_admin_logged_in", "true");
     }
+
+    // Fire-and-forget sync vao DB.
+    syncUserToBackend(user);
 
     return { role, name };
   }

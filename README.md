@@ -32,7 +32,8 @@ Web app đặt lịch và chăm sóc thú cưng. Frontend tĩnh (HTML/CSS/JS), b
 │   ├── admin/               # ASP.NET Core API (đã chạy được)
 │   │   ├── MyPuppy.Admin.csproj
 │   │   ├── Program.cs
-│   │   ├── appsettings.json # Connection string + Clerk Secret Key
+│   │   ├── appsettings.json        # Public config (logging, CORS) - commit
+│   │   ├── appsettings.Local.json  # Secret + DB password - GITIGNORE
 │   │   ├── Controllers/
 │   │   ├── Services/
 │   │   ├── Repositories/
@@ -73,15 +74,20 @@ cp .env.example .env
 # sửa .env, dán Clerk Publishable Key + Frontend API URL
 npm run setup
 
-# 2. Cấu hình SQL Server cho backend admin
-# Mở BACKEND/admin/appsettings.json, chỉnh connection string nếu khác:
+# 2. Tạo appsettings.Local.json cho backend admin (file này gitignore)
+# Tạo file BACKEND/admin/appsettings.Local.json với nội dung:
+#
+# {
+#   "Clerk": {
+#     "SecretKey": "sk_test_...",         (tùy chọn - cho session revoke)
+#     "WebhookSecret": "whsec_..."        (tùy chọn - cho webhook real-time)
+#   },
 #   "ConnectionStrings": {
-#     "PetHealth": "Server=127.0.0.1,1433;Database=PetHealth;User Id=...;Password=...;TrustServerCertificate=True;"
+#     "PetHealth": "Server=127.0.0.1,1433;Database=PetHealth;User Id=mypuppy_user;Password=YOUR_PASSWORD;TrustServerCertificate=True;Encrypt=False;"
 #   }
-
-# 3. (Tùy chọn) Bật Clerk session revoke khi khóa user
-# Trong BACKEND/admin/appsettings.json, đặt Clerk:SecretKey:
-#   "Clerk": { "SecretKey": "sk_test_..." }
+# }
+#
+# Lấy SecretKey/WebhookSecret tại Clerk Dashboard → API Keys / Webhooks.
 ```
 
 ## Cách Chạy
@@ -139,11 +145,11 @@ GET    /api/admin/reports/summary
   ```
   Role hợp lệ: `customer`, `staff`, `admin`.
 
-**Backend session revoke:** đặt `Clerk:SecretKey` trong `BACKEND/admin/appsettings.json`. Lấy ở Clerk Dashboard → API Keys → Secret keys. Để trống thì khóa user chỉ update DB, không revoke session ngay.
+**Backend session revoke:** đặt `Clerk:SecretKey` trong `BACKEND/admin/appsettings.Local.json` (file gitignore). Lấy ở Clerk Dashboard → API Keys → Secret keys. Để trống thì khóa user chỉ update DB, không revoke session ngay.
 
 ## SQL Server
 
-- Database: `PetHealth`. Backend admin đọc connection string từ `BACKEND/admin/appsettings.json`.
+- Database: `PetHealth`. Backend admin đọc connection string từ `BACKEND/admin/appsettings.Local.json` (file này gitignore — không commit secret).
 - Recommend dùng SQL Server Authentication (tạo SQL Login).
 - Test kết nối nhanh: chạy backend admin (`cd BACKEND/admin && dotnet run`) rồi gọi `http://localhost:4000/api/admin/health`.
 - Script SQL hỗ trợ tạo dev login: `BACKEND/shared/database/create-dev-login.sql`.
