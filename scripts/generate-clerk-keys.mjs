@@ -1,6 +1,6 @@
 // Sinh FE/shared/auth/clerk-keys.js tu bien moi truong khi build/deploy.
 //
-// Local dev: doc tu .env.local o root project (file da gitignore).
+// Local dev: doc tu .env o root project (file da gitignore).
 // Vercel: dat 2 env vars CLERK_PUBLISHABLE_KEY va CLERK_FRONTEND_API_URL
 //         trong Project Settings -> Environment Variables. Vercel se chay
 //         buildCommand "node scripts/generate-clerk-keys.mjs" theo vercel.json.
@@ -13,9 +13,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
 const targetPath = resolve(projectRoot, "FE/shared/auth/clerk-keys.js");
 const apiConfigPath = resolve(projectRoot, "FE/shared/config/api-config.js");
-const envLocalPath = resolve(projectRoot, ".env.local");
+const envPath = resolve(projectRoot, ".env");
 
-function loadEnvLocal(filePath) {
+function loadEnvFile(filePath) {
   if (!existsSync(filePath)) {
     return;
   }
@@ -52,7 +52,7 @@ function loadEnvLocal(filePath) {
   }
 }
 
-loadEnvLocal(envLocalPath);
+loadEnvFile(envPath);
 
 const publishableKey = process.env.CLERK_PUBLISHABLE_KEY;
 const frontendApiUrl = process.env.CLERK_FRONTEND_API_URL;
@@ -62,13 +62,13 @@ if (!publishableKey || !frontendApiUrl) {
     "[generate-clerk-keys] Thieu CLERK_PUBLISHABLE_KEY hoac CLERK_FRONTEND_API_URL.",
   );
   console.error(
-    "[generate-clerk-keys] Tao file .env.local o root tu .env.local.example va dien key.",
+    "[generate-clerk-keys] Tao file .env o root tu .env.example va dien key.",
   );
   process.exit(1);
 }
 
 const fileContent = `// File auto-generated boi scripts/generate-clerk-keys.mjs.
-// Khong sua tay. Dat key tai .env.local hoac env vars tren server.
+// Khong sua tay. Dat key tai .env hoac env vars tren server.
 
 window.MyPuppyClerkKeys = {
   publishableKey: ${JSON.stringify(publishableKey)},

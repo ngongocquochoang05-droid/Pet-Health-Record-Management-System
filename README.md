@@ -16,10 +16,10 @@ Web app đặt lịch và chăm sóc thú cưng. Frontend tĩnh (HTML/CSS/JS), b
 ├── README.md                # File này
 ├── package.json             # Script setup frontend
 ├── vercel.json              # Cấu hình deploy Vercel
-├── .env.local.example       # Template env cho Clerk Publishable Key
+├── .env.example       # Template env cho Clerk Publishable Key
 ├── .vscode/                 # Task tự bật backend khi mở folder
 ├── scripts/
-│   └── generate-clerk-keys.mjs   # Sinh clerk-keys.js + api-config.js từ .env.local
+│   └── generate-clerk-keys.mjs   # Sinh clerk-keys.js + api-config.js từ .env
 │
 ├── BACKEND/                 # API server
 │   ├── package.json
@@ -85,8 +85,8 @@ npm install
 cd ..
 
 # 2. Tạo file env cho Clerk Publishable Key
-cp .env.local.example .env.local
-# sửa .env.local, dán Clerk Publishable Key + Frontend API URL
+cp .env.example .env
+# sửa .env, dán Clerk Publishable Key + Frontend API URL
 
 # 3. Sinh file clerk-keys.js + api-config.js cho frontend
 npm run setup
@@ -142,7 +142,7 @@ GET    /api/admin/reports/summary
 ## Clerk Auth
 
 - Cấu hình Clerk dùng chung: `FE/shared/auth/clerk-config.js`.
-- Publishable Key đọc từ `.env.local` (gitignore). Chạy `npm run setup` mỗi khi đổi key.
+- Publishable Key đọc từ `.env` (gitignore). Chạy `npm run setup` mỗi khi đổi key.
 - **Chỉ dùng Publishable Key ở frontend.** Không đưa Secret Key vào HTML/CSS/JS.
 - Trang đăng nhập: `FE/customer/pages/auth/dang-nhap.html`.
 - Trang đăng ký: `FE/customer/pages/auth/dang-ky.html`.
