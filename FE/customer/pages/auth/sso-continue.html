@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPuppy | Google Sign Up</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+  <div id="clerk-captcha" style="display:flex;justify-content:center;padding:24px;"></div>
+  <script src="../../../shared/auth/clerk-keys.js"></script>
+  <script src="../../../shared/auth/clerk-config.js"></script>
+  <script>
+    (async function () {
+      function loginUrl(status) {
+        const baseUrl = window.MyPuppyAuth.routes.login();
+        const separator = baseUrl.includes("?") ? "&" : "?";
+        return `${baseUrl}${separator}oauth=${encodeURIComponent(status)}`;
+      }
+
+      try {
+        const clerk = await window.MyPuppyAuth.loadClerk();
+        const signUp = clerk.client?.signUp;
+
+        if (signUp?.status === "missing_requirements") {
+          const updatePayload = {};
+
+          if (signUp.missingFields?.includes("first_name")) {
+            updatePayload.firstName = "Khach";
+          }
+
+          if (signUp.missingFields?.includes("last_name")) {
+            updatePayload.lastName = "Hang";
+          }
+
+          if (Object.keys(updatePayload).length > 0) {
+            await signUp.update(updatePayload);
+          }
+        }
+
+        const createdSessionId = signUp?.createdSessionId || clerk.client?.signIn?.createdSessionId;
+
+        if (createdSessionId) {
+          await clerk.setActive({ session: createdSessionId });
+        }
+
+        window.location.replace(window.MyPuppyAuth.appPath("customer/pages/auth/auth-complete.html"));
+      } catch (error) {
+        console.error("OAuth continue failed:", error);
+        sessionStorage.removeItem("mypuppy_redirect_after_auth");
+        window.location.replace(loginUrl("error"));
+      }
+    })();
+  </script>
+</body>
+</html>

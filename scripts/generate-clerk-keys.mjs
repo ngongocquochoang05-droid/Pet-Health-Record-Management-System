@@ -1,4 +1,4 @@
-// Sinh FRONTEND/shared/auth/clerk-keys.js tu bien moi truong khi build/deploy.
+// Sinh FE/shared/auth/clerk-keys.js tu bien moi truong khi build/deploy.
 //
 // Local dev: doc tu .env.local o root project (file da gitignore).
 // Vercel: dat 2 env vars CLERK_PUBLISHABLE_KEY va CLERK_FRONTEND_API_URL
@@ -11,8 +11,8 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
-const targetPath = resolve(projectRoot, "FRONTEND/shared/auth/clerk-keys.js");
-const apiConfigPath = resolve(projectRoot, "FRONTEND/shared/config/api-config.js");
+const targetPath = resolve(projectRoot, "FE/shared/auth/clerk-keys.js");
+const apiConfigPath = resolve(projectRoot, "FE/shared/config/api-config.js");
 const envLocalPath = resolve(projectRoot, ".env.local");
 
 function loadEnvLocal(filePath) {

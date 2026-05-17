@@ -4,7 +4,7 @@
   "private": true,
   "description": "Static HTML, CSS and JavaScript frontend for MyPuppy.",
   "scripts": {
-    "start": "echo Open FRONTEND/customer/index.html in your browser",
+    "start": "echo Open FE/customer/index.html in your browser",
     "setup": "node scripts/generate-clerk-keys.mjs"
   }
 }

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPuppy | Đặt Lịch Chăm Sóc Thú Cưng</title>
+  <meta name="description" content="Đặt lịch dịch vụ chăm sóc thú cưng nhanh chóng và trực quan cùng MyPuppy.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/frontend-ui.css">
+</head>
+<body class="frontend-page--subpage text-slate-900">
+  <main class="relative overflow-hidden">
+    <section class="relative min-h-[52vh] overflow-hidden">
+      <div class="absolute inset-0 bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1800&q=80');"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-slate-950/82 via-slate-900/62 to-slate-950/78"></div>
+      <div class="relative z-10 px-4 pt-6 md:px-8">
+        <div class="mx-auto max-w-7xl">
+          <header class="flex items-center justify-between gap-4">
+            <a href="../index.html" class="petcare-logo hero-fade" aria-label="MyPuppy Premium">
+              <span class="petcare-logo__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="7.2" cy="7.1" r="2.05"></circle>
+                  <circle cx="12" cy="5.7" r="1.9"></circle>
+                  <circle cx="16.7" cy="7.4" r="2.05"></circle>
+                  <circle cx="18.1" cy="12.2" r="1.8"></circle>
+                  <path d="M12.1 19.7c-1.2 0-2.1-.44-2.86-1.06-.54-.43-.97-.7-1.63-.7-1.46 0-2.63-1.14-2.63-2.7 0-2.9 2.5-5.62 5.54-5.62 3.85 0 7.12 3.08 7.12 6.2 0 2.22-1.64 3.9-3.88 3.9-.84 0-1.38-.24-1.97-.62-.23-.15-.44-.25-.69-.25Z"></path>
+                </svg>
+              </span>
+              <span class="petcare-logo__copy">
+                <span class="petcare-logo__wordmark">MyPuppy</span>
+                <span class="petcare-logo__tag">Premium</span>
+              </span>
+            </a>
+            <nav class="hero-glass-soft-light hero-fade-delay nav-stagger hidden rounded-full border border-white/15 px-3 py-2 text-white shadow-glass lg:flex">
+              <a href="../index.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Trang chủ</a>
+              <a href="dich-vu.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Dịch vụ</a>
+              <a href="dat-lich.html" class="rounded-full bg-white px-5 py-2.5 font-semibold text-slate-950">Đặt lịch</a>
+              <a href="phu-kien.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Phụ kiện</a>
+              <a href="danh-gia.html" class="px-5 py-2.5 font-medium text-white/80 transition hover:text-sky-300">Đánh giá</a>
+            </nav>
+            <div class="hero-fade-delay flex items-center gap-3">
+              <a href="ho-so.html"
+                data-auth-customer
+                class="hidden rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-lg backdrop-blur-md transition hover:bg-white/15"
+                >
+                Xin chào,
+                <span data-customer-name>Khách hàng</span>
+              </a>
+              <a
+                href="auth/dang-nhap.html"
+                data-guest-only
+                class="inline-flex items-center gap-3 rounded-full bg-white px-5 py-3 font-semibold text-slate-950 shadow-lg transition hover:bg-sky-50"
+                >
+                <svg class="h-5 w-5 text-slate-950/85" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M16.5 19a4.5 4.5 0 0 0-9 0"></path>
+                  <circle cx="12" cy="11" r="3.5"></circle>
+                </svg>
+                <span>Đăng nhập</span>
+              </a>
+            </div>
+          </header>
+          <div class="py-20 text-center text-white md:py-28">
+            <p class="hero-fade text-sm font-semibold uppercase tracking-[0.45em] text-sky-300">Đặt lịch trực tuyến</p>
+            <h1 class="hero-fade-delay mt-6 text-5xl font-bold tracking-tight md:text-6xl">Đặt lịch nhanh cùng MyPuppy</h1>
+            <p class="hero-fade-delay-2 mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/78">
+              Quy trình rõ ràng, giao diện dễ dùng và xác nhận nhanh giúp bạn chủ động hơn trong việc chăm sóc thú cưng.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white px-4 py-24 md:px-8">
+      <div class="mx-auto max-w-6xl rounded-[2.75rem] border border-sky-100 bg-white px-6 py-14 shadow-[0_25px_80px_rgba(15,23,42,0.12)] md:px-10">
+        <div class="grid gap-8 xl:grid-cols-[1.05fr_1fr]">
+          <div class="reveal rounded-[2rem] bg-slate-50 p-8 md:p-10">
+            <p class="text-sm font-bold uppercase tracking-[0.45em] text-sky-600">Đặt lịch nhanh</p>
+            <h2 class="mt-5 text-4xl font-bold leading-tight text-slate-900 md:text-5xl">Trải nghiệm đặt lịch rõ ràng và chuyên nghiệp</h2>
+            <p class="mt-6 text-lg leading-8 text-slate-600">
+              Từ lựa chọn dịch vụ đến xác nhận thông tin, mọi bước đều được sắp xếp logic để bạn thao tác nhanh và chính xác.
+            </p>
+            <div class="mt-8 grid gap-4 sm:grid-cols-2">
+              <label class="rounded-2xl border border-slate-200 bg-white px-5 py-4">
+                <span class="text-xs font-bold uppercase tracking-[0.3em] text-sky-600">Dịch vụ</span>
+                <select class="mt-3 w-full bg-transparent text-lg font-semibold text-slate-900 outline-none">
+                  <option>Spa</option>
+                  <option>Grooming</option>
+                  <option>Khách sạn thú cưng</option>
+                </select>
+              </label>
+              <label class="rounded-2xl border border-slate-200 bg-white px-5 py-4">
+                <span class="text-xs font-bold uppercase tracking-[0.3em] text-sky-600">Thú cưng</span>
+                <select class="mt-3 w-full bg-transparent text-lg font-semibold text-slate-900 outline-none">
+                  <option>Chó nhỏ</option>
+                  <option>Chó lớn</option>
+                  <option>Mèo</option>
+                </select>
+              </label>
+              <label class="rounded-2xl border border-slate-200 bg-white px-5 py-4 sm:col-span-2">
+                <span class="text-xs font-bold uppercase tracking-[0.3em] text-sky-600">Ngày mong muốn</span>
+                <input type="date" class="mt-3 w-full bg-transparent text-lg font-semibold text-slate-900 outline-none">
+              </label>
+            </div>
+            <button class="mt-8 inline-flex items-center justify-center rounded-full bg-slate-950 px-8 py-4 text-lg font-semibold text-white transition hover:bg-slate-800">
+              Gửi yêu cầu đặt lịch
+            </button>
+          </div>
+
+          <div class="reveal rounded-[2rem] border border-sky-100 bg-white p-8 shadow-[0_20px_50px_rgba(15,23,42,0.08)] md:p-10">
+            <p class="text-sm font-bold uppercase tracking-[0.45em] text-sky-600">Quy trình 4 bước</p>
+            <div class="mt-8 space-y-5">
+              <article class="flex gap-4 rounded-2xl bg-sky-50 px-5 py-5">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky-500 font-bold text-white">1</div>
+                <div><h3 class="text-xl font-bold text-slate-900">Chọn dịch vụ</h3><p class="mt-2 text-base leading-7 text-slate-600">Chọn gói chăm sóc phù hợp với nhu cầu và giống thú cưng.</p></div>
+              </article>
+              <article class="flex gap-4 rounded-2xl bg-slate-50 px-5 py-5">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-900 font-bold text-white">2</div>
+                <div><h3 class="text-xl font-bold text-slate-900">Điền thông tin</h3><p class="mt-2 text-base leading-7 text-slate-600">Cung cấp thông tin về thú cưng, thời gian và các lưu ý quan trọng.</p></div>
+              </article>
+              <article class="flex gap-4 rounded-2xl bg-sky-50 px-5 py-5">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky-500 font-bold text-white">3</div>
+                <div><h3 class="text-xl font-bold text-slate-900">Xác nhận nhanh</h3><p class="mt-2 text-base leading-7 text-slate-600">Hệ thống hiển thị rõ ràng để bạn kiểm tra trước khi gửi yêu cầu.</p></div>
+              </article>
+              <article class="flex gap-4 rounded-2xl bg-slate-50 px-5 py-5">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-900 font-bold text-white">4</div>
+                <div><h3 class="text-xl font-bold text-slate-900">MyPuppy tiếp nhận</h3><p class="mt-2 text-base leading-7 text-slate-600">Đội ngũ vận hành xác nhận và sắp xếp khung giờ phù hợp cho bạn.</p></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="../assets/js/shared/reveal.js"></script>
+  <script src="../../shared/auth/clerk-keys.js"></script>
+  <script src="../../shared/auth/clerk-config.js"></script>
+  <script src="../assets/js/auth/customer-auth.js"></script>
+</body>
+</html>

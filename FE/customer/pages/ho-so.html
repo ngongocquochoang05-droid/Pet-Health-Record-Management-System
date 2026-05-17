@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>MyPuppy | Hồ sơ của tôi</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/frontend-ui.css" />
+</head>
+
+<body class="frontend-page--subpage min-h-screen bg-[#fffaf3] text-slate-900">
+  <main class="flex min-h-screen items-center justify-center px-4 py-10">
+    <section class="profile-card w-full max-w-md rounded-[2rem]">
+      <div class="flex items-start gap-4 border-b border-orange-100 pb-6">
+        <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#ffedd5] text-3xl">
+          👤
+        </div>
+
+        <div class="space-y-2">
+          <h1 class="profile-header-name">
+  Xin chào,
+  <span class="profile-customer-name" data-customer-name>
+    Khách hàng
+  </span>
+</h1>
+
+        </div>
+      </div>
+
+      <div class="mt-6 space-y-4">
+        <a href="#" class="profile-item">
+          <div class="profile-icon">✏️</div>
+          <div>
+            <p class="profile-title">Chỉnh sửa hồ sơ</p>
+            <p class="profile-subtitle">Cập nhật thông tin cá nhân và hồ sơ thú cưng</p>
+          </div>
+        </a>
+
+        <a href="../index.html" class="profile-item">
+          <div class="profile-icon">←</div>
+          <div>
+            <p class="profile-title">Quay lại trang chủ</p>
+            <p class="profile-subtitle">Trở về giao diện chính của MyPuppy</p>
+          </div>
+        </a>
+
+        <button
+          data-customer-logout
+          data-logout-target="../index.html"
+          type="button"
+          class="profile-item w-full text-left"
+        >
+          <div class="profile-icon">🚪</div>
+          <div>
+            <p class="profile-title">Đăng xuất</p>
+            <p class="profile-subtitle">Thoát khỏi tài khoản khách hàng</p>
+          </div>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script src="../../shared/auth/clerk-keys.js"></script>
+  <script src="../../shared/auth/clerk-config.js"></script>
+  <script src="../assets/js/auth/customer-auth.js"></script>
+</body>
+</html>

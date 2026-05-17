@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPuppy | Google OAuth</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+  <div id="clerk-captcha" style="display:flex;justify-content:center;padding:24px;"></div>
+  <script src="../../../shared/auth/clerk-keys.js"></script>
+  <script src="../../../shared/auth/clerk-config.js"></script>
+  <script>
+    (async function () {
+      function loginUrl(status) {
+        const baseUrl = window.MyPuppyAuth.routes.login();
+        const separator = baseUrl.includes("?") ? "&" : "?";
+        return status ? `${baseUrl}${separator}oauth=${encodeURIComponent(status)}` : baseUrl;
+      }
+
+      try {
+        if (!window.MyPuppyAuth) {
+          window.location.replace("dang-nhap.html?oauth=error");
+          return;
+        }
+
+        const clerk = await window.MyPuppyAuth.loadClerk();
+        const completeUrl = window.MyPuppyAuth.appPath("customer/pages/auth/auth-complete.html");
+
+        sessionStorage.setItem("mypuppy_redirect_after_auth", String(Date.now()));
+
+        await clerk.handleRedirectCallback({
+          signInUrl: loginUrl(),
+          signUpUrl: loginUrl(),
+          continueSignInUrl: completeUrl,
+          continueSignUpUrl: window.MyPuppyAuth.appPath("customer/pages/auth/sso-continue.html"),
+          redirectUrlComplete: completeUrl,
+          transferable: true,
+        });
+
+        window.location.replace(completeUrl);
+      } catch (error) {
+        console.error("Google OAuth callback failed:", error);
+        sessionStorage.removeItem("mypuppy_redirect_after_auth");
+        window.location.replace(loginUrl("error"));
+      }
+    })();
+  </script>
+</body>
+</html>
