@@ -59,13 +59,13 @@
       </a>
 
       <nav class="mt-10 flex-1 space-y-2">
-        <a href="index.html" class="nav-item nav-item--active">Tổng quan ca làm</a>
-        <a href="pages/customers.html" class="nav-item">Quản lý khách hàng</a>
-        <a href="pages/appointments.html" class="nav-item">Quản lý lịch hẹn</a>
-        <a href="pages/pets.html" class="nav-item">Hồ sơ thú cưng</a>
-        <a href="pages/services.html" class="nav-item">Đăng ký dịch vụ</a>
-        <a href="pages/payments.html" class="nav-item">Kiểm tra thanh toán</a>
-        <a href="pages/products.html" class="nav-item">Quản lý sản phẩm</a>
+        <a href="#overview" class="nav-item nav-item--active" data-staff-view="overview">Tổng quan ca làm</a>
+        <a href="#customers" class="nav-item" data-staff-view="customers">Quản lý khách hàng</a>
+        <a href="#appointments" class="nav-item" data-staff-view="appointments">Quản lý lịch hẹn</a>
+        <a href="#pets" class="nav-item" data-staff-view="pets">Hồ sơ thú cưng</a>
+        <a href="#services" class="nav-item" data-staff-view="services">Đăng ký dịch vụ</a>
+        <a href="#payments" class="nav-item" data-staff-view="payments">Kiểm tra thanh toán</a>
+        <a href="#products" class="nav-item" data-staff-view="products">Quản lý sản phẩm</a>
       </nav>
 
       <button id="staff-logout" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-center font-semibold text-white/80 transition hover:bg-white/10 hover:text-white">
@@ -114,7 +114,7 @@
         </div>
       </header>
 
-      <div class="space-y-8 p-6 md:p-8">
+      <div id="staff-content" class="space-y-8 p-6 md:p-8">
         <section class="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           <article class="metric-card">
             <p>Lịch hẹn hôm nay</p>
