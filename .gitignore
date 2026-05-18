@@ -1,25 +1,13 @@
 Thumbs.db
 .DS_Store
 *.log
-
-# Build outputs
 dist/
 out/
 /node_modules
 **/bin/
 **/obj/
-
-# .NET local secrets (Clerk Secret Key, Webhook Secret, DB password).
-# Tao file BACKEND/admin/appsettings.Local.json theo huong dan trong README.md.
+.env
+.env.*
 appsettings.Local.json
 
-# === GHI CHU CHO TEAM ===
-# Truoc khi bao cao/deploy that, mo file nay va xoa dau "#" o cac dong
-# duoi day de giau key lai (cong them rotate keys tren Clerk Dashboard).
-#
-# .env
-# .env.*
-# !.env.example
-# !*.env.example
-# FE/shared/auth/clerk-keys.js
-# FE/shared/config/api-config.js
+

@@ -44,8 +44,8 @@
       "command": "powershell",
       "args": [
         "-NoProfile",
-        "-Command",
-        "Get-NetTCPConnection -LocalPort 4000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }; Write-Output 'Admin backend stopped (if running).'"
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/.vscode/stop-admin.ps1"
       ],
       "presentation": {
         "echo": true,

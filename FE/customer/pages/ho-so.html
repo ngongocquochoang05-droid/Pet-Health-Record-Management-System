@@ -8,6 +8,7 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="../assets/css/frontend-ui.css" />
+  <script src="../assets/js/auth/auth-boot.js"></script>
 </head>
 
 <body class="frontend-page--subpage min-h-screen bg-[#fffaf3] text-slate-900">
@@ -26,6 +27,15 @@
   </span>
 </h1>
 
+        </div>
+      </div>
+
+      <div class="mt-5 rounded-[1.5rem] border border-sky-100 bg-white p-5 shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-[0.28em] text-sky-600">Thông tin tài khoản</p>
+        <div class="mt-4 space-y-2 text-sm text-slate-600">
+          <p>Email: <strong class="text-slate-950" data-profile-email>Đang tải...</strong></p>
+          <p>Số điện thoại: <strong class="text-slate-950" data-profile-phone>Chưa cập nhật</strong></p>
+          <p>Trạng thái: <strong class="text-slate-950" data-profile-status>Đang đồng bộ</strong></p>
         </div>
       </div>
 
@@ -62,8 +72,10 @@
     </section>
   </main>
 
+  <script src="../../shared/config/api-config.js"></script>
   <script src="../../shared/auth/clerk-keys.js"></script>
   <script src="../../shared/auth/clerk-config.js"></script>
   <script src="../assets/js/auth/customer-auth.js"></script>
+  <script src="../assets/js/pages/profile.js"></script>
 </body>
 </html>

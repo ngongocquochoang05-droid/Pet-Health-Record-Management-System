@@ -1,7 +1,7 @@
 const revealElements = document.querySelectorAll(".reveal");
 const heroParallax = document.getElementById("hero-parallax");
 
-if (revealElements.length) {
+if (revealElements.length && "IntersectionObserver" in window) {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -12,6 +12,8 @@ if (revealElements.length) {
   }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
 
   revealElements.forEach((element) => observer.observe(element));
+} else {
+  revealElements.forEach((element) => element.classList.add("is-visible"));
 }
 
 function updateScrollEffects() {
@@ -28,10 +30,14 @@ if ("scrollRestoration" in history) {
 
 window.addEventListener("load", () => {
   if (window.location.hash) {
-    history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+    const target = document.querySelector(window.location.hash);
+    if (target) {
+      target.scrollIntoView({ behavior: "auto", block: "start" });
+    }
+  } else {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }
 
-  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   updateScrollEffects();
 });
 

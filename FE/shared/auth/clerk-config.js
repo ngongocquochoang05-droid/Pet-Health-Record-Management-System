@@ -203,6 +203,8 @@
   }
 
   function clearDemoSessions() {
+    sessionStorage.removeItem("mypuppy_auth_id");
+    sessionStorage.removeItem("mypuppy_customer_id");
     sessionStorage.removeItem("mypuppy_customer_logged_in");
     sessionStorage.removeItem("mypuppy_customer_name");
     sessionStorage.removeItem("mypuppy_staff_logged_in");
@@ -223,6 +225,10 @@
     return (window.MyPuppyAdminApiBase || "http://localhost:4000/api/admin").replace(/\/$/, "");
   }
 
+  function getCustomerApiBase() {
+    return (window.MyPuppyCustomerApiBase || "http://localhost:4002/api/customer").replace(/\/$/, "");
+  }
+
   // Goi backend de sync user vao dbo.NguoiDung. Idempotent — goi nhieu lan
   // khong tao trung. Khong block luong dang nhap neu backend chua chay.
   function syncUserToBackend(user) {
@@ -241,7 +247,7 @@
       role: getUserRole(user),
     };
 
-    return fetch(`${getApiBase()}/auth/sync`, {
+    const adminSync = fetch(`${getApiBase()}/auth/sync`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -256,6 +262,23 @@
       .catch((error) => {
         console.warn("MyPuppy: khong sync duoc user vao backend (backend co the chua chay).", error);
       });
+
+    const customerSync = payload.role === "customer"
+      ? fetch(`${getCustomerApiBase()}/profile`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            clerkUserId: payload.clerkUserId,
+            fullName: payload.fullName,
+            email: payload.email,
+            phone: payload.phone,
+          }),
+        }).catch((error) => {
+          console.warn("MyPuppy: khong sync duoc customer profile vao customer backend.", error);
+        })
+      : Promise.resolve();
+
+    return Promise.allSettled([adminSync, customerSync]);
   }
 
   function rememberSession(user) {
@@ -263,10 +286,12 @@
     const name = getDisplayName(user);
 
     clearDemoSessions();
+    sessionStorage.setItem("mypuppy_auth_id", user.id || "");
     sessionStorage.setItem("mypuppy_auth_role", role);
     sessionStorage.setItem("mypuppy_auth_name", name);
 
     if (role === "customer") {
+      sessionStorage.setItem("mypuppy_customer_id", user.id || "");
       sessionStorage.setItem("mypuppy_customer_logged_in", "true");
       sessionStorage.setItem("mypuppy_customer_name", name);
     }
@@ -301,6 +326,8 @@
     } finally {
       clearDemoSessions();
       sessionStorage.removeItem("mypuppy_auth_role");
+      sessionStorage.removeItem("mypuppy_auth_id");
+      sessionStorage.removeItem("mypuppy_customer_id");
       sessionStorage.removeItem("mypuppy_auth_name");
       window.location.href = returnPath || routes.customer();
     }

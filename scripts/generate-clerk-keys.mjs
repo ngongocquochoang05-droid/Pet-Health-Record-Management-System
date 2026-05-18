@@ -81,13 +81,15 @@ writeFileSync(targetPath, fileContent, "utf8");
 console.log("[generate-clerk-keys] Da ghi", targetPath);
 
 // API base URL cho frontend admin/staff goi backend.
-// Local: mac dinh http://localhost:4000/api/admin.
-// Vercel/production: set ADMIN_API_BASE trong Project Settings (vd: ngrok URL hoac backend cloud).
+// Local: mac dinh http://localhost:4000/api/admin va http://localhost:4001/staff.
+// Production: set ADMIN_API_BASE va STAFF_API_BASE trong env vars.
 const adminApiBase = process.env.ADMIN_API_BASE || "http://localhost:4000/api/admin";
+const staffApiBase = process.env.STAFF_API_BASE || "http://localhost:4001/staff";
 const apiConfigContent = `// File auto-generated boi scripts/generate-clerk-keys.mjs.
-// Khong sua tay. Dat URL backend tai bien moi truong ADMIN_API_BASE.
+// Khong sua tay. Dat URL backend tai bien moi truong ADMIN_API_BASE va STAFF_API_BASE.
 
 window.MyPuppyAdminApiBase = ${JSON.stringify(adminApiBase)};
+window.MyPuppyStaffApiBase = ${JSON.stringify(staffApiBase)};
 `;
 
 mkdirSync(dirname(apiConfigPath), { recursive: true });

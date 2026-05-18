@@ -200,7 +200,8 @@ public class AdminRepository
         parameters.Add("phone", phone ?? string.Empty);
         parameters.Add("role", role == null ? null : ToDatabaseRole(role));
         parameters.Add("isActive", isActive);
-        parameters.Add("createdAt", createdAt);
+        // Quan trong: ep DbType.DateTime de SQL Server khong coerce nvarchar -> datetime.
+        parameters.Add("createdAt", createdAt, DbType.DateTime);
 
         using var conn = CreateConnection();
         await conn.ExecuteAsync(sql, parameters);
@@ -490,6 +491,35 @@ public class AdminRepository
 
         using var conn = CreateConnection();
         return await conn.QueryAsync<TopServiceDto>(sql, new { limit });
+    }
+
+    /// <summary>
+    /// Public endpoint cho frontend customer: tat ca dich vu kem mo ta, thoi gian
+    /// va xep hang theo luot dat lich.
+    /// </summary>
+    public async Task<IEnumerable<PublicServiceDto>> GetPublicServicesAsync()
+    {
+        const string sql = @"
+            WITH ServiceStats AS (
+                SELECT
+                    d.MaDichVu AS Id,
+                    ISNULL(d.TenDichVu, '') AS Name,
+                    ISNULL(d.MoTa, '') AS Description,
+                    ISNULL(d.GiaTien, 0) AS Price,
+                    ISNULL(d.ThoiGianThucHien, 60) AS Duration,
+                    COUNT(lh.MaLichHen) AS BookingCount
+                FROM dbo.DichVu d
+                LEFT JOIN dbo.LichHen lh ON lh.MaDichVu = d.MaDichVu
+                GROUP BY d.MaDichVu, d.TenDichVu, d.MoTa, d.GiaTien, d.ThoiGianThucHien
+            )
+            SELECT
+                Id, Name, Description, Price, Duration, BookingCount,
+                CAST(ROW_NUMBER() OVER (ORDER BY BookingCount DESC, Name) AS INT) AS Ranking
+            FROM ServiceStats
+            ORDER BY Ranking;";
+
+        using var conn = CreateConnection();
+        return await conn.QueryAsync<PublicServiceDto>(sql);
     }
 
     public async Task<IEnumerable<TopProductDto>> GetTopProductsAsync(int limit = 5)
