@@ -1,0 +1,59 @@
+@model MyPuppy.Admin.Models.UserDto
+
+@{
+    // Các hằng số để dễ đọc code hơn
+    var ROLE_LABELS = new Dictionary<string, string>
+    {
+        { "admin", "Quản trị" },
+        { "staff", "Nhân viên" },
+        { "customer", "Khách hàng" }
+    };
+
+    var STATUS_LABELS = new Dictionary<string, string>
+    {
+        { "active", "Đang hoạt động" },
+        { "locked", "Đã khóa" }
+    };
+
+    var STATUS_CLASS = new Dictionary<string, string>
+    {
+        { "active", "status status--done" },
+        { "locked", "status status--danger" }
+    };
+
+    var isLocked = Model.Status == "locked";
+}
+
+<tr>
+    <td>@Model.FullName</td>
+    <td>@Model.Email</td>
+    <td>@Model.Phone</td>
+    <td>
+        @* Dùng form để khi thay đổi select, nó sẽ POST về server *@
+        <form asp-controller="Admin" asp-action="ChangeRole" method="post" class="role-change-form">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <select name="role" class="admin-select" onchange="this.form.submit()">
+                @foreach (var role in ROLE_LABELS)
+                {
+                    <option value="@role.Key" selected="@(Model.Role == role.Key)">@role.Value</option>
+                }
+            </select>
+            @* Anti-forgery token để bảo mật *@
+            @Html.AntiForgeryToken()
+        </form>
+    </td>
+    <td>
+        <span class="@(STATUS_CLASS.GetValueOrDefault(Model.Status, "status"))">
+            @STATUS_LABELS.GetValueOrDefault(Model.Status, Model.Status)
+        </span>
+    </td>
+    <td>
+        <div class="inline-actions">
+            <form asp-controller="Admin" asp-action="@(isLocked ? "UnlockUser" : "LockUser")" method="post" class="user-action-form">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="admin-button-link">@(isLocked ? "Mở khóa" : "Khóa")</button>
+                @Html.AntiForgeryToken()
+            </form>
+        </div>
+    </td>
+</tr>

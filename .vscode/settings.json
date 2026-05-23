@@ -1,6 +1,6 @@
 {
   "task.allowAutomaticTasks": "on",
-  "liveServer.settings.port": 5500,
+  "liveServer.settings.port": 5501,
   "liveServer.settings.root": "/FE",
   "liveServer.settings.NoBrowser": false
 }

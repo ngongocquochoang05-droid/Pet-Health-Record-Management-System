@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@ViewData["Title"] - MyPuppy Admin</title>
+  <meta name="description" content="Bảng điều khiển quản trị MyPuppy dành cho admin.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+  @* Sử dụng đường dẫn tương đối từ wwwroot *@
+  <link rel="stylesheet" href="~/css/admin.css">
+</head>
+<body class="admin-dashboard min-h-screen">
+  <main class="dashboard-frame">
+    <aside class="admin-sidebar">
+      <a asp-controller="Admin" asp-action="Dashboard" class="admin-logo" aria-label="Trang quản trị MyPuppy">
+        <span class="admin-logo__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="7.2" cy="7.1" r="2.05"></circle>
+            <circle cx="12" cy="5.7" r="1.9"></circle>
+            <circle cx="16.7" cy="7.4" r="2.05"></circle>
+            <circle cx="18.1" cy="12.2" r="1.8"></circle>
+            <path d="M12.1 19.7c-1.2 0-2.1-.44-2.86-1.06-.54-.43-.97-.7-1.63-.7-1.46 0-2.63-1.14-2.63-2.7 0-2.9 2.5-5.62 5.54-5.62 3.85 0 7.12 3.08 7.12 6.2 0 2.22-1.64 3.9-3.88 3.9-.84 0-1.38-.24-1.97-.62-.23-.15-.44-.25-.69-.25Z"></path>
+          </svg>
+        </span>
+        <span>
+          <strong>MyPuppy</strong>
+          <small>Trung tâm quản trị</small>
+        </span>
+      </a>
+
+      <label class="admin-search">
+        <span class="sr-only">Tìm kiếm</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
+        <input id="admin-global-search" type="search" placeholder="Tìm nhanh">
+        <kbd>⌘ K</kbd>
+      </label>
+
+      <nav class="admin-nav" aria-label="Điều hướng quản trị">
+        <p>Danh mục chính</p>
+        <a asp-controller="Admin" asp-action="Dashboard" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6" height="6" rx="1.5"></rect><rect x="14" y="4" width="6" height="6" rx="1.5"></rect><rect x="4" y="14" width="6" height="6" rx="1.5"></rect><rect x="14" y="14" width="6" height="6" rx="1.5"></rect></svg>
+          Dashboard
+        </a>
+        <a asp-controller="Admin" asp-action="Users" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"></circle><path d="M3.8 19a5.2 5.2 0 0 1 10.4 0"></path><path d="M16 11a3 3 0 1 0 0-6"></path><path d="M17 15.5a4.7 4.7 0 0 1 3.2 3.5"></path></svg>
+          Tài khoản người dùng
+        </a>
+        <a asp-controller="Admin" asp-action="Staff" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16.5 19a4.5 4.5 0 0 0-9 0"></path><circle cx="12" cy="9" r="3.5"></circle><path d="M19 8v5M21.5 10.5h-5"></path></svg>
+          Quản lý nhân viên
+        </a>
+        <a asp-controller="Admin" asp-action="Reports" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19V5"></path><path d="M5 19h14"></path><path d="M9 15v-4"></path><path d="M13 15V8"></path><path d="M17 15v-6"></path></svg>
+          Báo cáo thống kê
+        </a>
+      </nav>
+
+      <nav class="admin-nav admin-nav--secondary" aria-label="Thiết lập quản trị">
+        <p>Thiết lập chung</p>
+        <a href="#" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"></path><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.05.05a2 2 0 1 1-2.83 2.83l-.05-.05A1.7 1.7 0 0 0 15 19.36a1.7 1.7 0 0 0-1 .54 1.7 1.7 0 0 0-.42 1.1V21a2 2 0 1 1-4 0v-.08a1.7 1.7 0 0 0-1.42-1.67 1.7 1.7 0 0 0-1.43.45l-.05.05a2 2 0 1 1-2.83-2.83l.05-.05A1.7 1.7 0 0 0 4.64 15 1.7 1.7 0 0 0 4.1 14a1.7 1.7 0 0 0-1.1-.42H3a2 2 0 1 1 0-4h.08A1.7 1.7 0 0 0 4.75 8.2a1.7 1.7 0 0 0-.45-1.43l-.05-.05a2 2 0 1 1 2.83-2.83l.05.05A1.7 1.7 0 0 0 9 4.64c.39-.16.73-.42 1-.74.28-.34.42-.72.42-1.1V2.7a2 2 0 1 1 4 0v.08c0 .38.14.76.42 1.1.27.32.61.58 1 .74a1.7 1.7 0 0 0 1.87-.34l.05-.05a2 2 0 1 1 2.83 2.83l-.05.05A1.7 1.7 0 0 0 19.36 9c.16.39.42.73.74 1 .34.28.72.42 1.1.42h.08a2 2 0 1 1 0 4h-.08c-.38 0-.76.14-1.1.42-.32.27-.58.61-.74 1Z"></path></svg>
+          Cài đặt
+        </a>
+        <a href="#" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M9.4 9a2.8 2.8 0 1 1 4.4 2.3c-.93.6-1.8 1.2-1.8 2.7"></path><path d="M12 17.5h.01"></path></svg>
+          Hỗ trợ
+        </a>
+        <a href="#" id="admin-logout" class="nav-link nav-link--logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 17 15 12l-5-5"></path><path d="M15 12H3"></path><path d="M14 4h4a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-4"></path></svg>
+          Đăng xuất
+        </a>
+      </nav>
+
+      <section class="sidebar-card">
+        <strong>MyPuppy Chuyên nghiệp</strong>
+        <span>Giám sát tài khoản, nhân viên và báo cáo vận hành trong một khu quản trị riêng.</span>
+        <button type="button">Xuất báo cáo</button>
+      </section>
+    </aside>
+
+    <section class="admin-main">
+      <header class="admin-header">
+        <div class="topbar-welcome">
+          <h1>Chào mừng trở lại, Quản trị viên <span aria-hidden="true">👋</span></h1>
+        </div>
+
+        <div class="topbar-actions" aria-label="Công cụ quản trị nhanh">
+          <button type="button" class="topbar-icon" aria-label="Trợ giúp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M9.5 9a2.6 2.6 0 1 1 4.1 2.12c-.86.56-1.6 1.1-1.6 2.38"></path>
+              <path d="M12 17.4h.01"></path>
+            </svg>
+          </button>
+          <button type="button" class="topbar-icon" aria-label="Tin nhắn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="4" y="5" width="16" height="14" rx="4"></rect>
+              <path d="m5.5 7 6.5 5 6.5-5"></path>
+            </svg>
+          </button>
+          <button type="button" class="topbar-icon notification-dot" aria-label="Thông báo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M18 9a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+              <path d="M10 21h4"></path>
+            </svg>
+          </button>
+
+          <div class="topbar-profile" role="button" tabindex="0">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120&q=80" alt="Ảnh đại diện quản trị viên">
+            <span>
+              <strong>Quản trị MyPuppy</strong>
+              <small>admin@mypuppy.vn</small>
+            </span>
+            <svg class="profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="m8 9 4-4 4 4"></path>
+              <path d="m16 15-4 4-4-4"></path>
+            </svg>
+          </div>
+        </div>
+      </header>
+
+      <div id="admin-content" class="admin-content">
+        @RenderBody()
+      </div>
+    </section>
+  </main>
+
+  @* Các file JS sẽ được đặt ở cuối body *@
+  <script src="~/js/admin.js"></script>
+
+  @* Hiển thị Toast message từ TempData (sau khi redirect từ một action POST) *@
+  @if (TempData["ToastMessage"] != null)
+  {
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Hàm createToast được định nghĩa trong admin.js
+        createToast('@Html.Raw(TempData["ToastMessage"])', '@(TempData["ToastType"] ?? "info")');
+      });
+    </script>
+  }
+
+  @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

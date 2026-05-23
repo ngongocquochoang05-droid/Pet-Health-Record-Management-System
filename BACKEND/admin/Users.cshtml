@@ -1,0 +1,36 @@
+@* Định nghĩa model mà View này nhận vào *@
+@model IEnumerable<MyPuppy.Admin.Models.UserDto>
+
+<section class="admin-view-header">
+  <div>
+    <p>Đang kết nối backend & SQL Server</p>
+    <h2>@ViewData["Title"]</h2>
+    <span>Tìm theo tên, số điện thoại hoặc email. Đổi vai trò hoặc khóa tài khoản.</span>
+  </div>
+  <div class="admin-view-actions">
+      <button type="button" class="admin-action-button">Đồng bộ Clerk</button>
+  </div>
+</section>
+
+<section class="activity-panel">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Họ tên</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Vai trò</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var user in Model)
+          {
+              @Html.Partial("_UserRow", user)
+          }
+        </tbody>
+      </table>
+    </div>
+</section>
