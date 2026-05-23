@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MyPuppy.Admin")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+535b7ec20427c18031043197f86e3841b696a3f2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e4d192cf9ad50bb892a56d28283962adb080276")]
 [assembly: System.Reflection.AssemblyProductAttribute("MyPuppy.Admin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MyPuppy.Admin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
