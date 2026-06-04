@@ -1,4 +1,0 @@
-{
-  "buildCommand": "node scripts/generate-clerk-keys.mjs",
-  "outputDirectory": "FE"
-}
