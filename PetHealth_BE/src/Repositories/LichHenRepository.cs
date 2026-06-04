@@ -152,9 +152,13 @@ public class LichHenRepository
             transaction);
         var id = await connection.ExecuteScalarAsync<int>(
             """
+            DECLARE @CreatedAppointments TABLE (MaLichHen int);
+
             INSERT INTO LichHen (MaKhachHang, MaThuCung, MaNhanVien, MaDichVu, NgayHen, GioBatDau, GioKetThuc, TrangThai, GhiChu, NgayTao)
-            OUTPUT INSERTED.MaLichHen
+            OUTPUT INSERTED.MaLichHen INTO @CreatedAppointments
             VALUES (@MaNguoiDung, @MaThuCung, @MaNhanVien, @MaDichVu, @NgayHen, @GioHen, DATEADD(minute, @DurationMinutes, CAST(@GioHen AS time)), @TrangThai, @GhiChu, @CreatedAt);
+
+            SELECT MaLichHen FROM @CreatedAppointments;
             """,
             new
             {

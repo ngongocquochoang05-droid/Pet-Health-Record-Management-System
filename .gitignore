@@ -10,3 +10,5 @@ PetHealth_BE/.api.log
 PetHealth_BE/.api.err.log
 PetHealth_FE/.vite.log
 PetHealth_FE/.vite.err.log
+PetHealth_BE/*.mdf
+PetHealth_BE/*.ldf

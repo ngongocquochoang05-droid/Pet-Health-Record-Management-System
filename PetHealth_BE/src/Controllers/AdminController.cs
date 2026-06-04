@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Text;
 using PetHealth_BE.src.DTOs;
 using PetHealth_BE.src.Models;
@@ -13,6 +14,8 @@ namespace PetHealth_BE.src.Controllers;
 [Route("api/[controller]")]
 public class AdminController : ControllerBase
 {
+    private const int ReportCsvColumnCount = 9;
+
     private readonly NguoiDungRepository _userRepository;
     private readonly DichVuRepository _serviceRepository;
     private readonly LichHenRepository _bookingRepository;
@@ -211,29 +214,71 @@ public class AdminController : ControllerBase
     {
         var report = await _bookingRepository.GetReportSummaryAsync();
         var builder = new StringBuilder();
-        builder.AppendLine("Loai,Ngay,Nam,Thang,MaDichVu,TenDichVu,SoLuong");
+        AppendCsvRow(
+            builder,
+            "Nhóm báo cáo",
+            "Thời gian",
+            "Mã",
+            "Tên",
+            "Số lịch",
+            "Lịch hoàn thành",
+            "Doanh thu (VND)",
+            "Tổng khách hàng",
+            "Khách mới");
 
         foreach (var item in report.LichTheoNgay)
         {
-            builder.AppendLine($"Ngay,{EscapeCsv(item.NgayHen)},,,,{EscapeCsv(string.Empty)},{item.SoLich}");
+            var displayDate = DateTime.TryParseExact(
+                item.NgayHen,
+                "yyyy-MM-dd",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out var date)
+                ? $"Ngày {date:dd/MM/yyyy}"
+                : $"Ngày {item.NgayHen}";
+            AppendCsvRow(builder, "Lịch theo ngày", displayDate, string.Empty, string.Empty, item.SoLich);
         }
 
         foreach (var item in report.LichTheoThang)
         {
-            builder.AppendLine($"Thang,,{item.Nam},{item.Thang},,,{item.SoLich}");
+            AppendCsvRow(builder, "Lịch theo tháng", $"Tháng {item.Thang:D2}/{item.Nam}", string.Empty, string.Empty, item.SoLich);
         }
 
         foreach (var item in report.TopDichVu)
         {
-            builder.AppendLine($"TopDichVu,,,,{item.MaDichVu},{EscapeCsv(item.TenDichVu)},{item.SoLanDat}");
-        }
-        builder.AppendLine($"TongQuan,,,,,,DoanhThu={report.TongDoanhThu};TongKhach={report.TongKhachHang};KhachMoi={report.KhachHangMoiThangNay}");
-        foreach (var item in report.HieuSuatNhanVien)
-        {
-            builder.AppendLine($"NhanVien,,,,{EscapeCsv(item.MaNhanVien)},{EscapeCsv(item.HoVaTen)},{item.SoLichHoanThanh}");
+            AppendCsvRow(builder, "Dịch vụ phổ biến", string.Empty, item.MaDichVu, item.TenDichVu, item.SoLanDat);
         }
 
-        return File(Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(builder.ToString())).ToArray(), "text/csv", "pethealth-report.csv");
+        AppendCsvRow(
+            builder,
+            "Tổng quan",
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            string.Empty,
+            report.TongDoanhThu,
+            report.TongKhachHang,
+            report.KhachHangMoiThangNay);
+
+        foreach (var item in report.HieuSuatNhanVien)
+        {
+            AppendCsvRow(
+                builder,
+                "Hiệu suất nhân viên",
+                string.Empty,
+                item.MaNhanVien,
+                item.HoVaTen,
+                item.SoLichDuocGiao,
+                item.SoLichHoanThanh,
+                item.DoanhThu);
+        }
+
+        var fileName = $"pethealth-report-{DateTime.Now:yyyyMMdd-HHmm}.csv";
+        return File(
+            Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(builder.ToString())).ToArray(),
+            "text/csv; charset=utf-8",
+            fileName);
     }
 
     private static string? ValidateService(ServiceUpsertDto request)
@@ -254,6 +299,15 @@ public class AdminController : ControllerBase
         }
 
         return null;
+    }
+
+    private static void AppendCsvRow(StringBuilder builder, params object?[] values)
+    {
+        var cells = values
+            .Concat(Enumerable.Repeat<object?>(null, Math.Max(0, ReportCsvColumnCount - values.Length)))
+            .Take(ReportCsvColumnCount)
+            .Select(value => EscapeCsv(value?.ToString() ?? string.Empty));
+        builder.AppendLine(string.Join(',', cells));
     }
 
     private static string EscapeCsv(string value)

@@ -2177,47 +2177,67 @@ tbody tr {
 @media (max-width: 1100px) {
   .app-shell.role-admin,
   .app-shell.role-staff {
-    display: block;
-    padding: 18px;
+    grid-template-columns: 224px minmax(0, 1fr);
+    gap: 0;
   }
 
   .role-admin .topbar,
   .role-staff .topbar {
-    position: sticky;
-    top: 12px;
-    width: 100%;
-    height: auto;
-    flex-direction: row;
-    flex-wrap: wrap;
-    border: 1px solid rgba(21, 94, 239, 0.12);
-    border-radius: 8px;
+    width: 224px;
+    padding: 22px 14px;
   }
 
   .role-admin .nav-links,
   .role-staff .nav-links {
-    display: flex;
-    width: auto;
-    flex: 1 1 420px;
+    display: grid;
+    width: 100%;
   }
 
-  .role-admin .session-block,
-  .role-staff .session-block,
-  .role-admin .brand-block,
-  .role-staff .brand-block {
-    width: auto;
-    margin-top: 0;
-    padding: 0;
-    border: 0;
+  .role-admin .brand-block h1,
+  .role-staff .brand-block h1 {
+    font-size: 1.02rem;
   }
 
   .role-admin .main-content,
   .role-staff .main-content {
-    padding: 24px 0 0;
+    padding: 24px 20px;
+  }
+
+  .role-public .topbar,
+  .role-customer .topbar {
+    grid-template-areas:
+      "brand session"
+      "nav nav";
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px 18px;
+  }
+
+  .role-public .brand-block,
+  .role-customer .brand-block {
+    grid-area: brand;
+    min-width: 0;
+  }
+
+  .role-public .nav-links,
+  .role-customer .nav-links {
+    grid-area: nav;
+    justify-content: flex-start;
+    padding: 5px;
+    scrollbar-color: rgba(21, 94, 239, 0.32) transparent;
+  }
+
+  .role-public .session-block,
+  .role-customer .session-block {
+    grid-area: session;
+  }
+
+  .role-public .nav-link,
+  .role-customer .nav-link {
+    flex: 0 0 auto;
   }
 }
 
 @media (max-width: 980px) {
-  .topbar,
   .hero-panel,
   .page-grid,
   .split-grid,
@@ -2226,25 +2246,6 @@ tbody tr {
   .featured-services,
   .hero-stats {
     grid-template-columns: 1fr;
-  }
-
-  .topbar {
-    position: static;
-  }
-
-  .role-public .topbar,
-  .role-customer .topbar {
-    grid-template-columns: 1fr;
-  }
-
-  .session-block,
-  .nav-links {
-    justify-content: flex-start;
-  }
-
-  .role-public .nav-links,
-  .role-customer .nav-links {
-    justify-content: flex-start;
   }
 
   .hero-panel h2 {
@@ -2276,6 +2277,80 @@ tbody tr {
   }
 }
 
+@media (max-width: 760px) {
+  .app-shell.role-admin,
+  .app-shell.role-staff {
+    display: block;
+    padding: 14px;
+  }
+
+  .role-admin .topbar,
+  .role-staff .topbar {
+    position: static;
+    width: 100%;
+    height: auto;
+    gap: 14px;
+    padding: 16px;
+    border: 1px solid rgba(21, 94, 239, 0.12);
+    border-radius: 8px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .role-admin .brand-block,
+  .role-staff .brand-block {
+    padding-bottom: 14px;
+  }
+
+  .role-admin .nav-links,
+  .role-staff .nav-links {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+
+  .role-admin .nav-section-title,
+  .role-staff .nav-section-title {
+    display: none;
+  }
+
+  .role-admin .nav-link,
+  .role-staff .nav-link {
+    flex: 0 0 auto;
+    width: auto;
+    min-height: 40px;
+    padding: 9px 12px;
+    white-space: nowrap;
+  }
+
+  .role-admin .session-block,
+  .role-staff .session-block {
+    margin-top: 0;
+    padding: 12px;
+  }
+
+  .role-admin .main-content,
+  .role-staff .main-content {
+    padding: 18px 0 0;
+  }
+
+  .role-public .topbar,
+  .role-customer .topbar {
+    grid-template-areas:
+      "brand"
+      "nav"
+      "session";
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .role-public .session-block,
+  .role-customer .session-block {
+    justify-content: space-between;
+  }
+}
+
 @media (max-width: 640px) {
   .app-shell {
     padding: 14px;
@@ -2289,6 +2364,30 @@ tbody tr {
   .hero-panel,
   .content-panel {
     padding: 18px;
+  }
+
+  .brand-block h1,
+  .role-public .brand-block h1,
+  .role-customer .brand-block h1 {
+    font-size: 1rem;
+  }
+
+  .brand-mark,
+  .role-public .brand-mark,
+  .role-customer .brand-mark {
+    width: 40px;
+    height: 40px;
+  }
+
+  .session-name {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .service-picker__grid {
+    grid-template-columns: 1fr;
   }
 
   .auth-screen {
