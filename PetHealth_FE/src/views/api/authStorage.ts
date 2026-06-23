@@ -1,4 +1,4 @@
-﻿import type { AuthResponseDto } from '../models/auth';
+import type { AuthResponseDto } from '../types/auth';
 
 const STORAGE_KEY = 'pethealth_session';
 

@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRef } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Header } from './views/components/Header';
@@ -20,16 +20,16 @@ import { StaffPage } from './views/pages/StaffPage';
 import { StaffWorkPage } from './views/pages/StaffWorkPage';
 import { MedicalRecordsPage } from './views/pages/MedicalRecordsPage';
 import { NotificationsPage } from './views/pages/NotificationsPage';
-import { getCurrentUser } from './controllers/authApi';
-import { clearSession, getStoredSession } from './controllers/authStorage';
-import { getBookings } from './controllers/bookingApi';
-import { getPets } from './controllers/petApi';
-import { getServices } from './controllers/serviceApi';
-import { connectRealtime, type RealtimeChange, type RealtimeTopic } from './controllers/realtime';
-import type { AuthResponseDto } from './models/auth';
-import type { LichHenDto } from './models/booking';
-import type { ThuCungDto } from './models/pet';
-import type { DichVuDto } from './models/service';
+import { getCurrentUser } from './views/api/authApi';
+import { clearSession, getStoredSession } from './views/api/authStorage';
+import { getBookings } from './views/api/bookingApi';
+import { getPets } from './views/api/petApi';
+import { getServices } from './views/api/serviceApi';
+import { connectRealtime, type RealtimeChange, type RealtimeTopic } from './views/api/realtime';
+import type { AuthResponseDto } from './views/types/auth';
+import type { LichHenDto } from './views/types/booking';
+import type { ThuCungDto } from './views/types/pet';
+import type { DichVuDto } from './views/types/service';
 
 export default function App() {
   const location = useLocation();
@@ -147,26 +147,44 @@ export default function App() {
 
       <main className={isAuthPage ? 'auth-main-content' : 'main-content'}>
         <Routes key={realtimeVersion}>
-          <Route path="/" element={<HomePage bookings={bookings} pets={pets} services={services} session={session} />} />
+          <Route path="/" element={session ? <Navigate replace to={getRoleOverviewPath(session)} /> : <HomePage bookings={bookings} pets={pets} services={services} session={session} />} />
+          <Route path="/customer" element={<HomePage bookings={bookings} pets={pets} services={services} session={session} />} />
+          <Route path="/admin/overview" element={<HomePage bookings={bookings} pets={pets} services={services} session={session} />} />
+          <Route path="/staff/overview" element={<HomePage bookings={bookings} pets={pets} services={services} session={session} />} />
           <Route path="/services" element={<ServicesPage services={services} />} />
+          <Route path="/customer/services" element={<ServicesPage services={services} />} />
           <Route path="/auth" element={<AuthPage onAuthenticated={setSession} />} />
           <Route path="/auth/forgot-password" element={<AuthRecoveryPage mode="forgot-password" />} />
           <Route path="/auth/reset-password" element={<AuthRecoveryPage mode="reset-password" />} />
           <Route path="/auth/verify-email" element={<AuthRecoveryPage mode="verify-email" />} />
           <Route path="/auth/google-callback" element={<GoogleCallbackPage onAuthenticated={setSession} />} />
-          <Route path="/profile" element={<ProfilePage onPetsChanged={() => refreshPrivateData(session?.user.maNguoiDung ?? '')} onSessionChanged={setSession} pets={pets} session={session} />} />
+          <Route path="/profile" element={<Navigate replace to="/customer/profile" />} />
+          <Route path="/customer/profile" element={<ProfilePage onPetsChanged={() => refreshPrivateData(session?.user.maNguoiDung ?? '')} onSessionChanged={setSession} pets={pets} session={session} />} />
           <Route path="/reviews" element={<ReviewsPage bookings={bookings} session={session} />} />
-          <Route path="/billing" element={<BillingPage session={session} />} />
+          <Route path="/customer/reviews" element={<ReviewsPage bookings={bookings} session={session} />} />
+          <Route path="/billing" element={<Navigate replace to="/customer/billing" />} />
+          <Route path="/customer/billing" element={<BillingPage session={session} />} />
           <Route path="/advanced" element={<Navigate replace to="/" />} />
           <Route path="/customer/rewards" element={<CustomerRewardsPage bookings={bookings} session={session} />} />
           <Route path="/admin/system" element={<AdminSystemPage session={session} />} />
           <Route path="/staff/work" element={<StaffWorkPage session={session} />} />
-          <Route path="/operations" element={<OperationsPage session={session} />} />
-          <Route path="/medical-records" element={<MedicalRecordsPage bookings={bookings} session={session} />} />
-          <Route path="/notifications" element={<NotificationsPage session={session} />} />
-          <Route path="/pets" element={<Navigate replace to="/profile" />} />
+          <Route path="/operations" element={<Navigate replace to="/admin/operations" />} />
+          <Route path="/admin/operations" element={<OperationsPage session={session} />} />
+          <Route path="/medical-records" element={<Navigate replace to={getRoleScopedPath(session, 'medical-records')} />} />
+          <Route path="/customer/medical-records" element={<MedicalRecordsPage bookings={bookings} session={session} />} />
+          <Route path="/admin/medical-records" element={<MedicalRecordsPage bookings={bookings} session={session} />} />
+          <Route path="/staff/medical-records" element={<MedicalRecordsPage bookings={bookings} session={session} />} />
+          <Route path="/notifications" element={<Navigate replace to={getRoleScopedPath(session, 'notifications')} />} />
+          <Route path="/customer/notifications" element={<NotificationsPage session={session} />} />
+          <Route path="/admin/notifications" element={<NotificationsPage session={session} />} />
+          <Route path="/staff/notifications" element={<NotificationsPage session={session} />} />
+          <Route path="/pets" element={<Navigate replace to="/customer/profile" />} />
           <Route
             path="/booking"
+            element={<Navigate replace to="/customer/booking" />}
+          />
+          <Route
+            path="/customer/booking"
             element={
               <BookingPage
                 onBookingCreated={() => refreshPrivateData(session?.user.maNguoiDung ?? '')}
@@ -178,11 +196,16 @@ export default function App() {
           />
           <Route
             path="/appointments"
+            element={<Navigate replace to="/customer/appointments" />}
+          />
+          <Route
+            path="/customer/appointments"
             element={
               <AppointmentsPage
                 bookings={bookings}
                 onBookingsChanged={() => refreshPrivateData(session?.user.maNguoiDung ?? '')}
                 pets={pets}
+                session={session}
                 services={services}
               />
             }
@@ -198,20 +221,48 @@ export default function App() {
 
 const topicRoutes: Record<RealtimeTopic, string[]> = {
   admin: ['/admin', '/admin/system'],
-  billing: ['/billing', '/admin', '/operations'],
-  bookings: ['/', '/booking', '/appointments', '/admin', '/staff', '/staff/work', '/operations', '/medical-records'],
-  clinical: ['/medical-records', '/staff/work', '/profile'],
-  notifications: ['/notifications'],
-  pets: ['/', '/profile', '/booking', '/appointments', '/staff/work', '/medical-records'],
-  profile: ['/profile', '/admin'],
+  billing: ['/customer/billing', '/admin', '/admin/operations'],
+  bookings: ['/', '/customer', '/customer/booking', '/customer/appointments', '/admin', '/staff', '/staff/work', '/admin/operations', '/customer/medical-records', '/admin/medical-records', '/staff/medical-records'],
+  clinical: ['/customer/medical-records', '/admin/medical-records', '/staff/medical-records', '/staff/work', '/customer/profile'],
+  notifications: ['/customer/notifications', '/admin/notifications', '/staff/notifications'],
+  pets: ['/', '/customer', '/customer/profile', '/customer/booking', '/customer/appointments', '/staff/work', '/customer/medical-records', '/admin/medical-records', '/staff/medical-records'],
+  profile: ['/customer/profile', '/admin'],
   promotions: ['/', '/customer/rewards', '/admin/system'],
-  reminders: ['/operations', '/staff/work', '/admin/system'],
-  reviews: ['/reviews', '/admin/system'],
-  services: ['/', '/services', '/booking', '/admin'],
-  shifts: ['/staff', '/admin', '/operations'],
+  reminders: ['/admin/operations', '/staff/work', '/admin/system'],
+  reviews: ['/reviews', '/customer/reviews', '/admin/system'],
+  services: ['/', '/services', '/customer/services', '/customer/booking', '/admin'],
+  shifts: ['/staff', '/admin', '/admin/operations'],
   system: ['/admin/system']
 };
 
 function isTopicRelevantToRoute(topic: RealtimeTopic, pathname: string): boolean {
   return topicRoutes[topic].some((route) => route === '/' ? pathname === '/' : pathname.startsWith(route));
+}
+
+function getRoleOverviewPath(session: AuthResponseDto): string {
+  if (session.user.vaiTro === 'Admin') {
+    return '/admin/overview';
+  }
+
+  if (session.user.vaiTro === 'Staff') {
+    return '/staff/overview';
+  }
+
+  return '/customer';
+}
+
+function getRoleScopedPath(session: AuthResponseDto | null, page: 'medical-records' | 'notifications'): string {
+  if (!session) {
+    return '/auth';
+  }
+
+  if (session.user.vaiTro === 'Admin') {
+    return `/admin/${page}`;
+  }
+
+  if (session.user.vaiTro === 'Staff') {
+    return `/staff/${page}`;
+  }
+
+  return `/customer/${page}`;
 }

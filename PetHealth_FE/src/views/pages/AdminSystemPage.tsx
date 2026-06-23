@@ -1,8 +1,14 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { getApiErrorMessage } from '../../controllers/api';
-import { createReminder, getCustomerUsage, getDeposits, getReminders, issuePetQr, reviewDeposit } from '../../controllers/featureApi';
-import type { AuthResponseDto } from '../../models/auth';
-import type { CustomerUsageDto, DepositDto, PetQrDto, ReminderDto } from '../../models/features';
+import { getApiErrorMessage } from '../api/api';
+import { getBookings } from '../api/bookingApi';
+import { createReminder, getCustomerUsage, getDeposits, getReminders, issuePetQr, reviewDeposit } from '../api/featureApi';
+import { getAdminUsers } from '../api/managementApi';
+import { getPets } from '../api/petApi';
+import type { AuthResponseDto } from '../types/auth';
+import type { LichHenDto } from '../types/booking';
+import type { CustomerUsageDto, DepositDto, PetQrDto, ReminderDto } from '../types/features';
+import type { ThuCungDto } from '../types/pet';
+import type { NguoiDungDto } from '../types/user';
 
 interface AdminSystemPageProps {
   session: AuthResponseDto | null;
@@ -10,10 +16,17 @@ interface AdminSystemPageProps {
 
 export function AdminSystemPage({ session }: AdminSystemPageProps) {
   const [customers, setCustomers] = useState<CustomerUsageDto[]>([]);
+  const [customerAccounts, setCustomerAccounts] = useState<NguoiDungDto[]>([]);
+  const [customerPets, setCustomerPets] = useState<ThuCungDto[]>([]);
   const [deposits, setDeposits] = useState<DepositDto[]>([]);
   const [reminders, setReminders] = useState<ReminderDto[]>([]);
   const [qr, setQr] = useState<PetQrDto | null>(null);
-  const [petCode, setPetCode] = useState('');
+  const [selectedCustomerId, setSelectedCustomerId] = useState('');
+  const [selectedPetId, setSelectedPetId] = useState(0);
+  const [reminderCustomerId, setReminderCustomerId] = useState('');
+  const [reminderPets, setReminderPets] = useState<ThuCungDto[]>([]);
+  const [reminderPetId, setReminderPetId] = useState(0);
+  const [reminderBookings, setReminderBookings] = useState<LichHenDto[]>([]);
   const [reminderForm, setReminderForm] = useState({ maLichHen: 0, ngayTaiKham: '', noiDung: '' });
   const [message, setMessage] = useState('');
 
@@ -24,16 +37,47 @@ export function AdminSystemPage({ session }: AdminSystemPageProps) {
   }, [session]);
 
   async function refresh(): Promise<void> {
-    const [customerData, depositData, reminderData] = await Promise.all([getCustomerUsage(), getDeposits(), getReminders()]);
+    const [customerData, customerAccountData, depositData, reminderData] = await Promise.all([
+      getCustomerUsage(),
+      getAdminUsers('Customer'),
+      getDeposits(),
+      getReminders()
+    ]);
     setCustomers(customerData);
+    setCustomerAccounts(customerAccountData);
     setDeposits(depositData);
     setReminders(reminderData);
   }
 
+  async function handleCustomerChange(maNguoiDung: string): Promise<void> {
+    setSelectedCustomerId(maNguoiDung);
+    setSelectedPetId(0);
+    setQr(null);
+
+    if (!maNguoiDung) {
+      setCustomerPets([]);
+      return;
+    }
+
+    try {
+      const pets = await getPets(maNguoiDung);
+      setCustomerPets(pets);
+      setSelectedPetId(pets[0]?.maThuCung ?? 0);
+    } catch (error) {
+      setCustomerPets([]);
+      setMessage(getApiErrorMessage(error));
+    }
+  }
+
   async function handleIssueQr(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
+    if (!selectedPetId) {
+      setMessage('Vui lòng chọn khách hàng và thú cưng trước khi cấp QR.');
+      return;
+    }
+
     try {
-      const data = await issuePetQr(Number(petCode));
+      const data = await issuePetQr(selectedPetId);
       setQr(data);
       setMessage('Đã cấp mã QR và gửi email cho chủ thú cưng.');
     } catch (error) {
@@ -41,8 +85,39 @@ export function AdminSystemPage({ session }: AdminSystemPageProps) {
     }
   }
 
+  async function handleReminderCustomerChange(maNguoiDung: string): Promise<void> {
+    setReminderCustomerId(maNguoiDung);
+    setReminderPetId(0);
+    setReminderPets([]);
+    setReminderBookings([]);
+    setReminderForm((current) => ({ ...current, maLichHen: 0 }));
+
+    if (!maNguoiDung) {
+      return;
+    }
+
+    try {
+      const [pets, bookings] = await Promise.all([getPets(maNguoiDung), getBookings(maNguoiDung)]);
+      setReminderPets(pets);
+      setReminderBookings(bookings);
+      setReminderPetId(pets[0]?.maThuCung ?? 0);
+    } catch (error) {
+      setMessage(getApiErrorMessage(error));
+    }
+  }
+
+  function handleReminderPetChange(maThuCung: number): void {
+    setReminderPetId(maThuCung);
+    setReminderForm((current) => ({ ...current, maLichHen: 0 }));
+  }
+
   async function handleReminderSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
+    if (!reminderForm.maLichHen) {
+      setMessage('Vui lòng chọn lịch hẹn đã hoàn thành trước khi tạo nhắc lịch tái khám.');
+      return;
+    }
+
     try {
       await createReminder(reminderForm);
       setReminderForm({ maLichHen: 0, ngayTaiKham: '', noiDung: '' });
@@ -72,6 +147,10 @@ export function AdminSystemPage({ session }: AdminSystemPageProps) {
     return <section className="content-panel"><p className="empty-state">Chỉ tài khoản Admin mới truy cập màn hình này.</p></section>;
   }
 
+  const completedReminderBookings = reminderBookings.filter(
+    (booking) => booking.maThuCung === reminderPetId && booking.trangThai === 'Completed'
+  );
+
   return (
     <div className="page-grid">
       <section className="content-panel full-width">
@@ -97,15 +176,88 @@ export function AdminSystemPage({ session }: AdminSystemPageProps) {
       <section className="content-panel">
         <div className="section-head"><div><p className="eyebrow">QR thú cưng</p><h2>Cấp mã QR lần đầu</h2></div></div>
         <form className="form-grid" onSubmit={handleIssueQr}>
-          <label>Mã thú cưng<input value={petCode} onChange={(event) => setPetCode(event.target.value)} /></label>
-          <button className="primary-button" type="submit">Cấp QR</button>
+          <label>
+            Khách hàng
+            <select value={selectedCustomerId} onChange={(event) => void handleCustomerChange(event.target.value)}>
+              <option value="">Chọn khách hàng</option>
+              {customerAccounts.map((customer) => (
+                <option key={customer.maNguoiDung} value={customer.maNguoiDung}>
+                  {customer.hoVaTen} - {customer.email}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Thú cưng
+            <select
+              disabled={!selectedCustomerId || customerPets.length === 0}
+              value={selectedPetId}
+              onChange={(event) => setSelectedPetId(Number(event.target.value))}
+            >
+              <option value={0}>{selectedCustomerId ? 'Chọn thú cưng' : 'Chọn khách hàng trước'}</option>
+              {customerPets.map((pet) => (
+                <option key={pet.maThuCung} value={pet.maThuCung}>
+                  {pet.tenThuCung} - {pet.giong}
+                </option>
+              ))}
+            </select>
+          </label>
+          {selectedCustomerId && customerPets.length === 0 ? <p className="empty-state full-span">Khách hàng này chưa có hồ sơ thú cưng.</p> : null}
+          <button className="primary-button" disabled={!selectedPetId} type="submit">Cấp QR</button>
         </form>
         {qr?.qrCodeUrl ? <article className="list-card space-top"><div><strong>{qr.tenThuCung}</strong><p>{qr.maQr}</p></div><img alt="QR thú cưng" src={qr.qrCodeUrl} width={120} height={120} /></article> : null}
       </section>
 
       <section className="content-panel">
-        <div className="section-head"><div><p className="eyebrow">Tái khám</p><h2>Tạo nhắc lịch qua email</h2></div></div>
+        <div className="section-head"><div><p className="eyebrow">Tái khám</p><h2>Tạo nhắc lịch tái khám</h2></div></div>
         <form className="form-grid" onSubmit={handleReminderSubmit}>
+          <label>
+            Khách hàng
+            <select value={reminderCustomerId} onChange={(event) => void handleReminderCustomerChange(event.target.value)}>
+              <option value="">Chọn khách hàng</option>
+              {customerAccounts.map((customer) => (
+                <option key={customer.maNguoiDung} value={customer.maNguoiDung}>
+                  {customer.hoVaTen} - {customer.email}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Thú cưng
+            <select
+              disabled={!reminderCustomerId || reminderPets.length === 0}
+              value={reminderPetId}
+              onChange={(event) => handleReminderPetChange(Number(event.target.value))}
+            >
+              <option value={0}>{reminderCustomerId ? 'Chọn thú cưng' : 'Chọn khách hàng trước'}</option>
+              {reminderPets.map((pet) => (
+                <option key={pet.maThuCung} value={pet.maThuCung}>
+                  {pet.tenThuCung} - {pet.giong}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="full-span">
+            Lịch hẹn đã hoàn thành
+            <select
+              disabled={!reminderPetId || completedReminderBookings.length === 0}
+              value={reminderForm.maLichHen}
+              onChange={(event) => setReminderForm((current) => ({ ...current, maLichHen: Number(event.target.value) }))}
+            >
+              <option value={0}>{reminderPetId ? 'Chọn lịch hẹn' : 'Chọn thú cưng trước'}</option>
+              {completedReminderBookings.map((booking) => (
+                <option key={booking.maLichHen} value={booking.maLichHen}>
+                  #{booking.maLichHen} - {booking.tenDichVu} - {booking.ngayHen} {booking.gioHen}
+                </option>
+              ))}
+            </select>
+          </label>
+          {reminderPetId && completedReminderBookings.length === 0 ? <p className="empty-state full-span">Thú cưng này chưa có lịch hẹn đã hoàn thành.</p> : null}
+          <label>Ngày tái khám<input type="date" value={reminderForm.ngayTaiKham} onChange={(event) => setReminderForm((current) => ({ ...current, ngayTaiKham: event.target.value }))} /></label>
+          <label className="full-span">Nội dung<textarea rows={3} value={reminderForm.noiDung} onChange={(event) => setReminderForm((current) => ({ ...current, noiDung: event.target.value }))} /></label>
+          <button className="primary-button" disabled={!reminderForm.maLichHen} type="submit">Tạo nhắc lịch</button>
+        </form>
+        <form className="form-grid" style={{ display: 'none' }} onSubmit={handleReminderSubmit}>
           <label>Lịch hẹn<input type="number" value={reminderForm.maLichHen} onChange={(event) => setReminderForm((current) => ({ ...current, maLichHen: Number(event.target.value) }))} /></label>
           <label>Ngày tái khám<input type="date" value={reminderForm.ngayTaiKham} onChange={(event) => setReminderForm((current) => ({ ...current, ngayTaiKham: event.target.value }))} /></label>
           <label className="full-span">Nội dung<textarea rows={3} value={reminderForm.noiDung} onChange={(event) => setReminderForm((current) => ({ ...current, noiDung: event.target.value }))} /></label>

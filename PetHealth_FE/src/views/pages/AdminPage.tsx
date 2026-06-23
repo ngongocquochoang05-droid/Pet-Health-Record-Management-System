@@ -1,6 +1,6 @@
-﻿import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { StatusPill } from '../components/StatusPill';
-import { getApiErrorMessage } from '../../controllers/api';
+import { getApiErrorMessage } from '../api/api';
 import {
   createAdminService,
   deleteAdminService,
@@ -14,12 +14,12 @@ import {
   assignAdminAppointmentStaff,
   updateAdminService,
   updateUserRole
-} from '../../controllers/managementApi';
-import type { AuthResponseDto } from '../../models/auth';
-import { LICH_HEN_STATUS, type LichHenDto, type LichHenStatus } from '../../models/booking';
-import type { ReportSummaryDto, ServiceUpsertDto, StaffDto, UpdateUserRoleDto } from '../../models/management';
-import type { DichVuDto } from '../../models/service';
-import type { NguoiDungDto } from '../../models/user';
+} from '../api/managementApi';
+import type { AuthResponseDto } from '../types/auth';
+import { LICH_HEN_STATUS, type LichHenDto, type LichHenStatus } from '../types/booking';
+import type { ReportSummaryDto, ServiceUpsertDto, StaffDto, UpdateUserRoleDto } from '../types/management';
+import type { DichVuDto } from '../types/service';
+import type { NguoiDungDto } from '../types/user';
 
 interface AdminPageProps {
   session: AuthResponseDto | null;

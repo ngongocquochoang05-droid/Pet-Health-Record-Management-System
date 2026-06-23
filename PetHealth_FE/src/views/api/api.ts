@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
-import type { ApiResponse } from '../models/common';
-import type { AuthResponseDto } from '../models/auth';
+import type { ApiResponse } from '../types/common';
+import type { AuthResponseDto } from '../types/auth';
 import { clearSession, getStoredSession, saveSession } from './authStorage';
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
@@ -13,6 +13,10 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const session = getStoredSession();
   if (session?.accessToken) config.headers.Authorization = `Bearer ${session.accessToken}`;
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+    delete config.headers['content-type'];
+  }
   return config;
 });
 
@@ -56,3 +60,4 @@ export function getApiErrorMessage(error: unknown): string {
 }
 
 export default api;
+

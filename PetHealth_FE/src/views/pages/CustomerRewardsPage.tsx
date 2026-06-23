@@ -1,9 +1,9 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { getApiErrorMessage } from '../../controllers/api';
-import { claimLoyaltyVoucher, createBankTransferDeposit, getDeposits, uploadDepositReceipt } from '../../controllers/featureApi';
-import type { AuthResponseDto } from '../../models/auth';
-import type { LichHenDto } from '../../models/booking';
-import type { BankTransferInfoDto, DepositDto } from '../../models/features';
+import { getApiErrorMessage } from '../api/api';
+import { claimLoyaltyVoucher, createBankTransferDeposit, getDeposits, uploadDepositReceipt } from '../api/featureApi';
+import type { AuthResponseDto } from '../types/auth';
+import type { LichHenDto } from '../types/booking';
+import type { BankTransferInfoDto, DepositDto } from '../types/features';
 
 interface CustomerRewardsPageProps {
   session: AuthResponseDto | null;

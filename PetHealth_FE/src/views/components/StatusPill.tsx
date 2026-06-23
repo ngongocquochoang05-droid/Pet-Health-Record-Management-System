@@ -1,4 +1,4 @@
-﻿interface StatusPillProps {
+interface StatusPillProps {
   status: string;
 }
 

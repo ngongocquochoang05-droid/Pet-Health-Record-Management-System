@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import type { AuthResponseDto } from '../../models/auth';
+import type { AuthResponseDto } from '../types/auth';
 
 interface HeaderProps {
   session: AuthResponseDto | null;
@@ -7,69 +7,70 @@ interface HeaderProps {
 }
 
 const text = {
-  overview: 'T\u1ed5ng quan',
-  services: 'D\u1ecbch v\u1ee5',
-  reviews: '\u0110\u00e1nh gi\u00e1',
-  booking: '\u0110\u1eb7t l\u1ecbch',
-  appointments: 'L\u1ecbch h\u1eb9n',
-  billing: 'H\u00f3a \u0111\u01a1n',
-  rewards: '\u01afu \u0111\u00e3i/\u0110\u1eb7t c\u1ecdc',
-  profile: 'H\u1ed3 s\u01a1',
+  home: 'Trang chủ',
+  overview: 'Tổng quan',
+  services: 'Dịch vụ',
+  reviews: 'Đánh giá',
+  booking: 'Đặt lịch',
+  appointments: 'Lịch hẹn',
+  billing: 'Hóa đơn',
+  rewards: 'Ưu đãi/Đặt cọc',
+  profile: 'Hồ sơ',
   medical: 'Hồ sơ bệnh án',
   notifications: 'Thông báo',
-  admin: 'Qu\u1ea3n tr\u1ecb',
-  system: 'H\u1ec7 th\u1ed1ng',
-  operations: 'V\u1eadn h\u00e0nh',
-  staffSchedule: 'L\u1ecbch ph\u00e2n c\u00f4ng',
-  staffWork: 'C\u00f4ng vi\u1ec7c',
-  guest: 'Kh\u00e1ch truy c\u1eadp',
-  adminRole: 'Qu\u1ea3n tr\u1ecb vi\u00ean',
-  staffRole: 'Nh\u00e2n vi\u00ean',
-  customerRole: 'Kh\u00e1ch h\u00e0ng',
-  title: 'Qu\u1ea3n l\u00fd ph\u00f2ng kh\u00e1m th\u00fa c\u01b0ng',
-  nav: 'Ch\u1ee9c n\u0103ng',
-  logout: '\u0110\u0103ng xu\u1ea5t',
-  login: '\u0110\u0103ng nh\u1eadp',
-  aria: '\u0110i\u1ec1u h\u01b0\u1edbng ch\u00ednh'
+  admin: 'Quản trị',
+  system: 'Hệ thống',
+  operations: 'Vận hành',
+  staffSchedule: 'Lịch phân công',
+  staffWork: 'Công việc',
+  guest: 'Khách truy cập',
+  adminRole: 'Quản trị viên',
+  staffRole: 'Nhân viên',
+  customerRole: 'Khách hàng',
+  title: 'Quản lý phòng khám thú cưng',
+  nav: 'Chức năng',
+  logout: 'Đăng xuất',
+  login: 'Đăng nhập',
+  aria: 'Điều hướng chính'
 };
 
 const publicLinks = [
-  { to: '/', label: text.overview },
+  { to: '/', label: text.home },
   { to: '/services', label: text.services },
   { to: '/reviews', label: text.reviews }
 ];
 
 const customerLinks = [
-  { to: '/', label: text.overview },
-  { to: '/services', label: text.services },
-  { to: '/booking', label: text.booking },
-  { to: '/appointments', label: text.appointments },
-  { to: '/reviews', label: text.reviews },
-  { to: '/billing', label: text.billing },
+  { to: '/customer', label: text.overview },
+  { to: '/customer/services', label: text.services },
+  { to: '/customer/booking', label: text.booking },
+  { to: '/customer/appointments', label: text.appointments },
+  { to: '/customer/reviews', label: text.reviews },
+  { to: '/customer/billing', label: text.billing },
   { to: '/customer/rewards', label: text.rewards },
-  { to: '/profile', label: text.profile }
-  ,{ to: '/medical-records', label: text.medical }
-  ,{ to: '/notifications', label: text.notifications }
+  { to: '/customer/profile', label: text.profile },
+  { to: '/customer/medical-records', label: text.medical },
+  { to: '/customer/notifications', label: text.notifications }
 ];
 
 const adminLinks = [
-  { to: '/', label: text.overview },
+  { to: '/admin/overview', label: text.overview },
   { to: '/admin', label: text.admin },
   { to: '/admin/system', label: text.system },
-  { to: '/operations', label: text.operations }
-  ,{ to: '/medical-records', label: text.medical }
-  ,{ to: '/notifications', label: text.notifications }
+  { to: '/admin/operations', label: text.operations },
+  { to: '/admin/medical-records', label: text.medical },
+  { to: '/admin/notifications', label: text.notifications }
 ];
 
 const staffLinks = [
-  { to: '/', label: text.overview },
+  { to: '/staff/overview', label: text.overview },
   { to: '/staff', label: text.staffSchedule },
-  { to: '/staff/work', label: text.staffWork }
-  ,{ to: '/medical-records', label: text.medical }
-  ,{ to: '/notifications', label: text.notifications }
+  { to: '/staff/work', label: text.staffWork },
+  { to: '/staff/medical-records', label: text.medical },
+  { to: '/staff/notifications', label: text.notifications }
 ];
 
-function getRoleLabel(session: AuthResponseDto | null): string {
+function getRoleLabel(session: AuthResponseDto | null) {
   if (!session) {
     return text.guest;
   }
@@ -85,16 +86,24 @@ function getRoleLabel(session: AuthResponseDto | null): string {
   return text.customerRole;
 }
 
-export function Header({ session, onLogout }: HeaderProps) {
-  const links =
-    session?.user.vaiTro === 'Customer'
-      ? customerLinks
-      : session?.user.vaiTro === 'Admin'
-        ? adminLinks
-        : session?.user.vaiTro === 'Staff'
-          ? staffLinks
-          : publicLinks;
+function getLinks(session: AuthResponseDto | null) {
+  if (!session) {
+    return publicLinks;
+  }
 
+  if (session.user.vaiTro === 'Admin') {
+    return adminLinks;
+  }
+
+  if (session.user.vaiTro === 'Staff') {
+    return staffLinks;
+  }
+
+  return customerLinks;
+}
+
+export function Header({ session, onLogout }: HeaderProps) {
+  const links = getLinks(session);
   const roleLabel = getRoleLabel(session);
 
   return (

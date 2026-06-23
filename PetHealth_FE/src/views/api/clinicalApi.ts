@@ -1,6 +1,6 @@
 import api from './api';
-import type { ApiResponse } from '../models/common';
-import type { MedicalRecordDto, UpsertMedicalRecordDto } from '../models/clinical';
+import type { ApiResponse } from '../types/common';
+import type { MedicalRecordDto, UpsertMedicalRecordDto } from '../types/clinical';
 
 export async function getMedicalRecords(maThuCung?: number): Promise<MedicalRecordDto[]> {
   const response = await api.get<ApiResponse<MedicalRecordDto[]>>('/clinical/records', {

@@ -1,7 +1,7 @@
-﻿import { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ServiceCard } from '../components/ServiceCard';
-import type { DichVuDto } from '../../models/service';
+import type { DichVuDto } from '../types/service';
 
 interface ServicesPageProps {
   services: DichVuDto[];

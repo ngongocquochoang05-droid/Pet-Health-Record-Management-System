@@ -1,9 +1,9 @@
-﻿import api from './api';
-import type { ApiResponse } from '../models/common';
-import type { LichHenDto, UpdateLichHenStatusDto } from '../models/booking';
-import type { DichVuDto } from '../models/service';
-import type { ReportSummaryDto, ServiceUpsertDto, StaffDto, UpdateUserRoleDto } from '../models/management';
-import type { NguoiDungDto } from '../models/user';
+import api from './api';
+import type { ApiResponse } from '../types/common';
+import type { LichHenDto, UpdateLichHenStatusDto } from '../types/booking';
+import type { DichVuDto } from '../types/service';
+import type { ReportSummaryDto, ServiceUpsertDto, StaffDto, UpdateUserRoleDto } from '../types/management';
+import type { NguoiDungDto } from '../types/user';
 
 export async function getAdminUsers(vaiTro?: string): Promise<NguoiDungDto[]> {
   const response = await api.get<ApiResponse<NguoiDungDto[]>>('/admin/users', {
@@ -41,6 +41,13 @@ export async function assignAdminAppointmentStaff(maLichHen: number, maNhanVien:
 
 export async function createAdminService(payload: ServiceUpsertDto): Promise<void> {
   await api.post('/admin/services', payload);
+}
+
+export async function uploadAdminServiceImage(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await api.post<ApiResponse<{ anhDichVuUrl: string }>>('/admin/services/image', formData);
+  return response.data.data.anhDichVuUrl;
 }
 
 export async function updateAdminService(maDichVu: number, payload: ServiceUpsertDto): Promise<void> {

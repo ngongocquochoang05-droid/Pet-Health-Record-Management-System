@@ -1,5 +1,5 @@
-﻿import api from './api';
-import type { ApiResponse } from '../models/common';
+import api from './api';
+import type { ApiResponse } from '../types/common';
 import type {
   CaLamViecDto,
   BankTransferDepositResponseDto,
@@ -21,8 +21,8 @@ import type {
   UpsertCaLamViecDto,
   UpsertHoaDonDto,
   UpsertUuDaiDto
-} from '../models/features';
-import type { StaffUpsertDto } from '../models/management';
+} from '../types/features';
+import type { StaffUpsertDto } from '../types/management';
 
 export async function getReviews(maDichVu?: number): Promise<DanhGiaDto[]> {
   const response = await api.get<ApiResponse<DanhGiaDto[]>>('/danhgia', {

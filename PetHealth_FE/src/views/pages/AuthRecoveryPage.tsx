@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { getApiErrorMessage } from '../../controllers/api';
-import { forgotPassword, resendVerification, resetPassword, verifyEmail } from '../../controllers/authApi';
+import { getApiErrorMessage } from '../api/api';
+import { forgotPassword, resendVerification, resetPassword, verifyEmail } from '../api/authApi';
 
 interface AuthRecoveryPageProps {
   mode: 'forgot-password' | 'reset-password' | 'verify-email';

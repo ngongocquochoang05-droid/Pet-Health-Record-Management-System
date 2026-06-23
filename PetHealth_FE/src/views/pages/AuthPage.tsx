@@ -1,9 +1,9 @@
 ﻿import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getApiErrorMessage } from '../../controllers/api';
-import { beginGoogleLogin, login, register } from '../../controllers/authApi';
-import { saveSession } from '../../controllers/authStorage';
-import type { AuthResponseDto, LoginRequestDto, RegisterRequestDto } from '../../models/auth';
+import { getApiErrorMessage } from '../api/api';
+import { beginGoogleLogin, login, register } from '../api/authApi';
+import { saveSession } from '../api/authStorage';
+import type { AuthResponseDto, LoginRequestDto, RegisterRequestDto } from '../types/auth';
 
 interface AuthPageProps {
   onAuthenticated: (session: AuthResponseDto) => void;

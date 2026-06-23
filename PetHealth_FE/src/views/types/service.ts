@@ -1,4 +1,4 @@
-﻿export interface DichVuDto {
+export interface DichVuDto {
   maDichVu: number;
   tenDichVu: string;
   moTa: string;

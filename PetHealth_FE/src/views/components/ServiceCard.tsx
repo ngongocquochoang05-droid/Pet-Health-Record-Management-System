@@ -1,4 +1,4 @@
-﻿import type { DichVuDto } from '../../models/service';
+import type { DichVuDto } from '../types/service';
 
 interface ServiceCardProps {
   service: DichVuDto;

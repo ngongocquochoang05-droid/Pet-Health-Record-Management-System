@@ -1,9 +1,9 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StatusPill } from '../components/StatusPill';
-import { getApiErrorMessage } from '../../controllers/api';
-import { getStaffAppointments, updateStaffAppointmentStatus } from '../../controllers/managementApi';
-import type { AuthResponseDto } from '../../models/auth';
-import { LICH_HEN_STATUS, type LichHenDto, type LichHenStatus } from '../../models/booking';
+import { getApiErrorMessage } from '../api/api';
+import { getStaffAppointments, updateStaffAppointmentStatus } from '../api/managementApi';
+import type { AuthResponseDto } from '../types/auth';
+import { LICH_HEN_STATUS, type LichHenDto, type LichHenStatus } from '../types/booking';
 
 interface StaffPageProps {
   session: AuthResponseDto | null;

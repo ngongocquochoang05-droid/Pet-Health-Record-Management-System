@@ -1,4 +1,4 @@
-﻿import type { NguoiDungDto } from './user';
+import type { NguoiDungDto } from './user';
 
 export interface RegisterRequestDto {
   hoVaTen: string;

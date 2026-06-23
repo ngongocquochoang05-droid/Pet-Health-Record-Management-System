@@ -1,4 +1,4 @@
-﻿export interface DanhGiaDto {
+export interface DanhGiaDto {
   maDanhGia: number;
   maLichHen: number;
   maKhachHang: string;
@@ -112,9 +112,12 @@ export interface CustomerUsageDto {
 export interface PetQrDto {
   maThuCung: number;
   tenThuCung: string;
+  tenChuNuoi?: string;
+  emailChuNuoi?: string;
   maQr?: string | null;
   qrCodeUrl?: string | null;
   ngayCapQr?: string | null;
+  emailDaGui?: boolean;
 }
 
 export interface PetHistoryDto {
@@ -126,12 +129,24 @@ export interface PetHistoryDto {
   gioHen: string;
   trangThai: string;
   ghiChu?: string | null;
+  maHoSo?: number | null;
+  chanDoan?: string | null;
+  dieuTri?: string | null;
+  thuoc?: string | null;
+  tiemChung?: string | null;
+  ghiChuBenhAn?: string | null;
+  ngayCapNhatBenhAn?: string | null;
+  tenNhanVienCapNhat?: string | null;
 }
 
 export interface PetVisitImageDto {
   maAnh: number;
   maLichHen: number;
   maThuCung: number;
+  tenThuCung: string;
+  tenDichVu?: string | null;
+  ngayHen?: string | null;
+  gioHen?: string | null;
   loaiAnh: string;
   anhUrl: string;
   ghiChu?: string | null;

@@ -24,9 +24,11 @@ public class ThuCungRepository
                 NULL AS GioiTinh,
                 NgaySinh,
                 CanNang,
-                GhiChu
+                GhiChu,
+                TrangThaiHoatDong
             FROM ThuCung
             WHERE MaChuNhan = @MaNguoiDung
+              AND TrangThaiHoatDong = 1
             ORDER BY MaThuCung DESC;
             """;
 
@@ -46,9 +48,11 @@ public class ThuCungRepository
                 NULL AS GioiTinh,
                 NgaySinh,
                 CanNang,
-                GhiChu
+                GhiChu,
+                TrangThaiHoatDong
             FROM ThuCung
-            WHERE MaThuCung = @MaThuCung;
+            WHERE MaThuCung = @MaThuCung
+              AND TrangThaiHoatDong = 1;
             """;
 
         using var connection = _connectionFactory.CreateConnection();
@@ -58,9 +62,9 @@ public class ThuCungRepository
     public async Task<int> CreateAsync(ThuCung pet)
     {
         const string sql = """
-            INSERT INTO ThuCung (MaChuNhan, TenThuCung, GiongLoai, NgaySinh, CanNang, GhiChu)
+            INSERT INTO ThuCung (MaChuNhan, TenThuCung, GiongLoai, NgaySinh, CanNang, GhiChu, TrangThaiHoatDong)
             OUTPUT INSERTED.MaThuCung
-            VALUES (@MaNguoiDung, @TenThuCung, @Giong, @NgaySinh, @CanNang, @GhiChu);
+            VALUES (@MaNguoiDung, @TenThuCung, @Giong, @NgaySinh, @CanNang, @GhiChu, 1);
             """;
 
         using var connection = _connectionFactory.CreateConnection();
@@ -95,25 +99,14 @@ public class ThuCungRepository
         return affected > 0;
     }
 
-    public async Task<bool> HasAppointmentsAsync(int maThuCung)
-    {
-        const string sql = """
-            SELECT COUNT(1)
-            FROM LichHen
-            WHERE MaThuCung = @MaThuCung;
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        var count = await connection.ExecuteScalarAsync<int>(sql, new { MaThuCung = maThuCung });
-        return count > 0;
-    }
-
     public async Task<bool> DeleteAsync(int maThuCung, string maNguoiDung)
     {
         const string sql = """
-            DELETE FROM ThuCung
+            UPDATE ThuCung
+            SET TrangThaiHoatDong = 0
             WHERE MaThuCung = @MaThuCung
-              AND MaChuNhan = @MaNguoiDung;
+              AND MaChuNhan = @MaNguoiDung
+              AND TrangThaiHoatDong = 1;
             """;
 
         using var connection = _connectionFactory.CreateConnection();

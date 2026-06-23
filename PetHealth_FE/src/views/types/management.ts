@@ -1,4 +1,4 @@
-﻿export interface StaffDto {
+export interface StaffDto {
   maNhanVien: string;
   hoVaTen: string;
   email: string;

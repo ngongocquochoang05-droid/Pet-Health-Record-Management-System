@@ -19,6 +19,8 @@ public class ThuCungDto
     public decimal? CanNang { get; set; }
 
     public string? GhiChu { get; set; }
+
+    public bool TrangThaiHoatDong { get; set; } = true;
 }
 
 public class CreateThuCungDto

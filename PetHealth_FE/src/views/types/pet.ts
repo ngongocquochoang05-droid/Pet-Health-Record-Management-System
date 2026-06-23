@@ -1,4 +1,4 @@
-﻿export interface ThuCungDto {
+export interface ThuCungDto {
   maThuCung: number;
   maNguoiDung: string;
   tenThuCung: string;
@@ -8,6 +8,7 @@
   ngaySinh?: string | null;
   canNang?: number | null;
   ghiChu?: string | null;
+  trangThaiHoatDong: boolean;
 }
 
 export interface CreateThuCungDto {

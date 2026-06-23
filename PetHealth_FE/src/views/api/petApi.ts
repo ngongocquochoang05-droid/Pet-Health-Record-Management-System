@@ -1,6 +1,6 @@
-﻿import api from './api';
-import type { ApiResponse } from '../models/common';
-import type { CreateThuCungDto, ThuCungDto, UpdateThuCungDto } from '../models/pet';
+import api from './api';
+import type { ApiResponse } from '../types/common';
+import type { CreateThuCungDto, ThuCungDto, UpdateThuCungDto } from '../types/pet';
 
 export async function getPets(maNguoiDung?: string): Promise<ThuCungDto[]> {
   const response = await api.get<ApiResponse<ThuCungDto[]>>('/thucung', {

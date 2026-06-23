@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PetHealth_BE.src.Models;
 using PetHealth_BE.src.Services;
 
@@ -19,6 +19,7 @@ public static class DatabaseInitializer
         await EnsureDepositReceiptColumnsAsync(dbContext);
         await EnsureClinicalRecordsAsync(dbContext);
         await EnsureNotificationsAsync(dbContext);
+        await EnsurePetSoftDeleteColumnAsync(dbContext);
         await EnsureVietnameseDisplayTextAsync(dbContext);
 
         await EnsureAccountAsync(
@@ -62,6 +63,7 @@ public static class DatabaseInitializer
         await EnsureDepositReceiptColumnsAsync(dbContext);
         await EnsureClinicalRecordsAsync(dbContext);
         await EnsureNotificationsAsync(dbContext);
+        await EnsurePetSoftDeleteColumnAsync(dbContext);
         await EnsureVietnameseDisplayTextAsync(dbContext);
 
         if (!await dbContext.DichVus.AnyAsync())
@@ -478,6 +480,26 @@ public static class DatabaseInitializer
                 WHERE d.MaLichHen IS NULL OR ISNULL(d.TrangThai, N'''') <> ISNULL(i.TrangThai, N'''');
             END');
             """;
+        await dbContext.Database.ExecuteSqlRawAsync(sql);
+    }
+
+    private static async Task EnsurePetSoftDeleteColumnAsync(AppDbContext dbContext)
+    {
+        if (!await dbContext.Database.CanConnectAsync())
+        {
+            return;
+        }
+
+        const string sql = """
+            IF OBJECT_ID(N'dbo.ThuCung', N'U') IS NOT NULL
+               AND COL_LENGTH(N'dbo.ThuCung', N'TrangThaiHoatDong') IS NULL
+            BEGIN
+                ALTER TABLE dbo.ThuCung
+                ADD TrangThaiHoatDong bit NOT NULL
+                    CONSTRAINT DF_ThuCung_TrangThaiHoatDong DEFAULT (1);
+            END;
+            """;
+
         await dbContext.Database.ExecuteSqlRawAsync(sql);
     }
 }

@@ -1,9 +1,11 @@
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { getApiErrorMessage } from '../../controllers/api';
-import { deleteVisitImage, getPetHistory, getVisitImages, uploadVisitImage } from '../../controllers/featureApi';
-import type { AuthResponseDto } from '../../models/auth';
-import type { PetHistoryDto, PetVisitImageDto } from '../../models/features';
+import { getApiErrorMessage } from '../api/api';
+import { deleteVisitImage, getPetHistory, getVisitImages, uploadVisitImage } from '../api/featureApi';
+import { getStaffAppointments } from '../api/managementApi';
+import type { AuthResponseDto } from '../types/auth';
+import type { LichHenDto } from '../types/booking';
+import type { PetHistoryDto, PetVisitImageDto } from '../types/features';
 
 interface StaffWorkPageProps {
   session: AuthResponseDto | null;
@@ -12,9 +14,9 @@ interface StaffWorkPageProps {
 const qrReaderId = 'staff-qr-reader';
 
 export function StaffWorkPage({ session }: StaffWorkPageProps) {
+  const [appointments, setAppointments] = useState<LichHenDto[]>([]);
   const [history, setHistory] = useState<PetHistoryDto[]>([]);
   const [images, setImages] = useState<PetVisitImageDto[]>([]);
-  const [petCode, setPetCode] = useState('');
   const [qrCode, setQrCode] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [cameraActive, setCameraActive] = useState(false);
@@ -23,10 +25,36 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
     maLichHen: 0,
     maThuCung: 0,
     loaiAnh: 'Before' as 'Before' | 'After',
-    ghiChu: '',
+    ghiChu: ''
   });
   const [message, setMessage] = useState('');
   const qrScannerRef = useRef<Html5Qrcode | null>(null);
+
+  const selectedAppointment = useMemo(
+    () => appointments.find((appointment) => appointment.maLichHen === imageForm.maLichHen),
+    [appointments, imageForm.maLichHen]
+  );
+
+  useEffect(() => {
+    if (session?.user.vaiTro !== 'Staff') {
+      setAppointments([]);
+      return;
+    }
+
+    void getStaffAppointments(session.user.maNguoiDung)
+      .then((data) => {
+        setAppointments(data);
+        const firstUploadable = data.find((appointment) => appointment.trangThai !== 'Cancelled');
+        if (firstUploadable) {
+          setImageForm((current) => ({
+            ...current,
+            maLichHen: firstUploadable.maLichHen,
+            maThuCung: firstUploadable.maThuCung
+          }));
+        }
+      })
+      .catch((error) => setMessage(getApiErrorMessage(error)));
+  }, [session]);
 
   useEffect(() => () => {
     void stopCamera();
@@ -40,12 +68,16 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
 
     setSearching(true);
     try {
-      const maThuCung = petCode ? Number(petCode) : undefined;
-      const data = await getPetHistory({ maThuCung: maThuCung || undefined, maQr: maQr || undefined });
+      const data = await getPetHistory({ maThuCung: imageForm.maThuCung || undefined, maQr: maQr || undefined });
       setHistory(data);
       setMessage(data.length ? 'Đã tải hồ sơ thú cưng.' : 'Không tìm thấy lịch sử chăm sóc phù hợp.');
-      if (maThuCung) {
-        setImages(await getVisitImages({ maThuCung }));
+
+      const lookupPetId = imageForm.maThuCung || data[0]?.maThuCung;
+      if (lookupPetId) {
+        setImages(await getVisitImages({ maThuCung: lookupPetId }));
+        setImageForm((current) => ({ ...current, maThuCung: lookupPetId }));
+      } else {
+        setImages([]);
       }
     } finally {
       setSearching(false);
@@ -64,6 +96,11 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
   async function handleImageSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     try {
+      if (!imageForm.maLichHen || !imageForm.maThuCung) {
+        setMessage('Vui lòng chọn lịch hẹn cần tải ảnh.');
+        return;
+      }
+
       if (!imageFile) {
         setMessage('Vui lòng chọn file ảnh.');
         return;
@@ -73,25 +110,34 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
       setImageFile(null);
       setImageForm((current) => ({ ...current, ghiChu: '' }));
       setImages(await getVisitImages({
-        maThuCung: imageForm.maThuCung || undefined,
-        maLichHen: imageForm.maLichHen || undefined,
+        maThuCung: imageForm.maThuCung,
+        maLichHen: imageForm.maLichHen
       }));
-      setMessage('Đã tải ảnh trước hoặc sau khi khám.');
+      setMessage('Đã tải ảnh trước hoặc sau dịch vụ.');
     } catch (error) {
       setMessage(getApiErrorMessage(error));
     }
   }
 
+  function handleAppointmentChange(maLichHen: number): void {
+    const appointment = appointments.find((item) => item.maLichHen === maLichHen);
+    setImageForm((current) => ({
+      ...current,
+      maLichHen,
+      maThuCung: appointment?.maThuCung ?? 0
+    }));
+  }
+
   async function startCamera(): Promise<void> {
     try {
-      if (!navigator.mediaDevices?.getUserMedia) {
+      if (!navigator.mediaDevices.getUserMedia) {
         setMessage('Trình duyệt chưa hỗ trợ camera. Bạn vẫn có thể nhập mã QR thủ công.');
         return;
       }
 
       await stopCamera();
       setCameraActive(true);
-      setMessage('Đưa mã QR vào giữa khung camera.');
+        setMessage('Trình duyệt chưa hỗ trợ camera. Bạn vẫn có thể nhập mã QR thủ công.');
 
       window.setTimeout(() => {
         const scanner = new Html5Qrcode(qrReaderId);
@@ -112,16 +158,16 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
             void searchHistory(value).catch((error) => setMessage(getApiErrorMessage(error)));
           },
           () => {
-            // The scanner calls this often while searching; keep the UI quiet.
+            // Scanner callback fires frequently while searching; keep the UI quiet.
           }
         ).catch(() => {
-          setMessage('Không thể mở camera. Hãy cấp quyền camera hoặc nhập mã QR thủ công.');
+        setMessage('Trình duyệt chưa hỗ trợ camera. Bạn vẫn có thể nhập mã QR thủ công.');
           setCameraActive(false);
           qrScannerRef.current = null;
         });
       }, 0);
     } catch {
-      setMessage('Không thể mở camera. Hãy cấp quyền camera hoặc nhập mã QR thủ công.');
+        setMessage('Trình duyệt chưa hỗ trợ camera. Bạn vẫn có thể nhập mã QR thủ công.');
       setCameraActive(false);
     }
   }
@@ -134,7 +180,7 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
       try {
         await scanner.stop();
       } catch {
-        // Ignore camera cleanup errors while closing the scanner.
+        // Ignore cleanup errors while closing the scanner.
       }
     }
 
@@ -161,15 +207,11 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
         <div className="section-head">
           <div>
             <p className="eyebrow">Hồ sơ thú cưng</p>
-            <h2>Tra cứu bằng mã thú cưng hoặc QR</h2>
+            <h2>Tra cứu bằng QR</h2>
           </div>
         </div>
         <form className="form-grid" onSubmit={handleSearchHistory}>
-          <label>
-            Mã thú cưng
-            <input inputMode="numeric" value={petCode} onChange={(event) => setPetCode(event.target.value)} />
-          </label>
-          <label>
+          <label className="full-span">
             Mã QR
             <input value={qrCode} onChange={(event) => setQrCode(event.target.value)} />
           </label>
@@ -193,18 +235,25 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
       <section className="content-panel">
         <div className="section-head">
           <div>
-            <p className="eyebrow">Ảnh khám</p>
+            <p className="eyebrow">Ảnh dịch vụ</p>
             <h2>Tải ảnh trước hoặc sau dịch vụ</h2>
           </div>
         </div>
         <form className="form-grid" onSubmit={handleImageSubmit}>
-          <label>
-            Lịch hẹn
-            <input type="number" value={imageForm.maLichHen} onChange={(event) => setImageForm((current) => ({ ...current, maLichHen: Number(event.target.value) }))} />
+          <label className="full-span">
+            Lịch hẹn được phân công
+            <select value={imageForm.maLichHen || ''} onChange={(event) => handleAppointmentChange(Number(event.target.value))}>
+              <option value="">Chọn lịch hẹn</option>
+              {appointments.map((appointment) => (
+                <option key={appointment.maLichHen} value={appointment.maLichHen}>
+                  #{appointment.maLichHen} - {appointment.tenKhachHang} - {appointment.tenThuCung} - {appointment.ngayHen} {appointment.gioHen}
+                </option>
+              ))}
+            </select>
           </label>
           <label>
-            Mã thú cưng
-            <input type="number" value={imageForm.maThuCung} onChange={(event) => setImageForm((current) => ({ ...current, maThuCung: Number(event.target.value) }))} />
+            Thú cưng
+            <input disabled value={selectedAppointment ? `${selectedAppointment.tenThuCung} (#${selectedAppointment.maThuCung})` : 'Chưa chọn lịch'} />
           </label>
           <label>
             Loại ảnh
@@ -239,6 +288,20 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
                 <div>
                   <strong>{item.tenThuCung}</strong>
                   <p>{item.tenDichVu} - {item.ngayHen} {item.gioHen}</p>
+                  {item.ghiChu ? <p>Ghi chú lịch hẹn: {item.ghiChu}</p> : null}
+                  {item.maHoSo ? (
+                    <div className="medical-summary">
+                      <strong>Hồ sơ bệnh án</strong>
+                      <p><b>Chẩn đoán:</b> {item.chanDoan || 'Chưa cập nhật'}</p>
+                      {item.dieuTri ? <p><b>Điều trị:</b> {item.dieuTri}</p> : null}
+                      {item.thuoc ? <p><b>Thuốc:</b> {item.thuoc}</p> : null}
+                      {item.tiemChung ? <p><b>Tiêm chủng:</b> {item.tiemChung}</p> : null}
+                      {item.ghiChuBenhAn ? <p><b>Ghi chú bệnh án:</b> {item.ghiChuBenhAn}</p> : null}
+                      <p><b>Cập nhật:</b> {item.ngayCapNhatBenhAn ?? 'Chưa rõ'}{item.tenNhanVienCapNhat ? ` - ${item.tenNhanVienCapNhat}` : ''}</p>
+                    </div>
+                  ) : (
+                    <p className="muted-text">Lịch hẹn này chưa có hồ sơ bệnh án.</p>
+                  )}
                 </div>
                 <span>{item.trangThai}</span>
               </article>
@@ -255,13 +318,28 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
               <h2>Ảnh trước và sau dịch vụ</h2>
             </div>
           </div>
-          <div className="services-grid">
+          <div className="services-grid visit-image-grid">
             {images.map((image) => (
-              <article className="service-card" key={image.maAnh}>
-                <img className="service-card__image" src={image.anhUrl} alt={image.loaiAnh} />
-                <strong>{image.loaiAnh}</strong>
-                <p>{image.ghiChu}</p>
-                <button className="ghost-button" type="button" onClick={() => void deleteVisitImage(image.maAnh).then(() => setImages((current) => current.filter((item) => item.maAnh !== image.maAnh))).catch((error) => setMessage(getApiErrorMessage(error)))}>Xóa ảnh</button>
+              <article className="service-card visit-image-card" key={image.maAnh}>
+                <div className="visit-image-frame">
+                  <img src={image.anhUrl} alt={`${image.tenThuCung} - ${image.loaiAnh}`} />
+                </div>
+                <div className="visit-image-meta">
+                  <span className="status-badge">{image.loaiAnh === 'After' ? 'Sau dịch vụ' : 'Trước dịch vụ'}</span>
+                  <strong>{image.tenThuCung || `Thú cưng #${image.maThuCung}`}</strong>
+                  <p>{image.tenDichVu || 'Chưa rõ dịch vụ'}</p>
+                  <small>Lịch #{image.maLichHen}{image.ngayHen ? ` - ${image.ngayHen}${image.gioHen ? ` lúc ${image.gioHen}` : ''}` : ''}</small>
+                  {image.ghiChu ? <p>{image.ghiChu}</p> : null}
+                </div>
+                <button
+                  className="ghost-button"
+                  onClick={() => void deleteVisitImage(image.maAnh)
+                    .then(() => setImages((current) => current.filter((item) => item.maAnh !== image.maAnh)))
+                    .catch((error) => setMessage(getApiErrorMessage(error)))}
+                  type="button"
+                >
+                  Xóa ảnh
+                </button>
               </article>
             ))}
           </div>

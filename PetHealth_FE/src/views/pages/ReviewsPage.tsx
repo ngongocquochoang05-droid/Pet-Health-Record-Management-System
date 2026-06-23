@@ -1,9 +1,9 @@
-﻿import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { getApiErrorMessage } from '../../controllers/api';
-import { createReview, getReviews } from '../../controllers/featureApi';
-import type { AuthResponseDto } from '../../models/auth';
-import { LICH_HEN_STATUS, type LichHenDto } from '../../models/booking';
-import type { DanhGiaDto } from '../../models/features';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { getApiErrorMessage } from '../api/api';
+import { createReview, getReviews } from '../api/featureApi';
+import type { AuthResponseDto } from '../types/auth';
+import { LICH_HEN_STATUS, type LichHenDto } from '../types/booking';
+import type { DanhGiaDto } from '../types/features';
 
 interface ReviewsPageProps {
   session: AuthResponseDto | null;

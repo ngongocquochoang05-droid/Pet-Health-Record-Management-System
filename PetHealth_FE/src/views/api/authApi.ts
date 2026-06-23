@@ -1,6 +1,6 @@
-﻿import api from './api';
+import api from './api';
 import { API_BASE_URL } from './api';
-import type { ApiResponse } from '../models/common';
+import type { ApiResponse } from '../types/common';
 import type {
   AuthResponseDto,
   EmailRequestDto,
@@ -8,8 +8,8 @@ import type {
   RegisterRequestDto,
   ResetPasswordRequestDto,
   TokenRequestDto
-} from '../models/auth';
-import type { NguoiDungDto, UpdateNguoiDungDto } from '../models/user';
+} from '../types/auth';
+import type { NguoiDungDto, UpdateNguoiDungDto } from '../types/user';
 
 export async function login(payload: LoginRequestDto): Promise<AuthResponseDto> {
   const response = await api.post<ApiResponse<AuthResponseDto>>('/auth/login', payload);

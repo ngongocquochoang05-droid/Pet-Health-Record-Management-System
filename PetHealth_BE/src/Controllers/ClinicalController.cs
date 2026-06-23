@@ -25,7 +25,7 @@ public class ClinicalController : ControllerBase
         return Ok(ApiResponseDto<IEnumerable<MedicalRecordDto>>.Ok(records));
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Staff")]
     [HttpPost("records")]
     public async Task<IActionResult> UpsertRecord([FromBody] UpsertMedicalRecordDto request)
     {
@@ -34,7 +34,7 @@ public class ClinicalController : ControllerBase
             return BadRequest(ApiResponseDto<object>.Fail("Lịch hẹn, thú cưng và chẩn đoán là bắt buộc."));
         }
 
-        var id = await _repository.UpsertAsync(request, CurrentUserId(), User.IsInRole("Admin"));
+        var id = await _repository.UpsertAsync(request, CurrentUserId(), false);
         return id.HasValue
             ? Ok(ApiResponseDto<object>.Ok(new { maHoSo = id.Value }, "Đã lưu hồ sơ bệnh án."))
             : BadRequest(ApiResponseDto<object>.Fail("Lịch hẹn không hợp lệ hoặc bạn không được phân công."));

@@ -1,6 +1,6 @@
 import api from './api';
-import type { ApiResponse } from '../models/common';
-import type { NotificationDto } from '../models/notification';
+import type { ApiResponse } from '../types/common';
+import type { NotificationDto } from '../types/notification';
 
 export async function getNotifications(): Promise<NotificationDto[]> {
   const response = await api.get<ApiResponse<NotificationDto[]>>('/notifications');

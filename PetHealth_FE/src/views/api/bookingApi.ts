@@ -1,6 +1,6 @@
-﻿import api from './api';
-import type { ApiResponse } from '../models/common';
-import type { BookingAvailabilityDto, CreateLichHenDto, LichHenDto, UpdateLichHenDto, UpdateLichHenStatusDto } from '../models/booking';
+import api from './api';
+import type { ApiResponse } from '../types/common';
+import type { BookingAvailabilityDto, CreateLichHenDto, LichHenDto, UpdateLichHenDto, UpdateLichHenStatusDto } from '../types/booking';
 
 export async function getBookings(maNguoiDung?: string): Promise<LichHenDto[]> {
   const response = await api.get<ApiResponse<LichHenDto[]>>('/lichhen', {

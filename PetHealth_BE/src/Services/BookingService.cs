@@ -10,17 +10,20 @@ public class BookingService
     private readonly DichVuRepository _serviceRepository;
     private readonly ThuCungRepository _petRepository;
     private readonly NguoiDungRepository _userRepository;
+    private readonly NotificationRepository _notificationRepository;
 
     public BookingService(
         LichHenRepository bookingRepository,
         DichVuRepository serviceRepository,
         ThuCungRepository petRepository,
-        NguoiDungRepository userRepository)
+        NguoiDungRepository userRepository,
+        NotificationRepository notificationRepository)
     {
         _bookingRepository = bookingRepository;
         _serviceRepository = serviceRepository;
         _petRepository = petRepository;
         _userRepository = userRepository;
+        _notificationRepository = notificationRepository;
     }
 
     public async Task<LichHenDto> CreateAsync(CreateLichHenDto request)
@@ -81,7 +84,7 @@ public class BookingService
         };
 
         var id = await _bookingRepository.CreateAsync(appointment, services.Select(service => service.MaDichVu).ToList(), staff?.MaNhanVien);
-        return new LichHenDto
+        var created = new LichHenDto
         {
             MaLichHen = id,
             MaNguoiDung = user.MaNguoiDung,
@@ -100,6 +103,8 @@ public class BookingService
             GhiChu = request.GhiChu,
             CreatedAt = appointment.CreatedAt.ToString("O")
         };
+        await _notificationRepository.NotifyBookingCreatedAsync(created);
+        return created;
     }
 
     public async Task<LichHenDto> UpdateAsync(int maLichHen, string maNguoiDung, UpdateLichHenDto request)

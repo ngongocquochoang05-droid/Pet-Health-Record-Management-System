@@ -1,7 +1,7 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { saveSession } from '../../controllers/authStorage';
-import type { AuthResponseDto } from '../../models/auth';
+import { saveSession } from '../api/authStorage';
+import type { AuthResponseDto } from '../types/auth';
 
 interface GoogleCallbackPageProps {
   onAuthenticated: (session: AuthResponseDto) => void;
@@ -10,7 +10,7 @@ interface GoogleCallbackPageProps {
 export function GoogleCallbackPage({ onAuthenticated }: GoogleCallbackPageProps) {
   const [params] = useSearchParams();
   const navigate = useNavigate();
-  const [message, setMessage] = useState<string>('Đang hoàn tất đăng nhập Google...');
+  const [message, setMessage] = useState<string>('Đang hoàn tất Đăng nhập Google...');
 
   useEffect(() => {
     const error = params.get('error');
@@ -29,7 +29,7 @@ export function GoogleCallbackPage({ onAuthenticated }: GoogleCallbackPageProps)
     const trangThaiHoatDong = params.get('trangThaiHoatDong');
 
     if (!accessToken || !refreshToken || !expiresAt || !maNguoiDung || !hoVaTen || !email || !vaiTro) {
-      setMessage('Không nhận được thông tin đăng nhập Google.');
+      setMessage('Không nhận được thông tin Đăng nhập Google.');
       return;
     }
 

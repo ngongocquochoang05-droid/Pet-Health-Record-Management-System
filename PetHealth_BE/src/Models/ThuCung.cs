@@ -37,6 +37,8 @@ public class ThuCung
     [MaxLength(500)]
     public string? GhiChu { get; set; }
 
+    public bool TrangThaiHoatDong { get; set; } = true;
+
     public NguoiDung? NguoiDung { get; set; }
 
     public ICollection<LichHen> LichHens { get; set; } = new List<LichHen>();

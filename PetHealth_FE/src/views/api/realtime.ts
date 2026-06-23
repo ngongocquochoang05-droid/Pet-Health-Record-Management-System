@@ -1,5 +1,5 @@
 import { HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/signalr';
-import type { AuthResponseDto } from '../models/auth';
+import type { AuthResponseDto } from '../types/auth';
 
 export interface RealtimeChange {
   topic: RealtimeTopic;

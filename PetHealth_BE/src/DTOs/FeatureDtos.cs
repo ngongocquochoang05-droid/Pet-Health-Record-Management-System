@@ -143,6 +143,14 @@ public class PetHistoryDto
     public string GioHen { get; set; } = string.Empty;
     public string TrangThai { get; set; } = string.Empty;
     public string? GhiChu { get; set; }
+    public int? MaHoSo { get; set; }
+    public string? ChanDoan { get; set; }
+    public string? DieuTri { get; set; }
+    public string? Thuoc { get; set; }
+    public string? TiemChung { get; set; }
+    public string? GhiChuBenhAn { get; set; }
+    public string? NgayCapNhatBenhAn { get; set; }
+    public string? TenNhanVienCapNhat { get; set; }
 }
 
 public class PetVisitImageDto
@@ -150,6 +158,10 @@ public class PetVisitImageDto
     public int MaAnh { get; set; }
     public int MaLichHen { get; set; }
     public int MaThuCung { get; set; }
+    public string TenThuCung { get; set; } = string.Empty;
+    public string? TenDichVu { get; set; }
+    public string? NgayHen { get; set; }
+    public string? GioHen { get; set; }
     public string LoaiAnh { get; set; } = string.Empty;
     public string AnhUrl { get; set; } = string.Empty;
     public string? GhiChu { get; set; }

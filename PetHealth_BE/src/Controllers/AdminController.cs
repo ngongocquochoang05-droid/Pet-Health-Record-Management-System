@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Text;
@@ -22,6 +22,8 @@ public class AdminController : ControllerBase
     private readonly BookingNotificationService _bookingNotificationService;
     private readonly PasswordHasherService _passwordHasher;
     private readonly AuthService _authService;
+    private readonly IWebHostEnvironment _environment;
+    private readonly NotificationRepository _notificationRepository;
 
     public AdminController(
         NguoiDungRepository userRepository,
@@ -29,7 +31,9 @@ public class AdminController : ControllerBase
         LichHenRepository bookingRepository,
         BookingNotificationService bookingNotificationService,
         PasswordHasherService passwordHasher,
-        AuthService authService)
+        AuthService authService,
+        IWebHostEnvironment environment,
+        NotificationRepository notificationRepository)
     {
         _userRepository = userRepository;
         _serviceRepository = serviceRepository;
@@ -37,6 +41,8 @@ public class AdminController : ControllerBase
         _bookingNotificationService = bookingNotificationService;
         _passwordHasher = passwordHasher;
         _authService = authService;
+        _environment = environment;
+        _notificationRepository = notificationRepository;
     }
 
     [HttpGet("users")]
@@ -75,6 +81,59 @@ public class AdminController : ControllerBase
     {
         var services = await _serviceRepository.GetCatalogAsync(includeInactive: true);
         return Ok(ApiResponseDto<IEnumerable<DichVuDto>>.Ok(services));
+    }
+
+    [HttpPost("services/image")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadServiceImage([FromForm] IFormFile? file)
+    {
+        if (file is null || file.Length <= 0)
+        {
+            return BadRequest(ApiResponseDto<object>.Fail("Vui lòng chọn ảnh dịch vụ."));
+        }
+
+        const long maxFileSize = 5 * 1024 * 1024;
+        if (file.Length > maxFileSize)
+        {
+            return BadRequest(ApiResponseDto<object>.Fail("Kích thước ảnh không được vượt quá 5 MB."));
+        }
+
+        var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".webp"
+        };
+        var extension = Path.GetExtension(file.FileName);
+        if (!allowedExtensions.Contains(extension))
+        {
+            return BadRequest(ApiResponseDto<object>.Fail("Chỉ hỗ trợ ảnh .jpg, .jpeg, .png hoặc .webp."));
+        }
+
+        var allowedContentTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        };
+        if (!allowedContentTypes.Contains(file.ContentType))
+        {
+            return BadRequest(ApiResponseDto<object>.Fail("Định dạng ảnh không hợp lệ."));
+        }
+
+        var uploadsRoot = Path.Combine(_environment.ContentRootPath, "src", "wwwroot", "uploads", "services");
+        Directory.CreateDirectory(uploadsRoot);
+        var safeFileName = $"{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
+        var filePath = Path.Combine(uploadsRoot, safeFileName);
+
+        await using (var stream = System.IO.File.Create(filePath))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var imageUrl = $"{Request.Scheme}://{Request.Host}/uploads/services/{safeFileName}";
+        return Ok(ApiResponseDto<object>.Ok(new { anhDichVuUrl = imageUrl }, "Đã upload ảnh dịch vụ."));
     }
 
     [HttpPost("staff")]
@@ -182,6 +241,7 @@ public class AdminController : ControllerBase
             if (booking is not null)
             {
                 await _bookingNotificationService.SendStatusChangedAsync(booking);
+                await _notificationRepository.NotifyBookingStatusChangedAsync(booking);
             }
         }
 
@@ -197,9 +257,20 @@ public class AdminController : ControllerBase
         {
             return BadRequest(ApiResponseDto<object>.Fail("Vui lòng chọn nhân viên."));
         }
-        return await _bookingRepository.AssignStaffAsync(maLichHen, request.MaNhanVien)
-            ? Ok(ApiResponseDto<object>.Ok(null, "Đã phân công nhân viên."))
-            : BadRequest(ApiResponseDto<object>.Fail("Không thể phân công nhân viên cho lịch này."));
+
+        var updated = await _bookingRepository.AssignStaffAsync(maLichHen, request.MaNhanVien);
+        if (!updated)
+        {
+            return BadRequest(ApiResponseDto<object>.Fail("Không thể phân công nhân viên cho lịch này."));
+        }
+
+        var booking = await _bookingRepository.GetByIdAsync(maLichHen);
+        if (booking is not null)
+        {
+            await _notificationRepository.NotifyStaffAssignedAsync(booking);
+        }
+
+        return Ok(ApiResponseDto<object>.Ok(null, "Đã phân công nhân viên."));
     }
 
     [HttpGet("reports")]
@@ -330,3 +401,5 @@ public class AdminController : ControllerBase
         return null;
     }
 }
+
+

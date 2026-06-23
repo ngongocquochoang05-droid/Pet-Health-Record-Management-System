@@ -1,8 +1,9 @@
-﻿import { useEffect, useState } from 'react';
-import { getApiErrorMessage } from '../../controllers/api';
-import { getInvoices, getMyVouchers, getPromotions } from '../../controllers/featureApi';
-import type { AuthResponseDto } from '../../models/auth';
-import type { ChuongTrinhUuDaiDto, HoaDonDto, PhieuUuDaiDto } from '../../models/features';
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { getApiErrorMessage } from '../api/api';
+import { getInvoices, getMyVouchers, getPromotions } from '../api/featureApi';
+import type { AuthResponseDto } from '../types/auth';
+import type { ChuongTrinhUuDaiDto, HoaDonDto, PhieuUuDaiDto } from '../types/features';
 
 interface BillingPageProps {
   session: AuthResponseDto | null;
@@ -25,7 +26,7 @@ export function BillingPage({ session }: BillingPageProps) {
   }
 
   useEffect(() => {
-    if (!session) {
+    if (!session || session.user.vaiTro !== 'Customer') {
       return;
     }
 
@@ -40,6 +41,10 @@ export function BillingPage({ session }: BillingPageProps) {
 
   if (!session) {
     return <section className="content-panel"><p className="empty-state">Đăng nhập để xem hóa đơn và ưu đãi.</p></section>;
+  }
+
+  if (session.user.vaiTro !== 'Customer') {
+    return <Navigate replace to={session.user.vaiTro === 'Admin' ? '/admin/overview' : '/staff/overview'} />;
   }
 
   return (

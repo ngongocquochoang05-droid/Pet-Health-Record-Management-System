@@ -16,15 +16,18 @@ public class LichHenController : ControllerBase
     private readonly LichHenRepository _bookingRepository;
     private readonly BookingService _bookingService;
     private readonly BookingNotificationService _bookingNotificationService;
+    private readonly NotificationRepository _notificationRepository;
 
     public LichHenController(
         LichHenRepository bookingRepository,
         BookingService bookingService,
-        BookingNotificationService bookingNotificationService)
+        BookingNotificationService bookingNotificationService,
+        NotificationRepository notificationRepository)
     {
         _bookingRepository = bookingRepository;
         _bookingService = bookingService;
         _bookingNotificationService = bookingNotificationService;
+        _notificationRepository = notificationRepository;
     }
 
     [HttpGet]
@@ -128,6 +131,7 @@ public class LichHenController : ControllerBase
             if (confirmedBooking is not null)
             {
                 await _bookingNotificationService.SendConfirmedAsync(confirmedBooking);
+                await _notificationRepository.NotifyBookingStatusChangedAsync(confirmedBooking);
             }
         }
         else
@@ -136,6 +140,7 @@ public class LichHenController : ControllerBase
             if (changedBooking is not null)
             {
                 await _bookingNotificationService.SendStatusChangedAsync(changedBooking);
+                await _notificationRepository.NotifyBookingStatusChangedAsync(changedBooking);
             }
         }
 

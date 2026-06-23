@@ -1,11 +1,11 @@
-﻿import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { getApiErrorMessage } from '../../controllers/api';
-import { createBooking, getBookingAvailability } from '../../controllers/bookingApi';
-import type { AuthResponseDto } from '../../models/auth';
-import type { BookingAvailabilityDto, CreateLichHenDto } from '../../models/booking';
-import type { ThuCungDto } from '../../models/pet';
-import type { DichVuDto } from '../../models/service';
+import { getApiErrorMessage } from '../api/api';
+import { createBooking, getBookingAvailability } from '../api/bookingApi';
+import type { AuthResponseDto } from '../types/auth';
+import type { BookingAvailabilityDto, CreateLichHenDto } from '../types/booking';
+import type { ThuCungDto } from '../types/pet';
+import type { DichVuDto } from '../types/service';
 
 interface BookingPageProps {
   session: AuthResponseDto | null;

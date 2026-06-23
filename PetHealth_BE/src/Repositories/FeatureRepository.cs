@@ -592,9 +592,19 @@ public class FeatureRepository
                 CONVERT(varchar(10), lh.NgayHen, 23) AS NgayHen,
                 LEFT(CONVERT(varchar(8), lh.GioBatDau, 108), 5) AS GioHen,
                 lh.TrangThai,
-                lh.GhiChu
+                lh.GhiChu,
+                hs.MaHoSo,
+                hs.ChanDoan,
+                hs.DieuTri,
+                hs.Thuoc,
+                hs.TiemChung,
+                hs.GhiChu AS GhiChuBenhAn,
+                CONVERT(varchar(33), hs.NgayCapNhat, 126) AS NgayCapNhatBenhAn,
+                nv.HoVaTen AS TenNhanVienCapNhat
             FROM LichHen lh
             INNER JOIN ThuCung tc ON tc.MaThuCung = lh.MaThuCung
+            LEFT JOIN HoSoBenhAn hs ON hs.MaLichHen = lh.MaLichHen
+            LEFT JOIN NguoiDung nv ON nv.MaNguoiDung = hs.MaNhanVien
             OUTER APPLY (
                 SELECT STRING_AGG(dv.TenDichVu, N', ') WITHIN GROUP (ORDER BY dv.MaDichVu) AS TenDichVu
                 FROM LichHenDichVu lhdv
@@ -613,9 +623,27 @@ public class FeatureRepository
     public async Task<IEnumerable<PetVisitImageDto>> GetVisitImagesAsync(int? maLichHen, int? maThuCung, string userId, bool isPrivileged)
     {
         var sql = """
-            SELECT a.MaAnh, a.MaLichHen, a.MaThuCung, a.LoaiAnh, a.AnhUrl, a.GhiChu, CONVERT(varchar(33), a.NgayTaiLen, 126) AS NgayTaiLen
+            SELECT
+                a.MaAnh,
+                a.MaLichHen,
+                a.MaThuCung,
+                tc.TenThuCung,
+                services.TenDichVu,
+                CONVERT(varchar(10), lh.NgayHen, 23) AS NgayHen,
+                LEFT(CONVERT(varchar(8), lh.GioBatDau, 108), 5) AS GioHen,
+                a.LoaiAnh,
+                a.AnhUrl,
+                a.GhiChu,
+                CONVERT(varchar(33), a.NgayTaiLen, 126) AS NgayTaiLen
             FROM AnhKhamThuCung a
             INNER JOIN ThuCung tc ON tc.MaThuCung = a.MaThuCung
+            LEFT JOIN LichHen lh ON lh.MaLichHen = a.MaLichHen
+            OUTER APPLY (
+                SELECT STRING_AGG(dv.TenDichVu, N', ') WITHIN GROUP (ORDER BY dv.MaDichVu) AS TenDichVu
+                FROM LichHenDichVu lhdv
+                INNER JOIN DichVu dv ON dv.MaDichVu = lhdv.MaDichVu
+                WHERE lhdv.MaLichHen = a.MaLichHen
+            ) services
             """;
         var where = new List<string>();
         if (!isPrivileged)

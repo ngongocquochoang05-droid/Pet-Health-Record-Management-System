@@ -9,27 +9,27 @@ using PetHealth_BE.src.Services;
 namespace PetHealth_BE.src.Controllers;
 
 [ApiController]
-[Authorize(Roles = "Staff,Admin")]
+[Authorize(Roles = "Staff")]
 [Route("api/[controller]")]
 public class StaffController : ControllerBase
 {
     private readonly LichHenRepository _bookingRepository;
     private readonly FeatureRepository _featureRepository;
     private readonly BookingNotificationService _bookingNotificationService;
+    private readonly NotificationRepository _notificationRepository;
 
-    public StaffController(LichHenRepository bookingRepository, FeatureRepository featureRepository, BookingNotificationService bookingNotificationService)
+    public StaffController(LichHenRepository bookingRepository, FeatureRepository featureRepository, BookingNotificationService bookingNotificationService, NotificationRepository notificationRepository)
     {
         _bookingRepository = bookingRepository;
         _featureRepository = featureRepository;
         _bookingNotificationService = bookingNotificationService;
+        _notificationRepository = notificationRepository;
     }
 
     [HttpGet("appointments")]
     public async Task<IActionResult> GetAppointments([FromQuery] string? maNhanVien = null)
     {
-        var staffId = User.IsInRole("Admin") && !string.IsNullOrWhiteSpace(maNhanVien)
-            ? maNhanVien
-            : User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+        var staffId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
         await _featureRepository.SynchronizeShiftAssignmentsAsync();
         var bookings = await _bookingRepository.GetAllAsync(null, staffId);
         return Ok(ApiResponseDto<IEnumerable<LichHenDto>>.Ok(bookings));
@@ -61,16 +61,18 @@ public class StaffController : ControllerBase
             return BadRequest(ApiResponseDto<object>.Fail("Nhân viên chỉ được cập nhật lịch thành Completed hoặc NO_SHOW."));
         }
 
-        var updated = User.IsInRole("Admin")
-            ? await _bookingRepository.UpdateStatusAsync(maLichHen, normalizedStatus, request.GhiChu)
-            : await _bookingRepository.UpdateStatusForStaffAsync(
-                maLichHen,
-                User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty,
-                normalizedStatus,
-                request.GhiChu);
+        var updated = await _bookingRepository.UpdateStatusForStaffAsync(
+            maLichHen,
+            User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty,
+            normalizedStatus,
+            request.GhiChu);
         if (!updated) return NotFound(ApiResponseDto<object>.Fail("Không tìm thấy lịch hẹn."));
         var booking = await _bookingRepository.GetByIdAsync(maLichHen);
-        if (booking is not null) await _bookingNotificationService.SendStatusChangedAsync(booking);
+        if (booking is not null)
+        {
+            await _bookingNotificationService.SendStatusChangedAsync(booking);
+            await _notificationRepository.NotifyBookingStatusChangedAsync(booking);
+        }
         return Ok(ApiResponseDto<object>.Ok(null, "Cập nhật lịch hẹn thành công."));
     }
 }

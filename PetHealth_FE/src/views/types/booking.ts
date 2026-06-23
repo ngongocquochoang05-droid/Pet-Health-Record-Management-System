@@ -1,4 +1,4 @@
-﻿export const LICH_HEN_STATUS = {
+export const LICH_HEN_STATUS = {
   Pending: 'Pending',
   Confirmed: 'Confirmed',
   Cancelled: 'Cancelled',

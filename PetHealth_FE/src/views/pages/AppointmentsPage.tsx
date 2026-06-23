@@ -1,19 +1,22 @@
-﻿import { FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { StatusPill } from '../components/StatusPill';
-import { getApiErrorMessage } from '../../controllers/api';
-import { updateBooking, updateBookingStatus } from '../../controllers/bookingApi';
-import { LICH_HEN_STATUS, type LichHenDto, type UpdateLichHenDto } from '../../models/booking';
-import type { ThuCungDto } from '../../models/pet';
-import type { DichVuDto } from '../../models/service';
+import { getApiErrorMessage } from '../api/api';
+import { updateBooking, updateBookingStatus } from '../api/bookingApi';
+import type { AuthResponseDto } from '../types/auth';
+import { LICH_HEN_STATUS, type LichHenDto, type UpdateLichHenDto } from '../types/booking';
+import type { ThuCungDto } from '../types/pet';
+import type { DichVuDto } from '../types/service';
 
 interface AppointmentsPageProps {
+  session: AuthResponseDto | null;
   bookings: LichHenDto[];
   pets: ThuCungDto[];
   services: DichVuDto[];
   onBookingsChanged: () => Promise<void>;
 }
 
-export function AppointmentsPage({ bookings, pets, services, onBookingsChanged }: AppointmentsPageProps) {
+export function AppointmentsPage({ session, bookings, pets, services, onBookingsChanged }: AppointmentsPageProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<UpdateLichHenDto | null>(null);
 
@@ -66,6 +69,14 @@ export function AppointmentsPage({ bookings, pets, services, onBookingsChanged }
     } catch (error) {
       window.alert(getApiErrorMessage(error));
     }
+  }
+
+  if (!session) {
+    return <section className="content-panel"><p className="empty-state">Đăng nhập để xem lịch hẹn.</p></section>;
+  }
+
+  if (session.user.vaiTro !== 'Customer') {
+    return <Navigate replace to={session.user.vaiTro === 'Admin' ? '/admin/overview' : '/staff/overview'} />;
   }
 
   return (

@@ -1,5 +1,5 @@
-﻿import { FormEvent, useEffect, useState } from 'react';
-import { getApiErrorMessage } from '../../controllers/api';
+import { FormEvent, useEffect, useState } from 'react';
+import { getApiErrorMessage } from '../api/api';
 import {
   createPromotion,
   createShift,
@@ -15,12 +15,12 @@ import {
   updateShift,
   updateStaff,
   upsertInvoice
-} from '../../controllers/featureApi';
-import { getAdminAppointments, getAdminStaff, getStaffAppointments } from '../../controllers/managementApi';
-import type { AuthResponseDto } from '../../models/auth';
-import type { LichHenDto } from '../../models/booking';
-import type { CaLamViecDto, ChuongTrinhUuDaiDto, HoaDonDto, PhieuUuDaiDto, UpsertCaLamViecDto, UpsertHoaDonDto, UpsertUuDaiDto } from '../../models/features';
-import type { StaffDto, StaffUpsertDto } from '../../models/management';
+} from '../api/featureApi';
+import { getAdminAppointments, getAdminStaff, getStaffAppointments } from '../api/managementApi';
+import type { AuthResponseDto } from '../types/auth';
+import type { LichHenDto } from '../types/booking';
+import type { CaLamViecDto, ChuongTrinhUuDaiDto, HoaDonDto, PhieuUuDaiDto, UpsertCaLamViecDto, UpsertHoaDonDto, UpsertUuDaiDto } from '../types/features';
+import type { StaffDto, StaffUpsertDto } from '../types/management';
 
 interface OperationsPageProps {
   session: AuthResponseDto | null;

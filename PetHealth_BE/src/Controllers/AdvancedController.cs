@@ -1,4 +1,4 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetHealth_BE.src.DTOs;
@@ -12,15 +12,23 @@ namespace PetHealth_BE.src.Controllers;
 [Route("api/[controller]")]
 public class AdvancedController : ControllerBase
 {
+    private static readonly HttpClient QrImageClient = new();
+
     private readonly FeatureRepository _featureRepository;
     private readonly IEmailService _emailService;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AdvancedController> _logger;
 
-    public AdvancedController(FeatureRepository featureRepository, IEmailService emailService, IConfiguration configuration)
+    public AdvancedController(
+        FeatureRepository featureRepository,
+        IEmailService emailService,
+        IConfiguration configuration,
+        ILogger<AdvancedController> logger)
     {
         _featureRepository = featureRepository;
         _emailService = emailService;
         _configuration = configuration;
+        _logger = logger;
     }
 
     [Authorize(Roles = "Admin")]
@@ -41,9 +49,21 @@ public class AdvancedController : ControllerBase
             return NotFound(ApiResponseDto<object>.Fail("Không tìm thấy thú cưng."));
         }
 
-        await SendPetQrEmailAsync(qr);
+        var emailSent = await SendPetQrEmailAsync(qr);
 
-        return Ok(ApiResponseDto<PetQrDto>.Ok(qr, "Đã cấp mã QR và gửi email cho chủ thú cưng."));
+        return Ok(ApiResponseDto<object>.Ok(new
+        {
+            qr.MaThuCung,
+            qr.TenThuCung,
+            qr.TenChuNuoi,
+            qr.EmailChuNuoi,
+            qr.MaQr,
+            qr.QrCodeUrl,
+            qr.NgayCapQr,
+            emailDaGui = emailSent
+        }, emailSent
+            ? "Đã cấp mã QR và gửi email cho chủ thú cưng."
+            : "Đã cấp mã QR nhưng chưa gửi được email. Hãy kiểm tra email chủ nuôi và cấu hình SMTP."));
     }
 
     [Authorize(Roles = "Admin,Staff")]
@@ -66,11 +86,11 @@ public class AdvancedController : ControllerBase
             maLichHen,
             maThuCung,
             GetCurrentUserId(),
-            User.IsInRole("Admin") || User.IsInRole("Staff"));
+            User.IsInRole("Staff"));
         return Ok(ApiResponseDto<IEnumerable<PetVisitImageDto>>.Ok(images));
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Staff")]
     [HttpPost("visit-images")]
     public async Task<IActionResult> AddVisitImage([FromBody] CreatePetVisitImageDto request)
     {
@@ -79,7 +99,7 @@ public class AdvancedController : ControllerBase
             return BadRequest(ApiResponseDto<object>.Fail("Thông tin ảnh trước/sau khi khám không hợp lệ."));
         }
 
-        if (!await _featureRepository.CanManageVisitImageAsync(request.MaLichHen, request.MaThuCung, GetCurrentUserId(), User.IsInRole("Admin")))
+        if (!await _featureRepository.CanManageVisitImageAsync(request.MaLichHen, request.MaThuCung, GetCurrentUserId(), false))
         {
             return BadRequest(ApiResponseDto<object>.Fail("Lịch hẹn và thú cưng không khớp hoặc bạn không được phân công."));
         }
@@ -89,13 +109,13 @@ public class AdvancedController : ControllerBase
         return Created($"/api/advanced/visit-images/{id}", ApiResponseDto<object>.Ok(new { maAnh = id }, "Đã lưu ảnh khám."));
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Staff")]
     [HttpPost("visit-images/upload")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadVisitImage([FromForm] UploadPetVisitImageDto request)
     {
         var file = request.File;
-        if (request.MaLichHen <= 0 || request.MaThuCung <= 0 || file.Length <= 0)
+        if (request.MaLichHen <= 0 || request.MaThuCung <= 0 || file is null || file.Length <= 0)
         {
             return BadRequest(ApiResponseDto<object>.Fail("Thông tin ảnh trước/sau khi khám không hợp lệ."));
         }
@@ -130,7 +150,7 @@ public class AdvancedController : ControllerBase
             return BadRequest(ApiResponseDto<object>.Fail("Định dạng nội dung ảnh không hợp lệ."));
         }
 
-        if (!await _featureRepository.CanManageVisitImageAsync(request.MaLichHen, request.MaThuCung, GetCurrentUserId(), User.IsInRole("Admin")))
+        if (!await _featureRepository.CanManageVisitImageAsync(request.MaLichHen, request.MaThuCung, GetCurrentUserId(), false))
         {
             return BadRequest(ApiResponseDto<object>.Fail("Lịch hẹn và thú cưng không khớp hoặc bạn không được phân công."));
         }
@@ -163,11 +183,11 @@ public class AdvancedController : ControllerBase
         }, "Đã upload và lưu ảnh khám."));
     }
 
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Staff")]
     [HttpDelete("visit-images/{maAnh:int}")]
     public async Task<IActionResult> DeleteVisitImage(int maAnh)
     {
-        var url = await _featureRepository.DeleteVisitImageAsync(maAnh, GetCurrentUserId(), User.IsInRole("Admin"));
+        var url = await _featureRepository.DeleteVisitImageAsync(maAnh, GetCurrentUserId(), false);
         if (url is null) return NotFound(ApiResponseDto<object>.Fail("Không tìm thấy ảnh hoặc bạn không có quyền xóa."));
         if (Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.AbsolutePath.StartsWith("/uploads/", StringComparison.Ordinal))
         {
@@ -214,7 +234,7 @@ public class AdvancedController : ControllerBase
     public async Task<IActionResult> UploadDepositReceipt(int maDatCoc, [FromForm] UploadDepositReceiptDto request)
     {
         var file = request.File;
-        if (file.Length <= 0)
+        if (file is null || file.Length <= 0)
         {
             return BadRequest(ApiResponseDto<object>.Fail("Vui lòng chọn ảnh biên lai."));
         }
@@ -348,31 +368,83 @@ public class AdvancedController : ControllerBase
         return value;
     }
 
-    private async Task SendPetQrEmailAsync(PetQrDto qr)
+    private async Task<bool> SendPetQrEmailAsync(PetQrDto qr)
     {
         if (string.IsNullOrWhiteSpace(qr.EmailChuNuoi))
         {
-            return;
+            _logger.LogWarning("Không gửi QR thú cưng {MaThuCung} vì chủ nuôi chưa có email.", qr.MaThuCung);
+            return false;
         }
 
-        var qrImage = string.IsNullOrWhiteSpace(qr.QrCodeUrl)
-            ? string.Empty
-            : $"""
-              <p><img src="{qr.QrCodeUrl}" alt="QR thú cưng {qr.TenThuCung}" width="220" height="220" /></p>
-              """;
+        try
+        {
+            var attachments = new List<InlineEmailImage>();
+            var qrImage = string.Empty;
 
-        await _emailService.SendAsync(
-            qr.EmailChuNuoi,
-            "PetHealth - Mã QR thú cưng",
-            $"""
-            <h2>Mã QR thú cưng</h2>
-            <p>Xin chào {qr.TenChuNuoi},</p>
-            <p>PetHealth đã cấp mã QR cho thú cưng của bạn.</p>
-            <p>Tên thú cưng: <strong>{qr.TenThuCung}</strong></p>
-            <p>Mã QR: <strong>{qr.MaQr}</strong></p>
-            {qrImage}
-            <p>Bạn có thể dùng mã QR này để tra cứu lịch sử chăm sóc tại PetHealth.</p>
-            """);
+            if (!string.IsNullOrWhiteSpace(qr.QrCodeUrl))
+            {
+                qrImage = BuildQrImageHtml(qr);
+                var imageBytes = await TryDownloadQrImageAsync(qr.QrCodeUrl);
+                if (imageBytes is not null)
+                {
+                    attachments.Add(new InlineEmailImage("pethealth-pet-qr", imageBytes, "image/png"));
+                }
+            }
+
+            await _emailService.SendAsync(
+                qr.EmailChuNuoi,
+                "PetHealth - Mã QR thú cưng",
+                $"""
+                <h2>Mã QR thú cưng</h2>
+                <p>Xin chào {qr.TenChuNuoi},</p>
+                <p>PetHealth đã cấp mã QR cho thú cưng của bạn.</p>
+                <p>Tên thú cưng: <strong>{qr.TenThuCung}</strong></p>
+                <p>Mã QR: <strong>{qr.MaQr}</strong></p>
+                {qrImage}
+                <p>Bạn có thể dùng mã QR này để tra cứu lịch sử chăm sóc tại PetHealth.</p>
+                """,
+                attachments);
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Không gửi được email QR cho thú cưng {MaThuCung} đến {Email}.", qr.MaThuCung, qr.EmailChuNuoi);
+            return false;
+        }
+    }
+
+    private static string BuildQrImageHtml(PetQrDto qr)
+    {
+        if (string.IsNullOrWhiteSpace(qr.QrCodeUrl))
+        {
+            return string.Empty;
+        }
+
+        return $"""
+            <p>
+              <img src="{qr.QrCodeUrl}" alt="QR thu cung {qr.TenThuCung}" width="220" height="220" style="width:220px;height:220px;border:0;" />
+            </p>
+            <p>Neu anh QR khong hien thi, vui long mo lien ket QR: <a href="{qr.QrCodeUrl}">{qr.QrCodeUrl}</a></p>
+            """;
+    }
+
+    private static async Task<byte[]?> TryDownloadQrImageAsync(string qrCodeUrl)
+    {
+        try
+        {
+            using var response = await QrImageClient.GetAsync(qrCodeUrl);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            return await response.Content.ReadAsByteArrayAsync();
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private async Task<bool> SendReminderEmailAsync(ReminderDto reminder)

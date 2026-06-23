@@ -1,4 +1,4 @@
-﻿export interface NguoiDungDto {
+export interface NguoiDungDto {
   maNguoiDung: string;
   hoVaTen: string;
   email: string;

@@ -37,7 +37,8 @@ public class ThuCungController : ControllerBase
                 GioiTinh = pet.GioiTinh,
                 NgaySinh = pet.NgaySinh?.ToString("yyyy-MM-dd"),
                 CanNang = pet.CanNang,
-                GhiChu = pet.GhiChu
+                GhiChu = pet.GhiChu,
+                TrangThaiHoatDong = pet.TrangThaiHoatDong
             });
 
         return Ok(ApiResponseDto<IEnumerable<ThuCungDto>>.Ok(pets));
@@ -77,7 +78,8 @@ public class ThuCungController : ControllerBase
             GioiTinh = pet.GioiTinh,
             NgaySinh = pet.NgaySinh?.ToString("yyyy-MM-dd"),
             CanNang = pet.CanNang,
-            GhiChu = pet.GhiChu
+            GhiChu = pet.GhiChu,
+            TrangThaiHoatDong = pet.TrangThaiHoatDong
         };
 
         return Created($"/api/thucung/{id}", ApiResponseDto<ThuCungDto>.Ok(result, "Thêm thú cưng thành công."));
@@ -132,7 +134,8 @@ public class ThuCungController : ControllerBase
             GioiTinh = updatedPet.GioiTinh,
             NgaySinh = updatedPet.NgaySinh?.ToString("yyyy-MM-dd"),
             CanNang = updatedPet.CanNang,
-            GhiChu = updatedPet.GhiChu
+            GhiChu = updatedPet.GhiChu,
+            TrangThaiHoatDong = true
         };
 
         return Ok(ApiResponseDto<ThuCungDto>.Ok(result, "Cập nhật thú cưng thành công."));
@@ -151,11 +154,6 @@ public class ThuCungController : ControllerBase
         if (!User.IsInRole("Admin") && pet.MaNguoiDung != currentUserId)
         {
             return Forbid();
-        }
-
-        if (await _petRepository.HasAppointmentsAsync(maThuCung))
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Thú cưng đã có lịch hẹn, không nên xóa trực tiếp."));
         }
 
         var deleted = await _petRepository.DeleteAsync(maThuCung, pet.MaNguoiDung);

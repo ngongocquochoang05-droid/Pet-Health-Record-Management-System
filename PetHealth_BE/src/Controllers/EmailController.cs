@@ -25,13 +25,24 @@ public class EmailController : ControllerBase
             return BadRequest(ApiResponseDto<object>.Fail("Vui lòng nhập email nhận."));
         }
 
-        await _emailService.SendAsync(
-            email.Trim(),
-            "PetHealth - Test email",
-            """
-            <h2>PetHealth</h2>
-            <p>Email SMTP đã được cấu hình thành công.</p>
-            """);
+        try
+        {
+            await _emailService.SendAsync(
+                email.Trim(),
+                "PetHealth - Test email",
+                """
+                <h2>PetHealth</h2>
+                <p>Email SMTP đã được cấu hình thành công.</p>
+                """);
+        }
+        catch (EmailConfigurationException ex)
+        {
+            return BadRequest(ApiResponseDto<object>.Fail(ex.Message));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponseDto<object>.Fail(ex.Message));
+        }
 
         return Ok(ApiResponseDto<object>.Ok(null, "Đã gửi email test."));
     }
