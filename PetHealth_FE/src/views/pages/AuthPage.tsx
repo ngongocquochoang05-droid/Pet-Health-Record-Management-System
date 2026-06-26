@@ -91,10 +91,6 @@ export function AuthPage({ onAuthenticated }: AuthPageProps) {
             <span>Tích điểm sau mỗi lần sử dụng</span>
             <span>Quản lý hồ sơ thú cưng dễ dàng</span>
           </div>
-          <div className="auth-offer">
-            <strong>Hồ sơ chăm sóc cá nhân</strong>
-            <p>Theo dõi thú cưng, lịch hẹn và hồ sơ bệnh án ngay trong tài khoản PetHealth.</p>
-          </div>
         </section>
       ) : null}
 
