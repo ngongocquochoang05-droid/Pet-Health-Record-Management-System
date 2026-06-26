@@ -50,6 +50,8 @@ public class NguoiDung
 
     public bool EmailDaXacMinh { get; set; }
 
+    public int LoginCount { get; set; }
+
     public ICollection<ThuCung> ThuCungs { get; set; } = new List<ThuCung>();
 
     public ICollection<LichHen> LichHens { get; set; } = new List<LichHen>();

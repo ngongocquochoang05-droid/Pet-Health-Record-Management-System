@@ -1,12 +1,10 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { getApiErrorMessage } from '../api/api';
 import { getMedicalRecords, saveMedicalRecord } from '../api/clinicalApi';
-import { getVisitImages } from '../api/featureApi';
 import { getAdminAppointments, getStaffAppointments } from '../api/managementApi';
 import type { AuthResponseDto } from '../types/auth';
 import type { LichHenDto } from '../types/booking';
 import type { MedicalRecordDto, UpsertMedicalRecordDto } from '../types/clinical';
-import type { PetVisitImageDto } from '../types/features';
 
 interface MedicalRecordsPageProps {
   session: AuthResponseDto | null;
@@ -25,13 +23,11 @@ const emptyForm: UpsertMedicalRecordDto = {
 
 export function MedicalRecordsPage({ session, bookings }: MedicalRecordsPageProps) {
   const [records, setRecords] = useState<MedicalRecordDto[]>([]);
-  const [images, setImages] = useState<PetVisitImageDto[]>([]);
   const [form, setForm] = useState<UpsertMedicalRecordDto>(emptyForm);
   const [message, setMessage] = useState('');
   const [editableBookings, setEditableBookings] = useState<LichHenDto[]>(bookings);
 
   const canEdit = session?.user.vaiTro === 'Staff';
-  const canViewServiceImages = session?.user.vaiTro === 'Staff' || session?.user.vaiTro === 'Customer';
 
   useEffect(() => {
     if (session) void refresh();
@@ -44,13 +40,9 @@ export function MedicalRecordsPage({ session, bookings }: MedicalRecordsPageProp
         ? await getStaffAppointments(session.user.maNguoiDung)
         : bookings;
 
-    const [recordData, imageData] = await Promise.all([
-      getMedicalRecords(),
-      canViewServiceImages ? getVisitImages({}) : Promise.resolve([])
-    ]);
+    const recordData = await getMedicalRecords();
 
     setRecords(recordData);
-    setImages(imageData);
     setEditableBookings(bookingData);
   }
 
@@ -146,34 +138,6 @@ export function MedicalRecordsPage({ session, bookings }: MedicalRecordsPageProp
           {!records.length ? <p className="empty-state">Chưa có hồ sơ bệnh án.</p> : null}
         </div>
       </section>
-
-      {canViewServiceImages ? (
-        <section className="content-panel full-width">
-          <div className="section-head">
-            <div>
-              <p className="eyebrow">Ảnh hồ sơ</p>
-              <h2>Ảnh trước và sau dịch vụ</h2>
-            </div>
-          </div>
-          <div className="services-grid visit-image-grid">
-            {images.map((image) => (
-              <article className="service-card visit-image-card" key={image.maAnh}>
-                <div className="visit-image-frame">
-                  <img src={image.anhUrl} alt={`${image.tenThuCung} - ${image.loaiAnh}`} />
-                </div>
-                <div className="visit-image-meta">
-                  <span className="status-badge">{image.loaiAnh === 'After' ? 'Sau dịch vụ' : 'Trước dịch vụ'}</span>
-                  <strong>{image.tenThuCung || `Thú cưng #${image.maThuCung}`}</strong>
-                  <p>{image.tenDichVu || 'Chưa rõ dịch vụ'}</p>
-                  <small>Lịch #{image.maLichHen}{image.ngayHen ? ` - ${image.ngayHen}${image.gioHen ? ` lúc ${image.gioHen}` : ''}` : ''}</small>
-                  {image.ghiChu ? <p>{image.ghiChu}</p> : null}
-                </div>
-              </article>
-            ))}
-            {!images.length ? <p className="empty-state">Chưa có ảnh dịch vụ.</p> : null}
-          </div>
-        </section>
-      ) : null}
 
       {message ? <p className="feedback-line">{message}</p> : null}
     </div>

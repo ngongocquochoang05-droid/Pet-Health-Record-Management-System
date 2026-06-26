@@ -31,22 +31,42 @@ public class ReminderBackgroundService : BackgroundService
                 {
                     break;
                 }
+                catch (ObjectDisposedException) when (stoppingToken.IsCancellationRequested)
+                {
+                    break;
+                }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Khong gui duoc nhac lich tai kham tu dong.");
                 }
 
-                await Task.Delay(_interval, stoppingToken);
+                try
+                {
+                    await Task.Delay(_interval, stoppingToken);
+                }
+                catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+                {
+                    break;
+                }
             }
         }
         catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
         {
             // Expected when the API is shutting down or restarting.
         }
+        catch (ObjectDisposedException) when (stoppingToken.IsCancellationRequested)
+        {
+            // Expected when the API fails to start and the host disposes services.
+        }
     }
 
     private async Task SendDueRemindersAsync(CancellationToken cancellationToken)
     {
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
         using var scope = _serviceProvider.CreateScope();
         var featureRepository = scope.ServiceProvider.GetRequiredService<FeatureRepository>();
         var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();

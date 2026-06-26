@@ -16,18 +16,15 @@ public class AdvancedController : ControllerBase
 
     private readonly FeatureRepository _featureRepository;
     private readonly IEmailService _emailService;
-    private readonly IConfiguration _configuration;
     private readonly ILogger<AdvancedController> _logger;
 
     public AdvancedController(
         FeatureRepository featureRepository,
         IEmailService emailService,
-        IConfiguration configuration,
         ILogger<AdvancedController> logger)
     {
         _featureRepository = featureRepository;
         _emailService = emailService;
-        _configuration = configuration;
         _logger = logger;
     }
 
@@ -79,230 +76,6 @@ public class AdvancedController : ControllerBase
         return Ok(ApiResponseDto<IEnumerable<PetHistoryDto>>.Ok(history));
     }
 
-    [HttpGet("visit-images")]
-    public async Task<IActionResult> GetVisitImages([FromQuery] int? maLichHen, [FromQuery] int? maThuCung)
-    {
-        var images = await _featureRepository.GetVisitImagesAsync(
-            maLichHen,
-            maThuCung,
-            GetCurrentUserId(),
-            User.IsInRole("Staff"));
-        return Ok(ApiResponseDto<IEnumerable<PetVisitImageDto>>.Ok(images));
-    }
-
-    [Authorize(Roles = "Staff")]
-    [HttpPost("visit-images")]
-    public async Task<IActionResult> AddVisitImage([FromBody] CreatePetVisitImageDto request)
-    {
-        if (request.MaLichHen <= 0 || request.MaThuCung <= 0 || string.IsNullOrWhiteSpace(request.AnhUrl))
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Thông tin ảnh trước/sau khi khám không hợp lệ."));
-        }
-
-        if (!await _featureRepository.CanManageVisitImageAsync(request.MaLichHen, request.MaThuCung, GetCurrentUserId(), false))
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Lịch hẹn và thú cưng không khớp hoặc bạn không được phân công."));
-        }
-
-        request.LoaiAnh = request.LoaiAnh.Equals("After", StringComparison.OrdinalIgnoreCase) ? "After" : "Before";
-        var id = await _featureRepository.AddVisitImageAsync(request);
-        return Created($"/api/advanced/visit-images/{id}", ApiResponseDto<object>.Ok(new { maAnh = id }, "Đã lưu ảnh khám."));
-    }
-
-    [Authorize(Roles = "Staff")]
-    [HttpPost("visit-images/upload")]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadVisitImage([FromForm] UploadPetVisitImageDto request)
-    {
-        var file = request.File;
-        if (request.MaLichHen <= 0 || request.MaThuCung <= 0 || file is null || file.Length <= 0)
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Thông tin ảnh trước/sau khi khám không hợp lệ."));
-        }
-
-        const long maxFileSize = 5 * 1024 * 1024;
-        if (file.Length > maxFileSize)
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Kích thước ảnh không được vượt quá 5 MB."));
-        }
-
-        var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            ".jpg",
-            ".jpeg",
-            ".png",
-            ".webp"
-        };
-        var extension = Path.GetExtension(file.FileName);
-        if (!allowedExtensions.Contains(extension))
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Chỉ hỗ trợ ảnh .jpg, .jpeg, .png hoặc .webp."));
-        }
-
-        var allowedContentTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-        };
-        if (!allowedContentTypes.Contains(file.ContentType))
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Định dạng nội dung ảnh không hợp lệ."));
-        }
-
-        if (!await _featureRepository.CanManageVisitImageAsync(request.MaLichHen, request.MaThuCung, GetCurrentUserId(), false))
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Lịch hẹn và thú cưng không khớp hoặc bạn không được phân công."));
-        }
-
-        var uploadsRoot = Path.Combine(Directory.GetCurrentDirectory(), "src", "wwwroot", "uploads");
-        Directory.CreateDirectory(uploadsRoot);
-        var safeFileName = $"{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
-        var filePath = Path.Combine(uploadsRoot, safeFileName);
-
-        await using (var stream = System.IO.File.Create(filePath))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        var imageUrl = $"{Request.Scheme}://{Request.Host}/uploads/{safeFileName}";
-        var imageRequest = new CreatePetVisitImageDto
-        {
-            MaLichHen = request.MaLichHen,
-            MaThuCung = request.MaThuCung,
-            LoaiAnh = request.LoaiAnh.Equals("After", StringComparison.OrdinalIgnoreCase) ? "After" : "Before",
-            AnhUrl = imageUrl,
-            GhiChu = request.GhiChu
-        };
-
-        var id = await _featureRepository.AddVisitImageAsync(imageRequest);
-        return Created($"/api/advanced/visit-images/{id}", ApiResponseDto<object>.Ok(new
-        {
-            maAnh = id,
-            anhUrl = imageUrl
-        }, "Đã upload và lưu ảnh khám."));
-    }
-
-    [Authorize(Roles = "Staff")]
-    [HttpDelete("visit-images/{maAnh:int}")]
-    public async Task<IActionResult> DeleteVisitImage(int maAnh)
-    {
-        var url = await _featureRepository.DeleteVisitImageAsync(maAnh, GetCurrentUserId(), false);
-        if (url is null) return NotFound(ApiResponseDto<object>.Fail("Không tìm thấy ảnh hoặc bạn không có quyền xóa."));
-        if (Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.AbsolutePath.StartsWith("/uploads/", StringComparison.Ordinal))
-        {
-            var relativePath = uri.AbsolutePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "src", "wwwroot", relativePath);
-            if (System.IO.File.Exists(filePath)) System.IO.File.Delete(filePath);
-        }
-        return Ok(ApiResponseDto<object>.Ok(null, "Đã xóa ảnh hồ sơ."));
-    }
-
-    [HttpGet("deposits")]
-    public async Task<IActionResult> GetDeposits()
-    {
-        var userId = User.IsInRole("Admin") ? null : GetCurrentUserId();
-        var deposits = await _featureRepository.GetDepositsAsync(userId);
-        return Ok(ApiResponseDto<IEnumerable<DepositDto>>.Ok(deposits));
-    }
-
-    [HttpPost("deposits/bank-transfer")]
-    public async Task<IActionResult> CreateBankTransferDeposit([FromBody] CreateDepositDto request)
-    {
-        if (request.MaLichHen <= 0 || request.SoTien <= 0)
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Thông tin đặt cọc không hợp lệ."));
-        }
-
-        var id = await _featureRepository.CreateDepositAsync(request, GetCurrentUserId());
-        if (!id.HasValue)
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Lịch hẹn không hợp lệ, không thuộc tài khoản hoặc đã có yêu cầu đặt cọc."));
-        }
-
-        var deposit = await _featureRepository.GetDepositByIdAsync(id.Value);
-        return Ok(ApiResponseDto<object>.Ok(new
-        {
-            maDatCoc = id.Value,
-            deposit,
-            bankTransfer = BuildBankTransferInfo(deposit)
-        }, "Đã tạo yêu cầu đặt cọc chuyển khoản ngân hàng."));
-    }
-
-    [HttpPost("deposits/{maDatCoc:int}/receipt")]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadDepositReceipt(int maDatCoc, [FromForm] UploadDepositReceiptDto request)
-    {
-        var file = request.File;
-        if (file is null || file.Length <= 0)
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Vui lòng chọn ảnh biên lai."));
-        }
-
-        const long maxFileSize = 5 * 1024 * 1024;
-        var allowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            ".jpg", ".jpeg", ".png", ".webp", ".pdf"
-        };
-        var allowedContentTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "image/jpeg", "image/png", "image/webp", "application/pdf"
-        };
-        var extension = Path.GetExtension(file.FileName);
-        if (file.Length > maxFileSize || !allowedExtensions.Contains(extension) || !allowedContentTypes.Contains(file.ContentType))
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Biên lai phải là ảnh hoặc PDF và không vượt quá 5 MB."));
-        }
-
-        var uploadsRoot = Path.Combine(Directory.GetCurrentDirectory(), "src", "wwwroot", "uploads", "deposit-receipts");
-        Directory.CreateDirectory(uploadsRoot);
-        var safeFileName = $"{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
-        var filePath = Path.Combine(uploadsRoot, safeFileName);
-
-        await using (var stream = System.IO.File.Create(filePath))
-        {
-            await file.CopyToAsync(stream);
-        }
-
-        var receiptUrl = $"{Request.Scheme}://{Request.Host}/uploads/deposit-receipts/{safeFileName}";
-        var updated = await _featureRepository.SaveDepositReceiptAsync(maDatCoc, GetCurrentUserId(), receiptUrl, request.GhiChu);
-        if (!updated)
-        {
-            System.IO.File.Delete(filePath);
-            return BadRequest(ApiResponseDto<object>.Fail("Không tìm thấy yêu cầu đặt cọc hoặc yêu cầu đã được xác nhận."));
-        }
-
-        return Ok(ApiResponseDto<object>.Ok(new { bienLaiUrl = receiptUrl }, "Đã gửi biên lai để Admin kiểm tra."));
-    }
-
-    [HttpPost("loyalty/claim")]
-    public async Task<IActionResult> ClaimLoyaltyVoucher()
-    {
-        var id = await _featureRepository.ClaimLoyaltyVoucherAsync(GetCurrentUserId());
-        return id > 0
-            ? Ok(ApiResponseDto<object>.Ok(new { maPhieu = id }, "Đã cấp ưu đãi miễn phí 1 lần khám."))
-            : BadRequest(ApiResponseDto<object>.Fail("Chưa đủ 3 lần khám hoàn thành hoặc đã có phiếu ưu đãi chưa sử dụng."));
-    }
-
-    [Authorize(Roles = "Admin")]
-    [HttpPatch("deposits/{maDatCoc:int}/review")]
-    public async Task<IActionResult> ReviewDeposit(int maDatCoc, [FromBody] ReviewDepositDto request)
-    {
-        if (!request.ChapNhan && string.IsNullOrWhiteSpace(request.LyDoTuChoi))
-        {
-            return BadRequest(ApiResponseDto<object>.Fail("Vui lòng nhập lý do từ chối biên lai."));
-        }
-
-        var updated = await _featureRepository.ReviewDepositAsync(
-            maDatCoc,
-            GetCurrentUserId(),
-            request.ChapNhan,
-            request.LyDoTuChoi);
-        return updated
-            ? Ok(ApiResponseDto<object>.Ok(null, request.ChapNhan ? "Đã xác nhận đặt cọc." : "Đã từ chối biên lai."))
-            : NotFound(ApiResponseDto<object>.Fail("Không tìm thấy đặt cọc cần duyệt."));
-    }
-
     [Authorize(Roles = "Admin,Staff")]
     [HttpGet("reminders")]
     public async Task<IActionResult> GetReminders()
@@ -338,34 +111,6 @@ public class AdvancedController : ControllerBase
             emailDaGui = emailSent,
             emailNhan = reminder is null ? null : MaskEmail(reminder.Email)
         }, emailSent ? "Đã tạo nhắc lịch tái khám và gửi email." : "Đã tạo nhắc lịch tái khám nhưng chưa có email hợp lệ để gửi."));
-    }
-
-    private string GetCurrentUserId()
-    {
-        return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
-    }
-
-    private object BuildBankTransferInfo(DepositDto? deposit)
-    {
-        return new
-        {
-            bankName = GetConfiguredValue("BankTransfer:BankName", "Ten ngan hang"),
-            accountNumber = GetConfiguredValue("BankTransfer:AccountNumber", "So tai khoan"),
-            accountName = GetConfiguredValue("BankTransfer:AccountName", "PETHEALTH"),
-            transferContent = deposit?.MaGiaoDich ?? "PETHEALTH-DAT-COC",
-            note = GetConfiguredValue("BankTransfer:Note", "Chuyen khoan dung noi dung de admin doi soat va xac nhan dat coc.")
-        };
-    }
-
-    private string GetConfiguredValue(string key, string fallback)
-    {
-        var value = _configuration[key]?.Trim();
-        if (string.IsNullOrWhiteSpace(value) || (value.StartsWith("__", StringComparison.Ordinal) && value.EndsWith("__", StringComparison.Ordinal)))
-        {
-            return fallback;
-        }
-
-        return value;
     }
 
     private async Task<bool> SendPetQrEmailAsync(PetQrDto qr)

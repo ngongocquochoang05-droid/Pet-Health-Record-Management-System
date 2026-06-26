@@ -68,16 +68,6 @@ public class RealtimeChangeMiddleware
             return Scope("services", "authenticated");
         }
 
-        if (path.StartsWith("/api/danhgia"))
-        {
-            return Scope("reviews", "authenticated");
-        }
-
-        if (path.StartsWith("/api/uudai"))
-        {
-            return Scope("promotions", "authenticated");
-        }
-
         if (path.StartsWith("/api/notifications"))
         {
             return Scope("notifications", actorGroup);
@@ -114,14 +104,9 @@ public class RealtimeChangeMiddleware
             return Scope("billing", actorGroup, "role:Admin", "role:Staff");
         }
 
-        if (path.StartsWith("/api/advanced/visit-images") || path.StartsWith("/api/advanced/pets"))
+        if (path.StartsWith("/api/advanced/pets"))
         {
             return Scope("clinical", actorGroup, "role:Admin", "role:Staff");
-        }
-
-        if (path.StartsWith("/api/advanced/deposits") || path.StartsWith("/api/advanced/loyalty"))
-        {
-            return Scope("billing", actorGroup, "role:Admin");
         }
 
         if (path.StartsWith("/api/advanced/reminders"))

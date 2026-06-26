@@ -7,14 +7,11 @@ import { AdminSystemPage } from './views/pages/AdminSystemPage';
 import { AppointmentsPage } from './views/pages/AppointmentsPage';
 import { AuthPage } from './views/pages/AuthPage';
 import { AuthRecoveryPage } from './views/pages/AuthRecoveryPage';
-import { BillingPage } from './views/pages/BillingPage';
 import { BookingPage } from './views/pages/BookingPage';
-import { CustomerRewardsPage } from './views/pages/CustomerRewardsPage';
 import { GoogleCallbackPage } from './views/pages/GoogleCallbackPage';
 import { HomePage } from './views/pages/HomePage';
 import { OperationsPage } from './views/pages/OperationsPage';
 import { ProfilePage } from './views/pages/ProfilePage';
-import { ReviewsPage } from './views/pages/ReviewsPage';
 import { ServicesPage } from './views/pages/ServicesPage';
 import { StaffPage } from './views/pages/StaffPage';
 import { StaffWorkPage } from './views/pages/StaffWorkPage';
@@ -160,12 +157,7 @@ export default function App() {
           <Route path="/auth/google-callback" element={<GoogleCallbackPage onAuthenticated={setSession} />} />
           <Route path="/profile" element={<Navigate replace to="/customer/profile" />} />
           <Route path="/customer/profile" element={<ProfilePage onPetsChanged={() => refreshPrivateData(session?.user.maNguoiDung ?? '')} onSessionChanged={setSession} pets={pets} session={session} />} />
-          <Route path="/reviews" element={<ReviewsPage bookings={bookings} session={session} />} />
-          <Route path="/customer/reviews" element={<ReviewsPage bookings={bookings} session={session} />} />
-          <Route path="/billing" element={<Navigate replace to="/customer/billing" />} />
-          <Route path="/customer/billing" element={<BillingPage session={session} />} />
           <Route path="/advanced" element={<Navigate replace to="/" />} />
-          <Route path="/customer/rewards" element={<CustomerRewardsPage bookings={bookings} session={session} />} />
           <Route path="/admin/system" element={<AdminSystemPage session={session} />} />
           <Route path="/staff/work" element={<StaffWorkPage session={session} />} />
           <Route path="/operations" element={<Navigate replace to="/admin/operations" />} />
@@ -221,15 +213,13 @@ export default function App() {
 
 const topicRoutes: Record<RealtimeTopic, string[]> = {
   admin: ['/admin', '/admin/system'],
-  billing: ['/customer/billing', '/admin', '/admin/operations'],
+  billing: ['/admin', '/admin/operations'],
   bookings: ['/', '/customer', '/customer/booking', '/customer/appointments', '/admin', '/staff', '/staff/work', '/admin/operations', '/customer/medical-records', '/admin/medical-records', '/staff/medical-records'],
   clinical: ['/customer/medical-records', '/admin/medical-records', '/staff/medical-records', '/staff/work', '/customer/profile'],
   notifications: ['/customer/notifications', '/admin/notifications', '/staff/notifications'],
   pets: ['/', '/customer', '/customer/profile', '/customer/booking', '/customer/appointments', '/staff/work', '/customer/medical-records', '/admin/medical-records', '/staff/medical-records'],
   profile: ['/customer/profile', '/admin'],
-  promotions: ['/', '/customer/rewards', '/admin/system'],
   reminders: ['/admin/operations', '/staff/work', '/admin/system'],
-  reviews: ['/reviews', '/customer/reviews', '/admin/system'],
   services: ['/', '/services', '/customer/services', '/customer/booking', '/admin'],
   shifts: ['/staff', '/admin', '/admin/operations'],
   system: ['/admin/system']

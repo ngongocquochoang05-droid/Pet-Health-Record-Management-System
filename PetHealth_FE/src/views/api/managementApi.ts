@@ -2,7 +2,7 @@ import api from './api';
 import type { ApiResponse } from '../types/common';
 import type { LichHenDto, UpdateLichHenStatusDto } from '../types/booking';
 import type { DichVuDto } from '../types/service';
-import type { ReportSummaryDto, ServiceUpsertDto, StaffDto, UpdateUserRoleDto } from '../types/management';
+import type { ServiceUpsertDto, StaffDto, UpdateUserRoleDto } from '../types/management';
 import type { NguoiDungDto } from '../types/user';
 
 export async function getAdminUsers(vaiTro?: string): Promise<NguoiDungDto[]> {
@@ -56,18 +56,6 @@ export async function updateAdminService(maDichVu: number, payload: ServiceUpser
 
 export async function deleteAdminService(maDichVu: number): Promise<void> {
   await api.delete(`/admin/services/${maDichVu}`);
-}
-
-export async function getAdminReports(): Promise<ReportSummaryDto> {
-  const response = await api.get<ApiResponse<ReportSummaryDto>>('/admin/reports');
-  return response.data.data;
-}
-
-export async function downloadAdminReportCsv(): Promise<Blob> {
-  const response = await api.get('/admin/reports/export.csv', {
-    responseType: 'blob'
-  });
-  return response.data;
 }
 
 export async function getStaffAppointments(maNhanVien: string): Promise<LichHenDto[]> {

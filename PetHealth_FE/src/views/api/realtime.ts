@@ -16,9 +16,7 @@ export type RealtimeTopic =
   | 'notifications'
   | 'pets'
   | 'profile'
-  | 'promotions'
   | 'reminders'
-  | 'reviews'
   | 'services'
   | 'shifts'
   | 'system';

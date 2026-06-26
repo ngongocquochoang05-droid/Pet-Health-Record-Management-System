@@ -10,11 +10,8 @@ const text = {
   home: 'Trang chủ',
   overview: 'Tổng quan',
   services: 'Dịch vụ',
-  reviews: 'Đánh giá',
   booking: 'Đặt lịch',
   appointments: 'Lịch hẹn',
-  billing: 'Hóa đơn',
-  rewards: 'Ưu đãi/Đặt cọc',
   profile: 'Hồ sơ',
   medical: 'Hồ sơ bệnh án',
   notifications: 'Thông báo',
@@ -36,8 +33,7 @@ const text = {
 
 const publicLinks = [
   { to: '/', label: text.home },
-  { to: '/services', label: text.services },
-  { to: '/reviews', label: text.reviews }
+  { to: '/services', label: text.services }
 ];
 
 const customerLinks = [
@@ -45,9 +41,6 @@ const customerLinks = [
   { to: '/customer/services', label: text.services },
   { to: '/customer/booking', label: text.booking },
   { to: '/customer/appointments', label: text.appointments },
-  { to: '/customer/reviews', label: text.reviews },
-  { to: '/customer/billing', label: text.billing },
-  { to: '/customer/rewards', label: text.rewards },
   { to: '/customer/profile', label: text.profile },
   { to: '/customer/medical-records', label: text.medical },
   { to: '/customer/notifications', label: text.notifications }

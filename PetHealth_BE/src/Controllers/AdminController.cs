@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using System.Text;
 using PetHealth_BE.src.DTOs;
 using PetHealth_BE.src.Models;
 using PetHealth_BE.src.Repositories;
@@ -14,8 +12,6 @@ namespace PetHealth_BE.src.Controllers;
 [Route("api/[controller]")]
 public class AdminController : ControllerBase
 {
-    private const int ReportCsvColumnCount = 9;
-
     private readonly NguoiDungRepository _userRepository;
     private readonly DichVuRepository _serviceRepository;
     private readonly LichHenRepository _bookingRepository;
@@ -273,85 +269,6 @@ public class AdminController : ControllerBase
         return Ok(ApiResponseDto<object>.Ok(null, "Đã phân công nhân viên."));
     }
 
-    [HttpGet("reports")]
-    public async Task<IActionResult> GetReports()
-    {
-        var report = await _bookingRepository.GetReportSummaryAsync();
-        return Ok(ApiResponseDto<ReportSummaryDto>.Ok(report));
-    }
-
-    [HttpGet("reports/export.csv")]
-    public async Task<IActionResult> ExportReportsCsv()
-    {
-        var report = await _bookingRepository.GetReportSummaryAsync();
-        var builder = new StringBuilder();
-        AppendCsvRow(
-            builder,
-            "Nhóm báo cáo",
-            "Thời gian",
-            "Mã",
-            "Tên",
-            "Số lịch",
-            "Lịch hoàn thành",
-            "Doanh thu (VND)",
-            "Tổng khách hàng",
-            "Khách mới");
-
-        foreach (var item in report.LichTheoNgay)
-        {
-            var displayDate = DateTime.TryParseExact(
-                item.NgayHen,
-                "yyyy-MM-dd",
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None,
-                out var date)
-                ? $"Ngày {date:dd/MM/yyyy}"
-                : $"Ngày {item.NgayHen}";
-            AppendCsvRow(builder, "Lịch theo ngày", displayDate, string.Empty, string.Empty, item.SoLich);
-        }
-
-        foreach (var item in report.LichTheoThang)
-        {
-            AppendCsvRow(builder, "Lịch theo tháng", $"Tháng {item.Thang:D2}/{item.Nam}", string.Empty, string.Empty, item.SoLich);
-        }
-
-        foreach (var item in report.TopDichVu)
-        {
-            AppendCsvRow(builder, "Dịch vụ phổ biến", string.Empty, item.MaDichVu, item.TenDichVu, item.SoLanDat);
-        }
-
-        AppendCsvRow(
-            builder,
-            "Tổng quan",
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            string.Empty,
-            report.TongDoanhThu,
-            report.TongKhachHang,
-            report.KhachHangMoiThangNay);
-
-        foreach (var item in report.HieuSuatNhanVien)
-        {
-            AppendCsvRow(
-                builder,
-                "Hiệu suất nhân viên",
-                string.Empty,
-                item.MaNhanVien,
-                item.HoVaTen,
-                item.SoLichDuocGiao,
-                item.SoLichHoanThanh,
-                item.DoanhThu);
-        }
-
-        var fileName = $"pethealth-report-{DateTime.Now:yyyyMMdd-HHmm}.csv";
-        return File(
-            Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(builder.ToString())).ToArray(),
-            "text/csv; charset=utf-8",
-            fileName);
-    }
-
     private static string? ValidateService(ServiceUpsertDto request)
     {
         if (string.IsNullOrWhiteSpace(request.TenDichVu))
@@ -370,20 +287,6 @@ public class AdminController : ControllerBase
         }
 
         return null;
-    }
-
-    private static void AppendCsvRow(StringBuilder builder, params object?[] values)
-    {
-        var cells = values
-            .Concat(Enumerable.Repeat<object?>(null, Math.Max(0, ReportCsvColumnCount - values.Length)))
-            .Take(ReportCsvColumnCount)
-            .Select(value => EscapeCsv(value?.ToString() ?? string.Empty));
-        builder.AppendLine(string.Join(',', cells));
-    }
-
-    private static string EscapeCsv(string value)
-    {
-        return $"\"{value.Replace("\"", "\"\"")}\"";
     }
 
     private static string? ValidateStaff(StaffUpsertDto request)

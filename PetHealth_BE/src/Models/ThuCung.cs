@@ -39,6 +39,14 @@ public class ThuCung
 
     public bool TrangThaiHoatDong { get; set; } = true;
 
+    [MaxLength(100)]
+    public string? MaQr { get; set; }
+
+    [MaxLength(1000)]
+    public string? QrCodeUrl { get; set; }
+
+    public DateTime? NgayCapQr { get; set; }
+
     public NguoiDung? NguoiDung { get; set; }
 
     public ICollection<LichHen> LichHens { get; set; } = new List<LichHen>();

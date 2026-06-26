@@ -92,11 +92,10 @@ public class DichVuRepository
                 dv.LoaiThuCung,
                 dv.TrangThaiHoatDong,
                 COUNT(DISTINCT lh.MaLichHen) AS SoLanDat,
-                CAST(AVG(CAST(dg.SoSao AS decimal(18,2))) AS decimal(18,2)) AS DiemTrungBinh,
-                COUNT(DISTINCT dg.MaDanhGia) AS SoDanhGia
+                CAST(0 AS decimal(18,2)) AS DiemTrungBinh,
+                0 AS SoDanhGia
             FROM DichVu dv
             LEFT JOIN LichHen lh ON lh.MaDichVu = dv.MaDichVu
-            LEFT JOIN DanhGiaDichVu dg ON dg.MaDichVu = dv.MaDichVu
             """;
 
         if (!includeInactive)

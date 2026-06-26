@@ -78,10 +78,6 @@ function toRoleScopedNotificationPath(path: string, session: AuthResponseDto): s
     return '/customer/appointments';
   }
 
-  if (path === '/billing') {
-    return '/customer/billing';
-  }
-
   if (path === '/profile' || path === '/pets') {
     return '/customer/profile';
   }

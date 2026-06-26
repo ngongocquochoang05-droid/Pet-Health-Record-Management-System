@@ -165,7 +165,12 @@ public class NguoiDungRepository
         const string sql = """
             UPDATE NguoiDung
             SET PasswordHash = @PasswordHash,
-                AuthProvider = CASE WHEN AuthProvider = 'Google' THEN AuthProvider ELSE 'Local' END
+                AuthProvider = CASE
+                    WHEN AuthProvider = 'Google' THEN 'Local,Google'
+                    WHEN AuthProvider IS NULL OR AuthProvider = '' THEN 'Local'
+                    ELSE AuthProvider
+                END,
+                EmailDaXacMinh = 1
             WHERE MaNguoiDung = @MaNguoiDung;
             """;
 

@@ -1,17 +1,12 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { getApiErrorMessage } from '../api/api';
 import {
-  createPromotion,
   createShift,
   createStaff,
   deleteShift,
   deleteStaff,
-  getAvailableVouchers,
   getInvoices,
-  getPromotions,
   getShifts,
-  issueVoucher,
-  updatePromotion,
   updateShift,
   updateStaff,
   upsertInvoice
@@ -19,7 +14,7 @@ import {
 import { getAdminAppointments, getAdminStaff, getStaffAppointments } from '../api/managementApi';
 import type { AuthResponseDto } from '../types/auth';
 import type { LichHenDto } from '../types/booking';
-import type { CaLamViecDto, ChuongTrinhUuDaiDto, HoaDonDto, PhieuUuDaiDto, UpsertCaLamViecDto, UpsertHoaDonDto, UpsertUuDaiDto } from '../types/features';
+import type { CaLamViecDto, HoaDonDto, UpsertCaLamViecDto, UpsertHoaDonDto } from '../types/features';
 import type { StaffDto, StaffUpsertDto } from '../types/management';
 
 interface OperationsPageProps {
@@ -46,15 +41,6 @@ const emptyShift: UpsertCaLamViecDto = {
   ghiChu: ''
 };
 
-const emptyPromotion: UpsertUuDaiDto = {
-  tenUuDai: '',
-  soLuotYeuCau: 1,
-  thoiHanThang: 1,
-  loaiGiamGia: 'Full',
-  giaTriGiam: 0,
-  trangThai: true
-};
-
 const emptyInvoice: UpsertHoaDonDto = {
   maLichHen: 0,
   tongTien: 0,
@@ -64,7 +50,6 @@ const emptyInvoice: UpsertHoaDonDto = {
 
 export function OperationsPage({ session }: OperationsPageProps) {
   const [shifts, setShifts] = useState<CaLamViecDto[]>([]);
-  const [promotions, setPromotions] = useState<ChuongTrinhUuDaiDto[]>([]);
   const [invoices, setInvoices] = useState<HoaDonDto[]>([]);
   const [staff, setStaff] = useState<StaffDto[]>([]);
   const [appointments, setAppointments] = useState<LichHenDto[]>([]);
@@ -72,45 +57,26 @@ export function OperationsPage({ session }: OperationsPageProps) {
   const [editingStaffId, setEditingStaffId] = useState<string | null>(null);
   const [shiftForm, setShiftForm] = useState<UpsertCaLamViecDto>(emptyShift);
   const [editingShiftId, setEditingShiftId] = useState<number | null>(null);
-  const [promotionForm, setPromotionForm] = useState<UpsertUuDaiDto>(emptyPromotion);
-  const [promotionId, setPromotionId] = useState<number | null>(null);
   const [invoiceForm, setInvoiceForm] = useState<UpsertHoaDonDto>(emptyInvoice);
-  const [availableVouchers, setAvailableVouchers] = useState<PhieuUuDaiDto[]>([]);
-  const [voucherCustomer, setVoucherCustomer] = useState<string>('');
-  const [voucherPromotion, setVoucherPromotion] = useState<number>(0);
   const [message, setMessage] = useState<string>('');
 
   const isAdmin = session?.user.vaiTro === 'Admin';
   const canAccess = session?.user.vaiTro === 'Admin' || session?.user.vaiTro === 'Staff';
 
-  function formatDiscount(item: { loaiGiamGia?: string | null; giaTriGiam?: number }): string {
-    if (item.loaiGiamGia === 'Percent') {
-      return `Giảm ${item.giaTriGiam ?? 0}%`;
-    }
-    if (item.loaiGiamGia === 'Fixed') {
-      return `Giảm ${new Intl.NumberFormat('vi-VN').format(item.giaTriGiam ?? 0)} VND`;
-    }
-    return 'Miễn phí toàn bộ';
-  }
-
   useEffect(() => {
-    if (!canAccess) {
-      return;
+    if (canAccess) {
+      void refresh();
     }
-
-    void refresh();
   }, [canAccess, session]);
 
   async function refresh(): Promise<void> {
-    const [shiftData, promotionData, invoiceData, staffData, appointmentData] = await Promise.all([
+    const [shiftData, invoiceData, staffData, appointmentData] = await Promise.all([
       getShifts(isAdmin ? undefined : session?.user.maNguoiDung),
-      getPromotions(),
       getInvoices(),
       isAdmin ? getAdminStaff() : Promise.resolve([]),
       isAdmin ? getAdminAppointments() : session ? getStaffAppointments(session.user.maNguoiDung) : Promise.resolve([])
     ]);
     setShifts(shiftData);
-    setPromotions(promotionData);
     setInvoices(invoiceData);
     setStaff(staffData);
     setAppointments(appointmentData);
@@ -150,43 +116,13 @@ export function OperationsPage({ session }: OperationsPageProps) {
     }
   }
 
-  async function handlePromotionSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault();
-    try {
-      if (promotionId) {
-        await updatePromotion(promotionId, promotionForm);
-      } else {
-        await createPromotion(promotionForm);
-      }
-      setPromotionForm(emptyPromotion);
-      setPromotionId(null);
-      setMessage('Đã lưu ưu đãi.');
-      await refresh();
-    } catch (error) {
-      setMessage(getApiErrorMessage(error));
-    }
-  }
-
   async function handleInvoiceSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     try {
       await upsertInvoice(invoiceForm);
       setInvoiceForm(emptyInvoice);
-      setAvailableVouchers([]);
       setMessage('Đã lưu hóa đơn.');
       await refresh();
-    } catch (error) {
-      setMessage(getApiErrorMessage(error));
-    }
-  }
-
-  async function handleIssueVoucher(event: FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault();
-    try {
-      await issueVoucher({ maKhachHang: voucherCustomer, maUuDai: voucherPromotion });
-      setVoucherCustomer('');
-      setVoucherPromotion(0);
-      setMessage('Đã cấp phiếu ưu đãi.');
     } catch (error) {
       setMessage(getApiErrorMessage(error));
     }
@@ -287,100 +223,37 @@ export function OperationsPage({ session }: OperationsPageProps) {
         </section>
       ) : null}
 
-      {isAdmin ? (
-        <section className="content-panel">
-          <div className="section-head"><div><p className="eyebrow">Ưu đãi</p><h2>Chương trình ưu đãi</h2></div></div>
-          <form className="form-grid" onSubmit={handlePromotionSubmit}>
-            <label>Tên ưu đãi<input value={promotionForm.tenUuDai} onChange={(event) => setPromotionForm((current) => ({ ...current, tenUuDai: event.target.value }))} /></label>
-            <label>Số lượt yêu cầu<input type="number" min="0" value={promotionForm.soLuotYeuCau} onChange={(event) => setPromotionForm((current) => ({ ...current, soLuotYeuCau: Number(event.target.value) }))} /></label>
-            <label>Thời hạn tháng<input type="number" min="1" value={promotionForm.thoiHanThang} onChange={(event) => setPromotionForm((current) => ({ ...current, thoiHanThang: Number(event.target.value) }))} /></label>
-            <label>Loại giảm<select value={promotionForm.loaiGiamGia} onChange={(event) => setPromotionForm((current) => ({ ...current, loaiGiamGia: event.target.value, giaTriGiam: event.target.value === 'Full' ? 0 : current.giaTriGiam }))}>
-              <option value="Full">Miễn phí toàn bộ</option>
-              <option value="Percent">Giảm theo phần trăm</option>
-              <option value="Fixed">Giảm theo số tiền</option>
-            </select></label>
-            <label>Giá trị giảm<input disabled={promotionForm.loaiGiamGia === 'Full'} type="number" min="0" max={promotionForm.loaiGiamGia === 'Percent' ? 100 : undefined} value={promotionForm.giaTriGiam} onChange={(event) => setPromotionForm((current) => ({ ...current, giaTriGiam: Number(event.target.value) }))} /></label>
-            <button className="primary-button" type="submit">{promotionId ? 'Cập nhật ưu đãi' : 'Thêm ưu đãi'}</button>
-          </form>
-          <div className="stack-list space-top">
-            {promotions.map((promotion) => (
-              <article className="list-card" key={promotion.maUuDai}>
-                <strong>{promotion.tenUuDai}</strong>
-                <button className="ghost-button" type="button" onClick={() => {
-                  setPromotionId(promotion.maUuDai);
-                  setPromotionForm({
-                    tenUuDai: promotion.tenUuDai ?? '',
-                    soLuotYeuCau: promotion.soLuotYeuCau,
-                    thoiHanThang: promotion.thoiHanThang,
-                    loaiGiamGia: promotion.loaiGiamGia ?? 'Full',
-                    giaTriGiam: promotion.giaTriGiam ?? 0,
-                    trangThai: promotion.trangThai
-                  });
-                }}>Sửa</button>
-                <span>{formatDiscount(promotion)}</span>
-              </article>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {canAccess ? (
-        <section className="content-panel">
-          <div className="section-head"><div><p className="eyebrow">Hóa đơn</p><h2>Xác nhận thanh toán</h2></div></div>
-          <form className="form-grid" onSubmit={handleInvoiceSubmit}>
-            <label>Lịch hẹn<select value={invoiceForm.maLichHen} onChange={(event) => {
-              const maLichHen = Number(event.target.value);
-              const booking = appointments.find((item) => item.maLichHen === maLichHen);
-              setInvoiceForm((current) => ({ ...current, maLichHen, tongTien: booking?.tongTien ?? 0, maPhieu: undefined }));
-              if (maLichHen) {
-                void getAvailableVouchers(maLichHen).then(setAvailableVouchers).catch(() => setAvailableVouchers([]));
-              } else {
-                setAvailableVouchers([]);
-              }
-            }}>
-              <option value={0}>Chọn lịch</option>
-              {appointments.map((item) => <option key={item.maLichHen} value={item.maLichHen}>{item.tenKhachHang} - {item.tenDichVu}</option>)}
-            </select></label>
-            <label>Phiếu ưu đãi<select value={invoiceForm.maPhieu ?? 0} onChange={(event) => setInvoiceForm((current) => ({ ...current, maPhieu: Number(event.target.value) || undefined }))}>
-              <option value={0}>Không áp dụng</option>
-              {availableVouchers.map((voucher) => <option key={voucher.maPhieu} value={voucher.maPhieu}>#{voucher.maPhieu} - {voucher.tenUuDai} ({formatDiscount(voucher)})</option>)}
-            </select></label>
-            <label>Tổng tiền<input type="number" min="0" value={invoiceForm.tongTien} onChange={(event) => setInvoiceForm((current) => ({ ...current, tongTien: Number(event.target.value) }))} /></label>
-            <label>Phương thức thanh toán<select value={invoiceForm.phuongThucThanhToan} onChange={(event) => setInvoiceForm((current) => ({ ...current, phuongThucThanhToan: event.target.value }))}>
-              <option value="Cash">Tiền mặt</option>
-              <option value="BankTransfer">Chuyển khoản ngân hàng</option>
-              <option value="Deposit">Khấu trừ tiền đặt cọc</option>
-            </select></label>
-            <label>Trạng thái<select value={invoiceForm.trangThaiThanhToan} onChange={(event) => setInvoiceForm((current) => ({ ...current, trangThaiThanhToan: event.target.value }))}>
-              <option value="Unpaid">Chưa thanh toán</option>
-              <option value="Paid">Đã thanh toán</option>
-            </select></label>
-            <button className="primary-button" type="submit">Lưu hóa đơn</button>
-          </form>
-          <div className="stack-list space-top">
-            {invoices.map((invoice) => (
-              <article className="list-card" key={invoice.maHoaDon}>
-                <strong>#{invoice.maHoaDon} - {invoice.tenKhachHang}</strong>
-                <span>{new Intl.NumberFormat('vi-VN').format(invoice.tongTien)} VND</span>
-              </article>
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {isAdmin ? (
-        <section className="content-panel">
-          <div className="section-head"><div><p className="eyebrow">Cấp ưu đãi</p><h2>Phiếu ưu đãi khách hàng</h2></div></div>
-          <form className="form-grid" onSubmit={handleIssueVoucher}>
-            <label>Mã khách hàng<input value={voucherCustomer} onChange={(event) => setVoucherCustomer(event.target.value)} /></label>
-            <label>Ưu đãi<select value={voucherPromotion} onChange={(event) => setVoucherPromotion(Number(event.target.value))}>
-              <option value={0}>Chọn ưu đãi</option>
-              {promotions.map((item) => <option key={item.maUuDai} value={item.maUuDai}>{item.tenUuDai}</option>)}
-            </select></label>
-            <button className="primary-button" type="submit">Cấp phiếu</button>
-          </form>
-        </section>
-      ) : null}
+      <section className="content-panel">
+        <div className="section-head"><div><p className="eyebrow">Hóa đơn</p><h2>Xác nhận thanh toán</h2></div></div>
+        <form className="form-grid" onSubmit={handleInvoiceSubmit}>
+          <label>Lịch hẹn<select value={invoiceForm.maLichHen} onChange={(event) => {
+            const maLichHen = Number(event.target.value);
+            const booking = appointments.find((item) => item.maLichHen === maLichHen);
+            setInvoiceForm((current) => ({ ...current, maLichHen, tongTien: booking?.tongTien ?? 0 }));
+          }}>
+            <option value={0}>Chọn lịch</option>
+            {appointments.map((item) => <option key={item.maLichHen} value={item.maLichHen}>{item.tenKhachHang} - {item.tenDichVu}</option>)}
+          </select></label>
+          <label>Tổng tiền<input type="number" min="0" value={invoiceForm.tongTien} onChange={(event) => setInvoiceForm((current) => ({ ...current, tongTien: Number(event.target.value) }))} /></label>
+          <label>Phương thức thanh toán<select value={invoiceForm.phuongThucThanhToan} onChange={(event) => setInvoiceForm((current) => ({ ...current, phuongThucThanhToan: event.target.value }))}>
+            <option value="Cash">Tiền mặt</option>
+            <option value="BankTransfer">Chuyển khoản ngân hàng</option>
+          </select></label>
+          <label>Trạng thái<select value={invoiceForm.trangThaiThanhToan} onChange={(event) => setInvoiceForm((current) => ({ ...current, trangThaiThanhToan: event.target.value }))}>
+            <option value="Unpaid">Chưa thanh toán</option>
+            <option value="Paid">Đã thanh toán</option>
+          </select></label>
+          <button className="primary-button" type="submit">Lưu hóa đơn</button>
+        </form>
+        <div className="stack-list space-top">
+          {invoices.map((invoice) => (
+            <article className="list-card" key={invoice.maHoaDon}>
+              <strong>#{invoice.maHoaDon} - {invoice.tenKhachHang}</strong>
+              <span>{new Intl.NumberFormat('vi-VN').format(invoice.tongTien)} VND</span>
+            </article>
+          ))}
+        </div>
+      </section>
 
       {message ? <p className="feedback-line">{message}</p> : null}
     </div>

@@ -92,8 +92,8 @@ export function AuthPage({ onAuthenticated }: AuthPageProps) {
             <span>Quản lý hồ sơ thú cưng dễ dàng</span>
           </div>
           <div className="auth-offer">
-            <strong>Ưu đãi cho thành viên mới</strong>
-            <p>Theo dõi ưu đãi và đặt cọc ngay trong tài khoản PetHealth.</p>
+            <strong>Hồ sơ chăm sóc cá nhân</strong>
+            <p>Theo dõi thú cưng, lịch hẹn và hồ sơ bệnh án ngay trong tài khoản PetHealth.</p>
           </div>
         </section>
       ) : null}

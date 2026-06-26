@@ -17,10 +17,15 @@ public class LichHen
 
     public int MaDichVu { get; set; }
 
+    [MaxLength(50)]
+    public string? MaNhanVien { get; set; }
+
     public DateTime NgayHen { get; set; }
 
     [Column("GioBatDau")]
     public TimeOnly GioHen { get; set; }
+
+    public TimeOnly? GioKetThuc { get; set; }
 
     [Required]
     [MaxLength(40)]

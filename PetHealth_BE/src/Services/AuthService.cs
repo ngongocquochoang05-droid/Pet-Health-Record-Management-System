@@ -225,7 +225,7 @@ public class AuthService
         }
 
         var user = await _userRepository.GetByEmailAsync(email.Trim().ToLowerInvariant());
-        if (user is null || string.IsNullOrWhiteSpace(user.PasswordHash))
+        if (user is null || !user.TrangThaiHoatDong)
         {
             return;
         }

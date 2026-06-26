@@ -109,7 +109,7 @@ function AdminOverview({
           <h2>Điều hành phòng khám, lịch hẹn và dữ liệu khách hàng.</h2>
           <p className="hero-copy">
             Trang tổng quan dành cho Admin dùng để nhìn nhanh tình hình hệ thống, sau đó đi vào quản lý lịch hẹn,
-            phân quyền tài khoản, dịch vụ, ưu đãi, đặt cọc và vận hành phòng khám.
+            phân quyền tài khoản, dịch vụ, phân ca nhân viên và vận hành phòng khám.
           </p>
           <div className="hero-actions">
             <Link className="primary-button" to="/admin">Mở bảng quản trị</Link>
@@ -139,7 +139,7 @@ function AdminOverview({
           <div className="hero-schedule-card">
             <span>Trọng tâm</span>
             <strong>Quản trị vận hành</strong>
-            <p>Kiểm soát lịch hẹn, dịch vụ, tài khoản, ưu đãi, đặt cọc và báo cáo.</p>
+            <p>Kiểm soát lịch hẹn, dịch vụ, tài khoản, phân ca và hồ sơ chăm sóc.</p>
           </div>
         </div>
       </section>
@@ -155,7 +155,7 @@ function AdminOverview({
           <Link className="text-link" to="/admin">Mở</Link>
         </div>
         <div className="stack-list">
-          <OverviewCard title="Quản lý lịch hẹn" description="Xem lịch, đổi trạng thái, phân công nhân viên và theo dõi đặt cọc." />
+          <OverviewCard title="Quản lý lịch hẹn" description="Xem lịch, đổi trạng thái và phân công nhân viên phụ trách." />
           <OverviewCard title="Quản lý dịch vụ" description="Thêm, sửa, xóa, bật tắt dịch vụ và cập nhật ảnh dịch vụ." />
         </div>
       </section>
@@ -170,7 +170,7 @@ function AdminOverview({
         </div>
         <div className="stack-list">
           <OverviewCard title="Phân quyền tài khoản" description="Đổi vai trò Admin, Nhân viên, Khách hàng và khóa/mở tài khoản." />
-          <OverviewCard title="Ưu đãi, QR và thanh toán" description="Cấp ưu đãi, cấp QR thú cưng, kiểm tra đặt cọc và cấu hình chức năng nâng cao." />
+          <OverviewCard title="QR và nhắc lịch" description="Cấp QR thú cưng, tra cứu lịch sử chăm sóc và tạo nhắc lịch tái khám." />
         </div>
       </section>
 
@@ -184,7 +184,7 @@ function AdminOverview({
         </div>
         <div className="featured-services">
           <OverviewCard title="Phân ca nhân viên" description="Sắp lịch làm việc cho nhân viên theo ngày." />
-          <OverviewCard title="Báo cáo" description="Theo dõi doanh thu, khách hàng, dịch vụ nổi bật và xuất CSV." />
+          <OverviewCard title="Hóa đơn" description="Ghi nhận thanh toán cho các lịch hẹn đã xử lý." />
           <OverviewCard title="Thông báo" description="Xem thông báo hệ thống liên quan đến lịch hẹn và vận hành." />
         </div>
       </section>
@@ -213,7 +213,7 @@ function StaffOverview({
           <h2>Theo dõi ca làm, lịch được giao và hồ sơ chăm sóc.</h2>
           <p className="hero-copy">
             Trang tổng quan dành cho nhân viên tập trung vào lịch phân công, công việc trong ngày, tra cứu QR,
-            cập nhật hồ sơ bệnh án và ảnh trước/sau dịch vụ.
+            cập nhật hồ sơ bệnh án và tra cứu lịch sử chăm sóc thú cưng.
           </p>
           <div className="hero-actions">
             <Link className="primary-button" to="/staff">Xem lịch phân công</Link>
@@ -274,7 +274,7 @@ function StaffOverview({
         </div>
         <div className="stack-list">
           <OverviewCard title="Tra cứu QR thú cưng" description="Quét hoặc nhập mã QR để xem hồ sơ chăm sóc của thú cưng." />
-          <OverviewCard title="Ảnh trước/sau dịch vụ" description="Tải ảnh dịch vụ để lưu lại quá trình chăm sóc." />
+          <OverviewCard title="Lịch sử chăm sóc" description="Tra cứu hồ sơ thú cưng bằng mã QR và xem lại các lần sử dụng dịch vụ." />
         </div>
       </section>
 
@@ -483,21 +483,6 @@ function CustomerHome({
         </div>
       </section>
 
-      <section className="content-panel">
-        <div className="section-head">
-          <div>
-            <p className="eyebrow">Ưu đãi & đặt cọc</p>
-            <h3>Theo dõi quyền lợi của bạn</h3>
-          </div>
-          <Link className="text-link" to={session ? '/customer/rewards' : '/auth'}>Mở ưu đãi</Link>
-        </div>
-
-        <div className="appointment-highlight">
-          <strong>Miễn phí 1 lần khám sau 3 lịch hoàn thành</strong>
-          <p>Khách hàng có thể kiểm tra ưu đãi và lịch sử đặt cọc ngay trong tài khoản.</p>
-          <span>Áp dụng theo dữ liệu lịch hẹn đã hoàn thành.</span>
-        </div>
-      </section>
     </div>
   );
 }

@@ -12,11 +12,10 @@ public static class DatabaseInitializer
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var passwordHasher = scope.ServiceProvider.GetRequiredService<PasswordHasherService>();
 
+        await dbContext.Database.MigrateAsync();
         await EnsureLegacyColumnNamesAsync(dbContext);
         await EnsureAccountSecurityAsync(dbContext);
         await EnsureMultiServiceBookingsAsync(dbContext);
-        await EnsurePromotionDiscountColumnsAsync(dbContext);
-        await EnsureDepositReceiptColumnsAsync(dbContext);
         await EnsureClinicalRecordsAsync(dbContext);
         await EnsureNotificationsAsync(dbContext);
         await EnsurePetSoftDeleteColumnAsync(dbContext);
@@ -55,95 +54,318 @@ public static class DatabaseInitializer
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var passwordHasher = scope.ServiceProvider.GetRequiredService<PasswordHasherService>();
 
+        await dbContext.Database.MigrateAsync();
         await EnsureLegacyColumnNamesAsync(dbContext);
-        await dbContext.Database.EnsureCreatedAsync();
         await EnsureAccountSecurityAsync(dbContext);
         await EnsureMultiServiceBookingsAsync(dbContext);
-        await EnsurePromotionDiscountColumnsAsync(dbContext);
-        await EnsureDepositReceiptColumnsAsync(dbContext);
         await EnsureClinicalRecordsAsync(dbContext);
         await EnsureNotificationsAsync(dbContext);
         await EnsurePetSoftDeleteColumnAsync(dbContext);
         await EnsureVietnameseDisplayTextAsync(dbContext);
 
-        if (!await dbContext.DichVus.AnyAsync())
+        await EnsureAccountAsync(dbContext, passwordHasher, "local_admin", "Quản trị viên", "admin@pethealth.local", "Admin");
+        await EnsureAccountAsync(dbContext, passwordHasher, "local_staff", "Nhân viên PetHealth", "staff@pethealth.local", "Staff");
+        await EnsureAccountAsync(dbContext, passwordHasher, "local_customer", "Khách hàng PetHealth", "customer@pethealth.local", "Customer");
+        await dbContext.SaveChangesAsync();
+
+        await SeedServicesAsync(dbContext);
+        await SeedStaffAsync(dbContext);
+        await SeedCustomerJourneyAsync(dbContext);
+        await SeedNotificationsAsync(dbContext);
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static async Task SeedServicesAsync(AppDbContext dbContext)
+    {
+        var services = new[]
         {
-            dbContext.DichVus.AddRange(
-                new DichVu
-                {
-                    TenDichVu = "Khám tổng quát",
-                    MoTa = "Khám sức khỏe tổng thể và tư vấn phác đồ chăm sóc.",
-                    GiaTien = 180000,
-                    ThoiGianThucHien = 30,
-                    TrangThaiHoatDong = true
-                },
-                new DichVu
-                {
-                    TenDichVu = "Tiêm phòng định kỳ",
-                    MoTa = "Tiêm phòng cho chó và mèo theo lịch trình định kỳ.",
-                    GiaTien = 250000,
-                    ThoiGianThucHien = 20,
-                    TrangThaiHoatDong = true
-                },
-                new DichVu
-                {
-                    TenDichVu = "Spa và cắt tỉa lông",
-                    MoTa = "Làm sạch, cắt tỉa, sấy khô và chăm sóc lông cơ bản.",
-                    GiaTien = 320000,
-                    ThoiGianThucHien = 60,
-                    TrangThaiHoatDong = true
-                });
-        }
-
-        if (!await dbContext.NguoiDungs.AnyAsync())
-        {
-            var user = new NguoiDung
+            new DichVu
             {
-                MaNguoiDung = "local_seed_001",
-                HoVaTen = "Nguyễn Thu Hà",
-                Email = "customer@pethealth.local",
-                SoDienThoai = "0909000111",
-                GioiTinh = string.Empty,
-                DiaChi = string.Empty,
-                VaiTro = "Customer",
-                TrangThaiHoatDong = true,
-                NgayTao = DateTime.UtcNow
-            };
-
-            dbContext.NguoiDungs.Add(user);
-            await dbContext.SaveChangesAsync();
-
-            var pet = new ThuCung
+                TenDichVu = "Khám tổng quát",
+                MoTa = "Kiểm tra mắt, tai, da lông, nghe tim phổi và tư vấn chăm sóc sức khỏe.",
+                GiaTien = 150000,
+                ThoiGianThucHien = 30,
+                LoaiThuCung = "Chó, mèo",
+                TrangThaiHoatDong = true
+            },
+            new DichVu
             {
-                MaNguoiDung = user.MaNguoiDung,
-                TenThuCung = "Bún",
+                TenDichVu = "Spa Tắm & Vệ sinh",
+                MoTa = "Tắm sấy, vệ sinh tai, cắt móng và chăm sóc lông cơ bản.",
+                GiaTien = 250000,
+                ThoiGianThucHien = 60,
+                LoaiThuCung = "Chó, mèo",
+                TrangThaiHoatDong = true
+            },
+            new DichVu
+            {
+                TenDichVu = "Cắt tỉa lông nghệ thuật (Grooming)",
+                MoTa = "Tạo kiểu lông theo yêu cầu, phù hợp từng giống thú cưng.",
+                GiaTien = 350000,
+                ThoiGianThucHien = 120,
                 LoaiThuCung = "Chó",
-                Giong = "Poodle",
-                GioiTinh = "Đực",
-                NgaySinh = new DateTime(2023, 6, 12),
-                CanNang = 4.8m,
-                GhiChu = "Dễ nhạy cảm với âm thanh lớn."
-            };
-
-            dbContext.ThuCungs.Add(pet);
-            await dbContext.SaveChangesAsync();
-
-            var firstService = await dbContext.DichVus.OrderBy(x => x.MaDichVu).FirstAsync();
-            dbContext.LichHens.Add(new LichHen
+                TrangThaiHoatDong = true
+            },
+            new DichVu
             {
-                MaNguoiDung = user.MaNguoiDung,
-                MaThuCung = pet.MaThuCung,
-                MaDichVu = firstService.MaDichVu,
-                NgayHen = DateTime.Today.AddDays(1),
-                GioHen = new TimeOnly(9, 0),
-                TrangThai = "Confirmed",
-                TongTien = firstService.GiaTien,
-                GhiChu = "Khám định kỳ đầu tháng.",
-                CreatedAt = DateTime.UtcNow
-            });
+                TenDichVu = "Tiêm phòng 7 bệnh",
+                MoTa = "Tiêm phòng định kỳ và theo dõi phản ứng sau tiêm.",
+                GiaTien = 200000,
+                ThoiGianThucHien = 15,
+                LoaiThuCung = "Chó",
+                TrangThaiHoatDong = true
+            }
+        };
+
+        foreach (var service in services)
+        {
+            if (!await dbContext.DichVus.AnyAsync(x => x.TenDichVu == service.TenDichVu))
+            {
+                dbContext.DichVus.Add(service);
+            }
         }
 
         await dbContext.SaveChangesAsync();
+    }
+
+    private static async Task SeedStaffAsync(AppDbContext dbContext)
+    {
+        if (!await dbContext.HoSoNhanViens.AnyAsync(x => x.MaNhanVien == "local_staff"))
+        {
+            dbContext.HoSoNhanViens.Add(new HoSoNhanVien
+            {
+                MaNhanVien = "local_staff",
+                ChuyenMon = "Khám tổng quát, tiêm phòng và chăm sóc sau dịch vụ",
+                NamKinhNghiem = 3,
+                DiemDanhGia = 4.8m,
+                SanSangLamViec = true
+            });
+        }
+
+        var today = DateTime.Today;
+        var shifts = new[]
+        {
+            today,
+            today.AddDays(1),
+            today.AddDays(2)
+        };
+
+        foreach (var shiftDate in shifts)
+        {
+            if (!await dbContext.CaLamViecs.AnyAsync(x => x.MaNhanVien == "local_staff" && x.NgayLam == shiftDate))
+            {
+                dbContext.CaLamViecs.Add(new CaLamViec
+                {
+                    MaNhanVien = "local_staff",
+                    NgayLam = shiftDate,
+                    GioBatDau = new TimeOnly(8, 0),
+                    GioKetThuc = new TimeOnly(17, 0),
+                    TrangThai = "Available",
+                    GhiChu = "Ca làm mẫu phục vụ demo."
+                });
+            }
+        }
+    }
+
+    private static async Task SeedCustomerJourneyAsync(AppDbContext dbContext)
+    {
+        var customer = await dbContext.NguoiDungs.FirstAsync(x => x.Email == "customer@pethealth.local");
+        customer.SoDienThoai = string.IsNullOrWhiteSpace(customer.SoDienThoai) ? "0909000111" : customer.SoDienThoai;
+        customer.DiaChi = string.IsNullOrWhiteSpace(customer.DiaChi) ? "Quận Ninh Kiều, Cần Thơ" : customer.DiaChi;
+
+        var pet = await dbContext.ThuCungs.FirstOrDefaultAsync(x => x.MaNguoiDung == customer.MaNguoiDung && x.TenThuCung == "Bún");
+        if (pet is null)
+        {
+            pet = new ThuCung
+            {
+                MaNguoiDung = customer.MaNguoiDung,
+                TenThuCung = "Bún",
+                Giong = "Poodle",
+                NgaySinh = new DateTime(2023, 6, 12),
+                CanNang = 4.8m,
+                GhiChu = "Dễ nhạy cảm với âm thanh lớn.",
+                TrangThaiHoatDong = true,
+                MaQr = "PET-DEMO-BUN",
+                NgayCapQr = DateTime.UtcNow
+            };
+            dbContext.ThuCungs.Add(pet);
+            await dbContext.SaveChangesAsync();
+        }
+
+        var cat = await dbContext.ThuCungs.FirstOrDefaultAsync(x => x.MaNguoiDung == customer.MaNguoiDung && x.TenThuCung == "Miu");
+        if (cat is null)
+        {
+            dbContext.ThuCungs.Add(new ThuCung
+            {
+                MaNguoiDung = customer.MaNguoiDung,
+                TenThuCung = "Miu",
+                Giong = "Mèo Anh lông ngắn",
+                NgaySinh = new DateTime(2024, 2, 20),
+                CanNang = 3.2m,
+                GhiChu = "Cần chải lông định kỳ.",
+                TrangThaiHoatDong = true,
+                MaQr = "PET-DEMO-MIU",
+                NgayCapQr = DateTime.UtcNow
+            });
+            await dbContext.SaveChangesAsync();
+        }
+
+        var generalExam = await dbContext.DichVus.FirstAsync(x => x.TenDichVu == "Khám tổng quát");
+        var spa = await dbContext.DichVus.FirstAsync(x => x.TenDichVu == "Spa Tắm & Vệ sinh");
+        var vaccine = await dbContext.DichVus.FirstAsync(x => x.TenDichVu == "Tiêm phòng 7 bệnh");
+
+        var completed = await EnsureBookingAsync(
+            dbContext,
+            customer.MaNguoiDung,
+            pet.MaThuCung,
+            generalExam.MaDichVu,
+            "local_staff",
+            DateTime.Today.AddDays(-7),
+            new TimeOnly(9, 0),
+            new TimeOnly(9, 30),
+            "Completed",
+            "Dữ liệu mẫu: lịch đã hoàn thành để demo hồ sơ bệnh án.");
+
+        await EnsureBookingServiceAsync(dbContext, completed.MaLichHen, generalExam.MaDichVu);
+        await EnsureBookingServiceAsync(dbContext, completed.MaLichHen, vaccine.MaDichVu);
+
+        var upcoming = await EnsureBookingAsync(
+            dbContext,
+            customer.MaNguoiDung,
+            pet.MaThuCung,
+            spa.MaDichVu,
+            "local_staff",
+            DateTime.Today.AddDays(1),
+            new TimeOnly(14, 0),
+            new TimeOnly(15, 0),
+            "Confirmed",
+            "Dữ liệu mẫu: lịch sắp tới để demo nhân viên xem lịch phân công.");
+
+        await EnsureBookingServiceAsync(dbContext, upcoming.MaLichHen, spa.MaDichVu);
+
+        if (!await dbContext.HoSoBenhAns.AnyAsync(x => x.MaLichHen == completed.MaLichHen))
+        {
+            dbContext.HoSoBenhAns.Add(new HoSoBenhAn
+            {
+                MaLichHen = completed.MaLichHen,
+                MaThuCung = pet.MaThuCung,
+                MaNhanVien = "local_staff",
+                ChanDoan = "Sức khỏe ổn định, cần theo dõi răng miệng và da lông.",
+                DieuTri = "Vệ sinh tai, tư vấn khẩu phần ăn và lịch vận động.",
+                Thuoc = "Bổ sung vitamin tổng hợp trong 7 ngày.",
+                TiemChung = "Đã tiêm phòng nhắc lại theo lịch.",
+                GhiChu = "Hồ sơ bệnh án mẫu phục vụ demo.",
+                NgayCapNhat = DateTime.UtcNow
+            });
+        }
+
+        if (!await dbContext.NhacLichTaiKhams.AnyAsync(x => x.MaLichHen == completed.MaLichHen))
+        {
+            dbContext.NhacLichTaiKhams.Add(new NhacLichTaiKham
+            {
+                MaLichHen = completed.MaLichHen,
+                MaKhachHang = customer.MaNguoiDung,
+                Email = customer.Email,
+                NgayTaiKham = DateTime.Today.AddMonths(6),
+                NoiDung = "Nhắc lịch tái khám sức khỏe định kỳ cho thú cưng.",
+                TrangThai = "Pending",
+                NgayTao = DateTime.UtcNow
+            });
+        }
+    }
+
+    private static async Task<LichHen> EnsureBookingAsync(
+        AppDbContext dbContext,
+        string customerId,
+        int petId,
+        int serviceId,
+        string staffId,
+        DateTime date,
+        TimeOnly start,
+        TimeOnly end,
+        string status,
+        string note)
+    {
+        var booking = await dbContext.LichHens.FirstOrDefaultAsync(x => x.GhiChu == note);
+        if (booking is not null)
+        {
+            return booking;
+        }
+
+        booking = new LichHen
+        {
+            MaNguoiDung = customerId,
+            MaThuCung = petId,
+            MaDichVu = serviceId,
+            MaNhanVien = staffId,
+            NgayHen = date,
+            GioHen = start,
+            GioKetThuc = end,
+            TrangThai = status,
+            GhiChu = note,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        dbContext.LichHens.Add(booking);
+        await dbContext.SaveChangesAsync();
+        return booking;
+    }
+
+    private static async Task EnsureBookingServiceAsync(AppDbContext dbContext, int bookingId, int serviceId)
+    {
+        if (!await dbContext.LichHenDichVus.AnyAsync(x => x.MaLichHen == bookingId && x.MaDichVu == serviceId))
+        {
+            dbContext.LichHenDichVus.Add(new LichHenDichVu
+            {
+                MaLichHen = bookingId,
+                MaDichVu = serviceId
+            });
+        }
+    }
+
+    private static async Task SeedNotificationsAsync(AppDbContext dbContext)
+    {
+        await EnsureNotificationAsync(
+            dbContext,
+            "local_admin",
+            "Có lịch hẹn mới cần theo dõi",
+            "Khách hàng mẫu đã có lịch hẹn trong hệ thống để demo màn quản trị.",
+            "/admin/operations");
+
+        await EnsureNotificationAsync(
+            dbContext,
+            "local_staff",
+            "Bạn có lịch được phân công",
+            "Lịch spa mẫu đã được phân công cho nhân viên PetHealth.",
+            "/staff/schedule");
+
+        await EnsureNotificationAsync(
+            dbContext,
+            "local_customer",
+            "Lịch hẹn đã được xác nhận",
+            "Lịch chăm sóc thú cưng mẫu đã sẵn sàng để khách hàng theo dõi.",
+            "/customer/appointments");
+    }
+
+    private static async Task EnsureNotificationAsync(
+        AppDbContext dbContext,
+        string userId,
+        string title,
+        string content,
+        string url)
+    {
+        if (!await dbContext.ThongBaoNguoiDungs.AnyAsync(x => x.MaNguoiDung == userId && x.TieuDe == title))
+        {
+            dbContext.ThongBaoNguoiDungs.Add(new ThongBaoNguoiDung
+            {
+                MaNguoiDung = userId,
+                TieuDe = title,
+                NoiDung = content,
+                DuongDan = url,
+                DaDoc = false,
+                NgayTao = DateTime.UtcNow
+            });
+        }
     }
 
     private static async Task EnsureAccountAsync(
@@ -204,11 +426,8 @@ public static class DatabaseInitializer
             ("LichHen", $"MaKhachHang{suffix}", "MaKhachHang"),
             ("LichHen", $"MaNhanVien{suffix}", "MaNhanVien"),
             ("HoSoNhanVien", $"MaNhanVien{suffix}", "MaNhanVien"),
-            ("DanhGiaDichVu", $"MaKhachHang{suffix}", "MaKhachHang"),
             ("HoaDon", $"MaKhachHang{suffix}", "MaKhachHang"),
-            ("PhieuUuDaiKhachHang", $"MaKhachHang{suffix}", "MaKhachHang"),
             ("CaLamViec", $"MaNhanVien{suffix}", "MaNhanVien"),
-            ("DatCocThanhToan", $"MaKhachHang{suffix}", "MaKhachHang"),
             ("NhacLichTaiKham", $"MaKhachHang{suffix}", "MaKhachHang")
         };
 
@@ -354,69 +573,6 @@ public static class DatabaseInitializer
 
         await dbContext.Database.ExecuteSqlRawAsync(sql);
     }
-    private static async Task EnsurePromotionDiscountColumnsAsync(AppDbContext dbContext)
-    {
-        if (!await dbContext.Database.CanConnectAsync())
-        {
-            return;
-        }
-
-        const string sql = """
-            IF OBJECT_ID(N'dbo.ChuongTrinhUuDai', N'U') IS NOT NULL
-            BEGIN
-                IF COL_LENGTH(N'dbo.ChuongTrinhUuDai', N'LoaiGiamGia') IS NULL
-                BEGIN
-                    ALTER TABLE dbo.ChuongTrinhUuDai
-                    ADD LoaiGiamGia nvarchar(20) NOT NULL
-                        CONSTRAINT DF_ChuongTrinhUuDai_LoaiGiamGia DEFAULT (N'Full');
-                END;
-
-                IF COL_LENGTH(N'dbo.ChuongTrinhUuDai', N'GiaTriGiam') IS NULL
-                BEGIN
-                    ALTER TABLE dbo.ChuongTrinhUuDai
-                    ADD GiaTriGiam decimal(18, 2) NOT NULL
-                        CONSTRAINT DF_ChuongTrinhUuDai_GiaTriGiam DEFAULT (0);
-                END;
-
-                EXEC(N'
-                    UPDATE dbo.ChuongTrinhUuDai
-                    SET LoaiGiamGia = N''Full'',
-                        GiaTriGiam = 0
-                    WHERE LoaiGiamGia IS NULL
-                       OR LTRIM(RTRIM(LoaiGiamGia)) = N'''';
-                ');
-            END;
-            """;
-
-        await dbContext.Database.ExecuteSqlRawAsync(sql);
-    }
-
-    private static async Task EnsureDepositReceiptColumnsAsync(AppDbContext dbContext)
-    {
-        if (!await dbContext.Database.CanConnectAsync())
-        {
-            return;
-        }
-
-        const string sql = """
-            IF OBJECT_ID(N'dbo.DatCocThanhToan', N'U') IS NOT NULL
-            BEGIN
-                IF COL_LENGTH(N'dbo.DatCocThanhToan', N'BienLaiUrl') IS NULL
-                    ALTER TABLE dbo.DatCocThanhToan ADD BienLaiUrl nvarchar(1000) NULL;
-                IF COL_LENGTH(N'dbo.DatCocThanhToan', N'GhiChuKhachHang') IS NULL
-                    ALTER TABLE dbo.DatCocThanhToan ADD GhiChuKhachHang nvarchar(500) NULL;
-                IF COL_LENGTH(N'dbo.DatCocThanhToan', N'MaNguoiDuyet') IS NULL
-                    ALTER TABLE dbo.DatCocThanhToan ADD MaNguoiDuyet nvarchar(100) NULL;
-                IF COL_LENGTH(N'dbo.DatCocThanhToan', N'NgayDuyet') IS NULL
-                    ALTER TABLE dbo.DatCocThanhToan ADD NgayDuyet datetime2 NULL;
-                IF COL_LENGTH(N'dbo.DatCocThanhToan', N'LyDoTuChoi') IS NULL
-                    ALTER TABLE dbo.DatCocThanhToan ADD LyDoTuChoi nvarchar(500) NULL;
-            END
-            """;
-
-        await dbContext.Database.ExecuteSqlRawAsync(sql);
-    }
-
     private static async Task EnsureClinicalRecordsAsync(AppDbContext dbContext)
     {
         if (!await dbContext.Database.CanConnectAsync())
@@ -497,6 +653,13 @@ public static class DatabaseInitializer
                 ALTER TABLE dbo.ThuCung
                 ADD TrangThaiHoatDong bit NOT NULL
                     CONSTRAINT DF_ThuCung_TrangThaiHoatDong DEFAULT (1);
+            END;
+
+            IF OBJECT_ID(N'dbo.ThuCung', N'U') IS NOT NULL
+               AND COL_LENGTH(N'dbo.ThuCung', N'QrCodeUrl') IS NULL
+            BEGIN
+                ALTER TABLE dbo.ThuCung
+                ADD QrCodeUrl nvarchar(1000) NULL;
             END;
             """;
 

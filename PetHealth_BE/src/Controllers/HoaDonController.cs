@@ -36,7 +36,7 @@ public class HoaDonController : ControllerBase
             return BadRequest(ApiResponseDto<object>.Fail("Tổng tiền hóa đơn không được âm."));
         }
 
-        var paymentMethods = new[] { "Cash", "BankTransfer", "Deposit" };
+        var paymentMethods = new[] { "Cash", "BankTransfer" };
         var paymentStatuses = new[] { "Unpaid", "Paid" };
         if (!paymentMethods.Contains(request.PhuongThucThanhToan, StringComparer.OrdinalIgnoreCase)
             || !paymentStatuses.Contains(request.TrangThaiThanhToan, StringComparer.OrdinalIgnoreCase))

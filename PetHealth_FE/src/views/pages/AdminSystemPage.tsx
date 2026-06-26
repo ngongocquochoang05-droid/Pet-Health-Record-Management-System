@@ -1,12 +1,12 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { getApiErrorMessage } from '../api/api';
 import { getBookings } from '../api/bookingApi';
-import { createReminder, getCustomerUsage, getDeposits, getReminders, issuePetQr, reviewDeposit } from '../api/featureApi';
+import { createReminder, getCustomerUsage, getReminders, issuePetQr } from '../api/featureApi';
 import { getAdminUsers } from '../api/managementApi';
 import { getPets } from '../api/petApi';
 import type { AuthResponseDto } from '../types/auth';
 import type { LichHenDto } from '../types/booking';
-import type { CustomerUsageDto, DepositDto, PetQrDto, ReminderDto } from '../types/features';
+import type { CustomerUsageDto, PetQrDto, ReminderDto } from '../types/features';
 import type { ThuCungDto } from '../types/pet';
 import type { NguoiDungDto } from '../types/user';
 
@@ -18,7 +18,6 @@ export function AdminSystemPage({ session }: AdminSystemPageProps) {
   const [customers, setCustomers] = useState<CustomerUsageDto[]>([]);
   const [customerAccounts, setCustomerAccounts] = useState<NguoiDungDto[]>([]);
   const [customerPets, setCustomerPets] = useState<ThuCungDto[]>([]);
-  const [deposits, setDeposits] = useState<DepositDto[]>([]);
   const [reminders, setReminders] = useState<ReminderDto[]>([]);
   const [qr, setQr] = useState<PetQrDto | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState('');
@@ -37,15 +36,13 @@ export function AdminSystemPage({ session }: AdminSystemPageProps) {
   }, [session]);
 
   async function refresh(): Promise<void> {
-    const [customerData, customerAccountData, depositData, reminderData] = await Promise.all([
+    const [customerData, customerAccountData, reminderData] = await Promise.all([
       getCustomerUsage(),
       getAdminUsers('Customer'),
-      getDeposits(),
       getReminders()
     ]);
     setCustomers(customerData);
     setCustomerAccounts(customerAccountData);
-    setDeposits(depositData);
     setReminders(reminderData);
   }
 
@@ -79,7 +76,7 @@ export function AdminSystemPage({ session }: AdminSystemPageProps) {
     try {
       const data = await issuePetQr(selectedPetId);
       setQr(data);
-      setMessage('Đã cấp mã QR và gửi email cho chủ thú cưng.');
+      setMessage(data.emailDaGui ? 'Đã cấp mã QR và gửi email cho chủ thú cưng.' : 'Đã cấp mã QR. Email chưa gửi được, hãy kiểm tra cấu hình email.');
     } catch (error) {
       setMessage(getApiErrorMessage(error));
     }
@@ -122,21 +119,6 @@ export function AdminSystemPage({ session }: AdminSystemPageProps) {
       await createReminder(reminderForm);
       setReminderForm({ maLichHen: 0, ngayTaiKham: '', noiDung: '' });
       setMessage('Đã tạo nhắc lịch tái khám và gửi email.');
-      await refresh();
-    } catch (error) {
-      setMessage(getApiErrorMessage(error));
-    }
-  }
-
-  async function handleDepositReview(deposit: DepositDto, approved: boolean): Promise<void> {
-    const rejectionReason = approved ? undefined : window.prompt('Nhập lý do từ chối biên lai:')?.trim();
-    if (!approved && !rejectionReason) {
-      return;
-    }
-
-    try {
-      await reviewDeposit(deposit.maDatCoc, approved, rejectionReason);
-      setMessage(approved ? 'Đã xác nhận đặt cọc.' : 'Đã từ chối biên lai.');
       await refresh();
     } catch (error) {
       setMessage(getApiErrorMessage(error));
@@ -257,39 +239,10 @@ export function AdminSystemPage({ session }: AdminSystemPageProps) {
           <label className="full-span">Nội dung<textarea rows={3} value={reminderForm.noiDung} onChange={(event) => setReminderForm((current) => ({ ...current, noiDung: event.target.value }))} /></label>
           <button className="primary-button" disabled={!reminderForm.maLichHen} type="submit">Tạo nhắc lịch</button>
         </form>
-        <form className="form-grid" style={{ display: 'none' }} onSubmit={handleReminderSubmit}>
-          <label>Lịch hẹn<input type="number" value={reminderForm.maLichHen} onChange={(event) => setReminderForm((current) => ({ ...current, maLichHen: Number(event.target.value) }))} /></label>
-          <label>Ngày tái khám<input type="date" value={reminderForm.ngayTaiKham} onChange={(event) => setReminderForm((current) => ({ ...current, ngayTaiKham: event.target.value }))} /></label>
-          <label className="full-span">Nội dung<textarea rows={3} value={reminderForm.noiDung} onChange={(event) => setReminderForm((current) => ({ ...current, noiDung: event.target.value }))} /></label>
-          <button className="primary-button" type="submit">Tạo nhắc lịch</button>
-        </form>
       </section>
 
       <section className="content-panel full-width">
-        <div className="section-head"><div><p className="eyebrow">Thanh toán</p><h2>Lịch sử đặt cọc</h2></div></div>
-        <div className="stack-list">
-          {deposits.map((deposit) => (
-            <article className="list-card" key={deposit.maDatCoc}>
-              <div>
-                <strong>{deposit.maGiaoDich}</strong>
-                <p>{deposit.tenKhachHang} - {new Intl.NumberFormat('vi-VN').format(deposit.soTien)} VND - {deposit.trangThai}</p>
-                {deposit.ghiChuKhachHang ? <p>Ghi chú: {deposit.ghiChuKhachHang}</p> : null}
-                {deposit.lyDoTuChoi ? <p>Lý do từ chối: {deposit.lyDoTuChoi}</p> : null}
-                {deposit.bienLaiUrl ? <a href={deposit.bienLaiUrl} rel="noreferrer" target="_blank">Mở biên lai</a> : <p>Khách hàng chưa gửi biên lai.</p>}
-              </div>
-              {deposit.trangThai !== 'Paid' ? (
-                <div className="row-actions">
-                  <button className="primary-button" disabled={!deposit.bienLaiUrl} onClick={() => void handleDepositReview(deposit, true)} type="button">Xác nhận</button>
-                  <button className="ghost-button" disabled={!deposit.bienLaiUrl} onClick={() => void handleDepositReview(deposit, false)} type="button">Từ chối</button>
-                </div>
-              ) : null}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="content-panel full-width">
-        <div className="section-head"><div><p className="eyebrow">Reminder</p><h2>Danh sách nhắc lịch</h2></div></div>
+        <div className="section-head"><div><p className="eyebrow">Nhắc lịch</p><h2>Danh sách nhắc lịch</h2></div></div>
         <div className="stack-list">
           {reminders.map((reminder) => <article className="list-card" key={reminder.maNhacLich}><strong>{reminder.email}</strong><span>{reminder.ngayTaiKham} - {reminder.trangThai}</span></article>)}
         </div>

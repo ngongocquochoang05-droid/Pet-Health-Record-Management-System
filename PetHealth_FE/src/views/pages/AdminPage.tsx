@@ -4,9 +4,7 @@ import { getApiErrorMessage } from '../api/api';
 import {
   createAdminService,
   deleteAdminService,
-  downloadAdminReportCsv,
   getAdminAppointments,
-  getAdminReports,
   getAdminServices,
   getAdminStaff,
   getAdminUsers,
@@ -17,7 +15,7 @@ import {
 } from '../api/managementApi';
 import type { AuthResponseDto } from '../types/auth';
 import { LICH_HEN_STATUS, type LichHenDto, type LichHenStatus } from '../types/booking';
-import type { ReportSummaryDto, ServiceUpsertDto, StaffDto, UpdateUserRoleDto } from '../types/management';
+import type { ServiceUpsertDto, StaffDto, UpdateUserRoleDto } from '../types/management';
 import type { DichVuDto } from '../types/service';
 import type { NguoiDungDto } from '../types/user';
 
@@ -42,7 +40,6 @@ export function AdminPage({ session, onServicesChanged }: AdminPageProps) {
   const [staff, setStaff] = useState<StaffDto[]>([]);
   const [users, setUsers] = useState<NguoiDungDto[]>([]);
   const [allServices, setAllServices] = useState<DichVuDto[]>([]);
-  const [report, setReport] = useState<ReportSummaryDto | null>(null);
   const [form, setForm] = useState<ServiceUpsertDto>(emptyService);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [message, setMessage] = useState<string>('');
@@ -56,16 +53,14 @@ export function AdminPage({ session, onServicesChanged }: AdminPageProps) {
   }, [session]);
 
   async function refresh(): Promise<void> {
-    const [appointmentData, staffData, reportData, serviceData, userData] = await Promise.all([
+    const [appointmentData, staffData, serviceData, userData] = await Promise.all([
       getAdminAppointments(),
       getAdminStaff(),
-      getAdminReports(),
       getAdminServices(),
       getAdminUsers()
     ]);
     setAppointments(appointmentData);
     setStaff(staffData);
-    setReport(reportData);
     setAllServices(serviceData);
     setUsers(userData);
   }
@@ -98,16 +93,6 @@ export function AdminPage({ session, onServicesChanged }: AdminPageProps) {
       trangThaiHoatDong: payload.trangThaiHoatDong ?? user.trangThaiHoatDong
     });
     await refresh();
-  }
-
-  async function handleDownloadCsv(): Promise<void> {
-    const blob = await downloadAdminReportCsv();
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'pethealth-report.csv';
-    anchor.click();
-    URL.revokeObjectURL(url);
   }
 
   if (session?.user.vaiTro !== 'Admin') {
@@ -216,32 +201,6 @@ export function AdminPage({ session, onServicesChanged }: AdminPageProps) {
               ))}
             </tbody>
           </table>
-        </div>
-      </section>
-
-      <section className="content-panel">
-        <div className="section-head">
-          <div><p className="eyebrow">Thống kê</p><h2>Báo cáo vận hành</h2></div>
-          <div className="row-actions">
-            <button className="ghost-button" type="button" onClick={() => void handleDownloadCsv()}>CSV</button>
-            <button className="ghost-button" type="button" onClick={() => window.print()}>PDF</button>
-          </div>
-        </div>
-        <div className="booking-summary">
-          <div><span>Doanh thu đã thu</span><strong>{new Intl.NumberFormat('vi-VN').format(report?.tongDoanhThu ?? 0)} VND</strong></div>
-          <div><span>Tổng khách hàng</span><strong>{report?.tongKhachHang ?? 0}</strong></div>
-          <div><span>Khách mới tháng này</span><strong>{report?.khachHangMoiThangNay ?? 0}</strong></div>
-        </div>
-        <div className="stack-list">
-          {report?.topDichVu.map((item) => (
-            <article className="list-card" key={item.maDichVu}>
-              <strong>{item.tenDichVu}</strong>
-              <span>{item.soLanDat} lịch</span>
-            </article>
-          ))}
-        </div>
-        <div className="stack-list space-top">
-          {report?.hieuSuatNhanVien.map((item) => <article className="list-card" key={item.maNhanVien}><div><strong>{item.hoVaTen}</strong><p>{item.soLichHoanThanh}/{item.soLichDuocGiao} lịch hoàn thành</p></div><span>{new Intl.NumberFormat('vi-VN').format(item.doanhThu)} VND</span></article>)}
         </div>
       </section>
 

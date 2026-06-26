@@ -13,82 +13,6 @@ public class FeatureRepository
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<IEnumerable<DanhGiaDto>> GetReviewsAsync(int? maDichVu, string? maKhachHang)
-    {
-        var sql = """
-            SELECT
-                dg.MaDanhGia,
-                dg.MaLichHen,
-                dg.MaKhachHang AS MaKhachHang,
-                nd.HoVaTen AS TenKhachHang,
-                dg.MaDichVu,
-                dv.TenDichVu,
-                dg.SoSao,
-                dg.NhanXet,
-                CONVERT(varchar(33), dg.NgayTao, 126) AS NgayTao
-            FROM DanhGiaDichVu dg
-            LEFT JOIN NguoiDung nd ON nd.MaNguoiDung = dg.MaKhachHang
-            LEFT JOIN DichVu dv ON dv.MaDichVu = dg.MaDichVu
-            """;
-
-        var where = new List<string>();
-        if (maDichVu.HasValue)
-        {
-            where.Add("dg.MaDichVu = @MaDichVu");
-        }
-
-        if (!string.IsNullOrWhiteSpace(maKhachHang))
-        {
-            where.Add("dg.MaKhachHang = @MaKhachHang");
-        }
-
-        if (where.Count > 0)
-        {
-            sql += " WHERE " + string.Join(" AND ", where);
-        }
-
-        sql += " ORDER BY dg.NgayTao DESC;";
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.QueryAsync<DanhGiaDto>(sql, new { MaDichVu = maDichVu, MaKhachHang = maKhachHang });
-    }
-
-    public async Task<bool> CanReviewAsync(int maLichHen, string maKhachHang)
-    {
-        const string sql = """
-            SELECT COUNT(1)
-            FROM LichHen lh
-            WHERE lh.MaLichHen = @MaLichHen
-              AND lh.MaKhachHang = @MaKhachHang
-              AND lh.TrangThai = 'Completed'
-              AND NOT EXISTS (SELECT 1 FROM DanhGiaDichVu dg WHERE dg.MaLichHen = lh.MaLichHen);
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteScalarAsync<int>(sql, new { MaLichHen = maLichHen, MaKhachHang = maKhachHang }) > 0;
-    }
-
-    public async Task<int> CreateReviewAsync(CreateDanhGiaDto request, string maKhachHang)
-    {
-        const string sql = """
-            INSERT INTO DanhGiaDichVu (MaLichHen, MaKhachHang, MaDichVu, SoSao, NhanXet, NgayTao)
-            OUTPUT INSERTED.MaDanhGia
-            SELECT lh.MaLichHen, lh.MaKhachHang, lh.MaDichVu, @SoSao, @NhanXet, GETDATE()
-            FROM LichHen lh
-            WHERE lh.MaLichHen = @MaLichHen
-              AND lh.MaKhachHang = @MaKhachHang;
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteScalarAsync<int>(sql, new
-        {
-            request.MaLichHen,
-            request.SoSao,
-            NhanXet = string.IsNullOrWhiteSpace(request.NhanXet) ? null : request.NhanXet.Trim(),
-            MaKhachHang = maKhachHang
-        });
-    }
-
     public async Task<IEnumerable<HoaDonDto>> GetInvoicesAsync(string? maKhachHang, string? maNhanVien = null)
     {
         var sql = """
@@ -98,30 +22,12 @@ public class FeatureRepository
                 hd.MaKhachHang AS MaKhachHang,
                 nd.HoVaTen AS TenKhachHang,
                 ISNULL(hd.TongTien, 0) AS TongTien,
-                ISNULL(services.TongTien, hd.TongTien) AS TongTienTruocUuDai,
-                voucher.MaPhieu,
-                voucher.TenUuDai,
-                voucher.LoaiGiamGia,
-                voucher.GiaTriGiam,
                 hd.PhuongThucThanhToan,
                 hd.TrangThaiThanhToan,
                 hd.MaNhanVienXacNhan,
                 CONVERT(varchar(33), hd.NgayThanhToan, 126) AS NgayThanhToan
             FROM HoaDon hd
             LEFT JOIN NguoiDung nd ON nd.MaNguoiDung = hd.MaKhachHang
-            OUTER APPLY (
-                SELECT SUM(dv.GiaTien) AS TongTien
-                FROM LichHenDichVu lhdv
-                INNER JOIN DichVu dv ON dv.MaDichVu = lhdv.MaDichVu
-                WHERE lhdv.MaLichHen = hd.MaLichHen
-            ) services
-            OUTER APPLY (
-                SELECT TOP 1 p.MaPhieu, u.TenUuDai, ISNULL(u.LoaiGiamGia, N'Full') AS LoaiGiamGia, ISNULL(u.GiaTriGiam, 0) AS GiaTriGiam
-                FROM PhieuUuDaiKhachHang p
-                LEFT JOIN ChuongTrinhUuDai u ON u.MaUuDai = p.MaUuDai
-                WHERE p.MaLichHenSuDung = hd.MaLichHen
-                ORDER BY p.MaPhieu DESC
-            ) voucher
             """;
 
         if (!string.IsNullOrWhiteSpace(maKhachHang))
@@ -148,54 +54,12 @@ public class FeatureRepository
                 FROM LichHen lh
                 WHERE lh.MaLichHen = @MaLichHen
                   AND (@IsAdmin = 1 OR lh.MaNhanVien = @MaNhanVien)
-                  AND
-                  (
-                      @MaPhieu IS NULL
-                      OR EXISTS
-                      (
-                          SELECT 1
-                          FROM PhieuUuDaiKhachHang p
-                          WHERE p.MaPhieu = @MaPhieu
-                            AND p.MaKhachHang = lh.MaKhachHang
-                            AND ISNULL(p.HanSuDung, CAST(GETDATE() AS date)) >= CAST(GETDATE() AS date)
-                            AND (ISNULL(p.DaSuDung, 0) = 0 OR p.MaLichHenSuDung = lh.MaLichHen)
-                      )
-                  )
             )
             BEGIN
-                DECLARE @FinalTongTien decimal(18, 2) = @TongTien;
-
-                IF @MaPhieu IS NOT NULL
-                BEGIN
-                    SELECT @FinalTongTien =
-                        CASE ISNULL(u.LoaiGiamGia, N'Full')
-                            WHEN N'Percent' THEN
-                                CASE
-                                    WHEN @TongTien - (@TongTien * ISNULL(u.GiaTriGiam, 0) / 100) < 0 THEN 0
-                                    ELSE @TongTien - (@TongTien * ISNULL(u.GiaTriGiam, 0) / 100)
-                                END
-                            WHEN N'Fixed' THEN
-                                CASE
-                                    WHEN @TongTien - ISNULL(u.GiaTriGiam, 0) < 0 THEN 0
-                                    ELSE @TongTien - ISNULL(u.GiaTriGiam, 0)
-                                END
-                            ELSE 0
-                        END
-                    FROM PhieuUuDaiKhachHang p
-                    LEFT JOIN ChuongTrinhUuDai u ON u.MaUuDai = p.MaUuDai
-                    WHERE p.MaPhieu = @MaPhieu;
-                END
-
-                UPDATE PhieuUuDaiKhachHang
-                SET DaSuDung = 0,
-                    MaLichHenSuDung = NULL
-                WHERE MaLichHenSuDung = @MaLichHen
-                  AND (@MaPhieu IS NULL OR MaPhieu <> @MaPhieu);
-
                 IF EXISTS (SELECT 1 FROM HoaDon WHERE MaLichHen = @MaLichHen)
                 BEGIN
                     UPDATE HoaDon
-                    SET TongTien = @FinalTongTien,
+                    SET TongTien = @TongTien,
                         PhuongThucThanhToan = @PhuongThucThanhToan,
                         TrangThaiThanhToan = @TrangThaiThanhToan,
                         MaNhanVienXacNhan = @MaNhanVien,
@@ -207,18 +71,10 @@ public class FeatureRepository
                 BEGIN
                     INSERT INTO HoaDon (MaLichHen, MaKhachHang, TongTien, PhuongThucThanhToan, TrangThaiThanhToan, MaNhanVienXacNhan, NgayThanhToan)
                     OUTPUT INSERTED.MaHoaDon
-                    SELECT lh.MaLichHen, lh.MaKhachHang, @FinalTongTien, @PhuongThucThanhToan, @TrangThaiThanhToan, @MaNhanVien,
+                    SELECT lh.MaLichHen, lh.MaKhachHang, @TongTien, @PhuongThucThanhToan, @TrangThaiThanhToan, @MaNhanVien,
                            CASE WHEN @TrangThaiThanhToan = 'Paid' THEN GETDATE() ELSE NULL END
                     FROM LichHen lh
                     WHERE lh.MaLichHen = @MaLichHen;
-                END
-
-                IF @MaPhieu IS NOT NULL
-                BEGIN
-                    UPDATE PhieuUuDaiKhachHang
-                    SET DaSuDung = 1,
-                        MaLichHenSuDung = @MaLichHen
-                    WHERE MaPhieu = @MaPhieu;
                 END
             END
             """;
@@ -228,143 +84,11 @@ public class FeatureRepository
         {
             request.MaLichHen,
             request.TongTien,
-            request.MaPhieu,
             request.PhuongThucThanhToan,
             request.TrangThaiThanhToan,
             MaNhanVien = maNhanVien,
             IsAdmin = isAdmin
         });
-    }
-
-    public async Task<IEnumerable<ChuongTrinhUuDaiDto>> GetPromotionsAsync(bool activeOnly)
-    {
-        var sql = """
-            SELECT MaUuDai, TenUuDai, ISNULL(SoLuotYeuCau, 0) AS SoLuotYeuCau,
-                   ISNULL(ThoiHanThang, 0) AS ThoiHanThang,
-                   ISNULL(LoaiGiamGia, N'Full') AS LoaiGiamGia,
-                   ISNULL(GiaTriGiam, 0) AS GiaTriGiam,
-                   ISNULL(TrangThai, 0) AS TrangThai
-            FROM ChuongTrinhUuDai
-            """;
-
-        if (activeOnly)
-        {
-            sql += " WHERE ISNULL(TrangThai, 0) = 1";
-        }
-
-        sql += " ORDER BY MaUuDai DESC;";
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.QueryAsync<ChuongTrinhUuDaiDto>(sql);
-    }
-
-    public async Task<int> CreatePromotionAsync(UpsertUuDaiDto request)
-    {
-        const string sql = """
-            INSERT INTO ChuongTrinhUuDai (TenUuDai, SoLuotYeuCau, ThoiHanThang, LoaiGiamGia, GiaTriGiam, TrangThai)
-            OUTPUT INSERTED.MaUuDai
-            VALUES (@TenUuDai, @SoLuotYeuCau, @ThoiHanThang, @LoaiGiamGia, @GiaTriGiam, @TrangThai);
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteScalarAsync<int>(sql, request);
-    }
-
-    public async Task<bool> UpdatePromotionAsync(int maUuDai, UpsertUuDaiDto request)
-    {
-        const string sql = """
-            UPDATE ChuongTrinhUuDai
-            SET TenUuDai = @TenUuDai,
-                SoLuotYeuCau = @SoLuotYeuCau,
-                ThoiHanThang = @ThoiHanThang,
-                LoaiGiamGia = @LoaiGiamGia,
-                GiaTriGiam = @GiaTriGiam,
-                TrangThai = @TrangThai
-            WHERE MaUuDai = @MaUuDai;
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteAsync(sql, new
-        {
-            MaUuDai = maUuDai,
-            request.TenUuDai,
-            request.SoLuotYeuCau,
-            request.ThoiHanThang,
-            request.LoaiGiamGia,
-            request.GiaTriGiam,
-            request.TrangThai
-        }) > 0;
-    }
-
-    public async Task<IEnumerable<PhieuUuDaiDto>> GetVouchersAsync(string maKhachHang)
-    {
-        const string sql = """
-            SELECT
-                p.MaPhieu,
-                p.MaKhachHang AS MaKhachHang,
-                p.MaUuDai,
-                u.TenUuDai,
-                ISNULL(u.LoaiGiamGia, N'Full') AS LoaiGiamGia,
-                ISNULL(u.GiaTriGiam, 0) AS GiaTriGiam,
-                CONVERT(varchar(33), p.NgayCap, 126) AS NgayCap,
-                CONVERT(varchar(10), p.HanSuDung, 23) AS HanSuDung,
-                ISNULL(p.DaSuDung, 0) AS DaSuDung,
-                p.MaLichHenSuDung
-            FROM PhieuUuDaiKhachHang p
-            LEFT JOIN ChuongTrinhUuDai u ON u.MaUuDai = p.MaUuDai
-            WHERE p.MaKhachHang = @MaKhachHang
-            ORDER BY p.MaPhieu DESC;
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.QueryAsync<PhieuUuDaiDto>(sql, new { MaKhachHang = maKhachHang });
-    }
-
-    public async Task<IEnumerable<PhieuUuDaiDto>> GetAvailableVouchersForBookingAsync(int maLichHen, string maNhanVien, bool isAdmin)
-    {
-        const string sql = """
-            SELECT
-                p.MaPhieu,
-                p.MaKhachHang AS MaKhachHang,
-                p.MaUuDai,
-                u.TenUuDai,
-                ISNULL(u.LoaiGiamGia, N'Full') AS LoaiGiamGia,
-                ISNULL(u.GiaTriGiam, 0) AS GiaTriGiam,
-                CONVERT(varchar(33), p.NgayCap, 126) AS NgayCap,
-                CONVERT(varchar(10), p.HanSuDung, 23) AS HanSuDung,
-                ISNULL(p.DaSuDung, 0) AS DaSuDung,
-                p.MaLichHenSuDung
-            FROM LichHen lh
-            INNER JOIN PhieuUuDaiKhachHang p ON p.MaKhachHang = lh.MaKhachHang
-            LEFT JOIN ChuongTrinhUuDai u ON u.MaUuDai = p.MaUuDai
-            WHERE lh.MaLichHen = @MaLichHen
-              AND (@IsAdmin = 1 OR lh.MaNhanVien = @MaNhanVien)
-              AND ISNULL(p.DaSuDung, 0) = 0
-              AND ISNULL(p.HanSuDung, CAST(GETDATE() AS date)) >= CAST(GETDATE() AS date)
-            ORDER BY p.HanSuDung, p.MaPhieu;
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.QueryAsync<PhieuUuDaiDto>(sql, new
-        {
-            MaLichHen = maLichHen,
-            MaNhanVien = maNhanVien,
-            IsAdmin = isAdmin
-        });
-    }
-
-    public async Task<int> IssueVoucherAsync(IssueUuDaiDto request)
-    {
-        const string sql = """
-            INSERT INTO PhieuUuDaiKhachHang (MaKhachHang, MaUuDai, NgayCap, HanSuDung, DaSuDung)
-            OUTPUT INSERTED.MaPhieu
-            SELECT @MaKhachHang, u.MaUuDai, GETDATE(), DATEADD(month, ISNULL(u.ThoiHanThang, 1), CAST(GETDATE() AS date)), 0
-            FROM ChuongTrinhUuDai u
-            WHERE u.MaUuDai = @MaUuDai AND ISNULL(u.TrangThai, 0) = 1;
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteScalarAsync<int>(sql, request);
     }
 
     public async Task<IEnumerable<CaLamViecDto>> GetShiftsAsync(string? maNhanVien)
@@ -620,235 +344,6 @@ public class FeatureRepository
         return await connection.QueryAsync<PetHistoryDto>(sql, new { MaThuCung = maThuCung, MaQr = maQr });
     }
 
-    public async Task<IEnumerable<PetVisitImageDto>> GetVisitImagesAsync(int? maLichHen, int? maThuCung, string userId, bool isPrivileged)
-    {
-        var sql = """
-            SELECT
-                a.MaAnh,
-                a.MaLichHen,
-                a.MaThuCung,
-                tc.TenThuCung,
-                services.TenDichVu,
-                CONVERT(varchar(10), lh.NgayHen, 23) AS NgayHen,
-                LEFT(CONVERT(varchar(8), lh.GioBatDau, 108), 5) AS GioHen,
-                a.LoaiAnh,
-                a.AnhUrl,
-                a.GhiChu,
-                CONVERT(varchar(33), a.NgayTaiLen, 126) AS NgayTaiLen
-            FROM AnhKhamThuCung a
-            INNER JOIN ThuCung tc ON tc.MaThuCung = a.MaThuCung
-            LEFT JOIN LichHen lh ON lh.MaLichHen = a.MaLichHen
-            OUTER APPLY (
-                SELECT STRING_AGG(dv.TenDichVu, N', ') WITHIN GROUP (ORDER BY dv.MaDichVu) AS TenDichVu
-                FROM LichHenDichVu lhdv
-                INNER JOIN DichVu dv ON dv.MaDichVu = lhdv.MaDichVu
-                WHERE lhdv.MaLichHen = a.MaLichHen
-            ) services
-            """;
-        var where = new List<string>();
-        if (!isPrivileged)
-        {
-            where.Add("tc.MaChuNhan = @UserId");
-        }
-        if (maLichHen.HasValue)
-        {
-            where.Add("a.MaLichHen = @MaLichHen");
-        }
-        if (maThuCung.HasValue)
-        {
-            where.Add("a.MaThuCung = @MaThuCung");
-        }
-        if (where.Count > 0)
-        {
-            sql += " WHERE " + string.Join(" AND ", where);
-        }
-        sql += " ORDER BY NgayTaiLen DESC;";
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.QueryAsync<PetVisitImageDto>(sql, new { MaLichHen = maLichHen, MaThuCung = maThuCung, UserId = userId });
-    }
-
-    public async Task<int> AddVisitImageAsync(CreatePetVisitImageDto request)
-    {
-        const string sql = """
-            INSERT INTO AnhKhamThuCung (MaLichHen, MaThuCung, LoaiAnh, AnhUrl, GhiChu)
-            OUTPUT INSERTED.MaAnh
-            VALUES (@MaLichHen, @MaThuCung, @LoaiAnh, @AnhUrl, @GhiChu);
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteScalarAsync<int>(sql, request);
-    }
-
-    public async Task<string?> DeleteVisitImageAsync(int maAnh, string userId, bool isAdmin)
-    {
-        const string selectSql = """
-            SELECT a.AnhUrl
-            FROM AnhKhamThuCung a
-            INNER JOIN LichHen lh ON lh.MaLichHen = a.MaLichHen
-            WHERE a.MaAnh = @MaAnh AND (@IsAdmin = 1 OR lh.MaNhanVien = @UserId);
-            """;
-        using var connection = _connectionFactory.CreateConnection();
-        var url = await connection.ExecuteScalarAsync<string?>(selectSql, new { MaAnh = maAnh, UserId = userId, IsAdmin = isAdmin });
-        if (url is null) return null;
-        await connection.ExecuteAsync("DELETE FROM AnhKhamThuCung WHERE MaAnh = @MaAnh;", new { MaAnh = maAnh });
-        return url;
-    }
-
-    public async Task<bool> CanManageVisitImageAsync(int maLichHen, int maThuCung, string maNhanVien, bool isAdmin)
-    {
-        const string sql = """
-            SELECT COUNT(1)
-            FROM LichHen
-            WHERE MaLichHen = @MaLichHen
-              AND MaThuCung = @MaThuCung
-              AND (@IsAdmin = 1 OR MaNhanVien = @MaNhanVien);
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteScalarAsync<int>(sql, new
-        {
-            MaLichHen = maLichHen,
-            MaThuCung = maThuCung,
-            MaNhanVien = maNhanVien,
-            IsAdmin = isAdmin
-        }) > 0;
-    }
-
-    public async Task<IEnumerable<DepositDto>> GetDepositsAsync(string? maKhachHang)
-    {
-        var sql = """
-            SELECT
-                dc.MaDatCoc,
-                dc.MaLichHen,
-                dc.MaKhachHang AS MaKhachHang,
-                nd.HoVaTen AS TenKhachHang,
-                dc.SoTien,
-                dc.PhuongThuc,
-                dc.MaGiaoDich,
-                dc.TrangThai,
-                CONVERT(varchar(33), dc.NgayTao, 126) AS NgayTao,
-                CONVERT(varchar(33), dc.NgayThanhToan, 126) AS NgayThanhToan,
-                dc.BienLaiUrl,
-                dc.GhiChuKhachHang,
-                dc.MaNguoiDuyet,
-                CONVERT(varchar(33), dc.NgayDuyet, 126) AS NgayDuyet,
-                dc.LyDoTuChoi
-            FROM DatCocThanhToan dc
-            LEFT JOIN NguoiDung nd ON nd.MaNguoiDung = dc.MaKhachHang
-            """;
-
-        if (!string.IsNullOrWhiteSpace(maKhachHang))
-        {
-            sql += " WHERE dc.MaKhachHang = @MaKhachHang";
-        }
-
-        sql += " ORDER BY dc.MaDatCoc DESC;";
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.QueryAsync<DepositDto>(sql, new { MaKhachHang = maKhachHang });
-    }
-
-    public async Task<DepositDto?> GetDepositByIdAsync(int maDatCoc)
-    {
-        const string sql = """
-            SELECT
-                dc.MaDatCoc,
-                dc.MaLichHen,
-                dc.MaKhachHang AS MaKhachHang,
-                nd.HoVaTen AS TenKhachHang,
-                dc.SoTien,
-                dc.PhuongThuc,
-                dc.MaGiaoDich,
-                dc.TrangThai,
-                CONVERT(varchar(33), dc.NgayTao, 126) AS NgayTao,
-                CONVERT(varchar(33), dc.NgayThanhToan, 126) AS NgayThanhToan,
-                dc.BienLaiUrl,
-                dc.GhiChuKhachHang,
-                dc.MaNguoiDuyet,
-                CONVERT(varchar(33), dc.NgayDuyet, 126) AS NgayDuyet,
-                dc.LyDoTuChoi
-            FROM DatCocThanhToan dc
-            LEFT JOIN NguoiDung nd ON nd.MaNguoiDung = dc.MaKhachHang
-            WHERE dc.MaDatCoc = @MaDatCoc;
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.QuerySingleOrDefaultAsync<DepositDto>(sql, new { MaDatCoc = maDatCoc });
-    }
-
-    public async Task<int?> CreateDepositAsync(CreateDepositDto request, string maKhachHang)
-    {
-        const string sql = """
-            INSERT INTO DatCocThanhToan (MaLichHen, MaKhachHang, SoTien, PhuongThuc, MaGiaoDich, TrangThai)
-            OUTPUT INSERTED.MaDatCoc
-            SELECT lh.MaLichHen, lh.MaKhachHang, @SoTien, N'BANK_TRANSFER',
-                   CONCAT(N'CK-LH-', lh.MaLichHen, N'-', FORMAT(GETDATE(), 'yyyyMMddHHmmss')), N'Pending'
-            FROM LichHen lh
-            WHERE lh.MaLichHen = @MaLichHen
-              AND lh.MaKhachHang = @MaKhachHang
-              AND lh.TrangThai IN ('Pending', 'Confirmed')
-              AND NOT EXISTS
-              (
-                  SELECT 1
-                  FROM DatCocThanhToan dc
-                  WHERE dc.MaLichHen = lh.MaLichHen
-                    AND dc.TrangThai IN (N'Pending', N'Submitted', N'Paid')
-              );
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteScalarAsync<int?>(sql, new { request.MaLichHen, request.SoTien, MaKhachHang = maKhachHang });
-    }
-
-    public async Task<bool> SaveDepositReceiptAsync(int maDatCoc, string maKhachHang, string bienLaiUrl, string? ghiChu)
-    {
-        const string sql = """
-            UPDATE DatCocThanhToan
-            SET BienLaiUrl = @BienLaiUrl,
-                GhiChuKhachHang = @GhiChu,
-                TrangThai = N'Submitted',
-                LyDoTuChoi = NULL,
-                MaNguoiDuyet = NULL,
-                NgayDuyet = NULL
-            WHERE MaDatCoc = @MaDatCoc
-              AND MaKhachHang = @MaKhachHang
-              AND TrangThai IN (N'Pending', N'Rejected', N'Submitted');
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteAsync(sql, new
-        {
-            MaDatCoc = maDatCoc,
-            MaKhachHang = maKhachHang,
-            BienLaiUrl = bienLaiUrl,
-            GhiChu = string.IsNullOrWhiteSpace(ghiChu) ? null : ghiChu.Trim()
-        }) > 0;
-    }
-
-    public async Task<bool> ReviewDepositAsync(int maDatCoc, string maNguoiDuyet, bool chapNhan, string? lyDoTuChoi)
-    {
-        const string sql = """
-            UPDATE DatCocThanhToan
-            SET TrangThai = CASE WHEN @ChapNhan = 1 THEN N'Paid' ELSE N'Rejected' END,
-                NgayThanhToan = CASE WHEN @ChapNhan = 1 THEN GETDATE() ELSE NULL END,
-                MaNguoiDuyet = @MaNguoiDuyet,
-                NgayDuyet = GETDATE(),
-                LyDoTuChoi = CASE WHEN @ChapNhan = 1 THEN NULL ELSE @LyDoTuChoi END
-            WHERE MaDatCoc = @MaDatCoc
-              AND TrangThai IN (N'Pending', N'Submitted', N'Rejected')
-              AND (@ChapNhan = 0 OR BienLaiUrl IS NOT NULL);
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteAsync(sql, new
-        {
-            MaDatCoc = maDatCoc,
-            MaNguoiDuyet = maNguoiDuyet,
-            ChapNhan = chapNhan,
-            LyDoTuChoi = string.IsNullOrWhiteSpace(lyDoTuChoi) ? null : lyDoTuChoi.Trim()
-        }) > 0;
-    }
-
     public async Task<int> CreateReminderAsync(CreateReminderDto request)
     {
         const string sql = """
@@ -998,53 +493,5 @@ public class FeatureRepository
         return await connection.ExecuteAsync(sql, new { MaNhacLich = maNhacLich }) > 0;
     }
 
-    public async Task<int> ClaimLoyaltyVoucherAsync(string maKhachHang)
-    {
-        const string sql = """
-            DECLARE @CompletedCount int = (
-                SELECT COUNT(1)
-                FROM LichHen
-                WHERE MaKhachHang = @MaKhachHang AND TrangThai = 'Completed'
-            );
-
-            IF @CompletedCount < 3
-            BEGIN
-                SELECT 0;
-                RETURN;
-            END
-
-            DECLARE @MaUuDai int = (
-                SELECT TOP 1 MaUuDai
-                FROM ChuongTrinhUuDai
-                WHERE TenUuDai = N'Miễn phí 1 lần khám sau 3 lần hoàn thành'
-            );
-
-            IF @MaUuDai IS NULL
-            BEGIN
-                INSERT INTO ChuongTrinhUuDai (TenUuDai, SoLuotYeuCau, ThoiHanThang, LoaiGiamGia, GiaTriGiam, TrangThai)
-                VALUES (N'Miễn phí 1 lần khám sau 3 lần hoàn thành', 3, 3, N'Full', 0, 1);
-                SET @MaUuDai = SCOPE_IDENTITY();
-            END
-
-            IF EXISTS (
-                SELECT 1
-                FROM PhieuUuDaiKhachHang
-                WHERE MaKhachHang = @MaKhachHang
-                  AND MaUuDai = @MaUuDai
-                  AND ISNULL(DaSuDung, 0) = 0
-            )
-            BEGIN
-                SELECT 0;
-                RETURN;
-            END
-
-            INSERT INTO PhieuUuDaiKhachHang (MaKhachHang, MaUuDai, NgayCap, HanSuDung, DaSuDung)
-            OUTPUT INSERTED.MaPhieu
-            VALUES (@MaKhachHang, @MaUuDai, GETDATE(), DATEADD(month, 3, CAST(GETDATE() AS date)), 0);
-            """;
-
-        using var connection = _connectionFactory.CreateConnection();
-        return await connection.ExecuteScalarAsync<int>(sql, new { MaKhachHang = maKhachHang });
-    }
 }
 

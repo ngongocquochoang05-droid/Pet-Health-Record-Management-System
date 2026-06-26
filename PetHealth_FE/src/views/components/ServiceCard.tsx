@@ -28,10 +28,6 @@ export function ServiceCard({ service, onBook }: ServiceCardProps) {
           <span>Lượt đặt</span>
           <strong>{service.soLanDat} lịch</strong>
         </div>
-        <div>
-          <span>Đánh giá</span>
-          <strong>{service.soDanhGia ? `${service.diemTrungBinh ?? 0}/5 (${service.soDanhGia})` : 'Chưa có'}</strong>
-        </div>
       </div>
 
       <div className="service-card__foot">

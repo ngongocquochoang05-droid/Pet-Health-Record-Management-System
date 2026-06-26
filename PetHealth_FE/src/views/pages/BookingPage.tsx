@@ -44,28 +44,37 @@ export function BookingPage({ session, pets, services, onBookingCreated }: Booki
     }
 
     const petText = normalizeText(`${selectedPet.loaiThuCung} ${selectedPet.giong}`);
-    return services.filter((service) => {
+    const matchedServices = services.filter((service) => {
       const target = normalizeText(service.loaiThuCung || service.moTa || service.tenDichVu);
       return !service.loaiThuCung || target.includes('tat ca') || petText.split(' ').some((word) => word && target.includes(word));
     });
+
+    return matchedServices.length ? matchedServices : services;
   }, [selectedPet, services]);
 
   useEffect(() => {
     const requestedServiceId = Number(params.get('serviceId'));
-    setForm((current) => ({
-      ...current,
-      maNguoiDung: session?.user.maNguoiDung ?? '',
-      maThuCung: current.maThuCung || pets[0]?.maThuCung || 0,
-      maDichVu: requestedServiceId || current.maDichVus[0] || services[0]?.maDichVu || 0,
-      maDichVus: requestedServiceId
-        ? Array.from(new Set([requestedServiceId, ...current.maDichVus]))
-        : current.maDichVus.length
-          ? current.maDichVus
-          : services[0]?.maDichVu
-            ? [services[0].maDichVu]
-            : []
-    }));
-  }, [params, pets, services, session]);
+    const firstVisibleServiceId = filteredServices[0]?.maDichVu || services[0]?.maDichVu || 0;
+
+    setForm((current) => {
+      const currentServiceIds = current.maDichVus.filter((serviceId) => services.some((service) => service.maDichVu === serviceId));
+      const nextServiceIds = requestedServiceId
+        ? Array.from(new Set([requestedServiceId, ...currentServiceIds]))
+        : currentServiceIds.length
+          ? currentServiceIds
+          : firstVisibleServiceId
+            ? [firstVisibleServiceId]
+            : [];
+
+      return {
+        ...current,
+        maNguoiDung: session?.user.maNguoiDung ?? '',
+        maThuCung: current.maThuCung || pets[0]?.maThuCung || 0,
+        maDichVu: requestedServiceId || nextServiceIds[0] || 0,
+        maDichVus: nextServiceIds
+      };
+    });
+  }, [filteredServices, params, pets, services, session]);
 
   function toggleService(serviceId: number): void {
     setForm((current) => {
