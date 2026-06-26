@@ -25,7 +25,6 @@ public class ThuCung
     [NotMapped]
     public string LoaiThuCung { get; set; } = string.Empty;
 
-    [NotMapped]
     [MaxLength(20)]
     public string? GioiTinh { get; set; }
 

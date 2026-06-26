@@ -656,6 +656,13 @@ public static class DatabaseInitializer
             END;
 
             IF OBJECT_ID(N'dbo.ThuCung', N'U') IS NOT NULL
+               AND COL_LENGTH(N'dbo.ThuCung', N'GioiTinh') IS NULL
+            BEGIN
+                ALTER TABLE dbo.ThuCung
+                ADD GioiTinh nvarchar(20) NULL;
+            END;
+
+            IF OBJECT_ID(N'dbo.ThuCung', N'U') IS NOT NULL
                AND COL_LENGTH(N'dbo.ThuCung', N'QrCodeUrl') IS NULL
             BEGIN
                 ALTER TABLE dbo.ThuCung

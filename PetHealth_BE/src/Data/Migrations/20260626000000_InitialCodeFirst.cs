@@ -58,6 +58,7 @@ public partial class InitialCodeFirst : Migration
                     MaChuNhan nvarchar(50) NOT NULL,
                     TenThuCung nvarchar(120) NOT NULL,
                     GiongLoai nvarchar(80) NOT NULL,
+                    GioiTinh nvarchar(20) NULL,
                     NgaySinh date NULL,
                     CanNang decimal(5,2) NULL,
                     GhiChu nvarchar(500) NULL,

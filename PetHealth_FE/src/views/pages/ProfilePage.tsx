@@ -338,6 +338,7 @@ export function ProfilePage({ session, pets, onSessionChanged, onPetsChanged }: 
               <select value={petForm.gioiTinh ?? ''} onChange={(event) => setPetForm((current) => ({ ...current, gioiTinh: event.target.value }))}>
                 <option value="Đực">Đực</option>
                 <option value="Cái">Cái</option>
+                <option value="">Chưa xác định</option>
               </select>
             </label>
             <label>

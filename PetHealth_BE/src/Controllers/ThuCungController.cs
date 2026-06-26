@@ -26,20 +26,9 @@ public class ThuCungController : ControllerBase
         var ownerId = User.IsInRole("Admin") && !string.IsNullOrWhiteSpace(maNguoiDung)
             ? maNguoiDung
             : currentUserId;
+
         var pets = (await _petRepository.GetByOwnerIdAsync(ownerId))
-            .Select(pet => new ThuCungDto
-            {
-                MaThuCung = pet.MaThuCung,
-                MaNguoiDung = pet.MaNguoiDung,
-                TenThuCung = pet.TenThuCung,
-                LoaiThuCung = pet.LoaiThuCung,
-                Giong = pet.Giong,
-                GioiTinh = pet.GioiTinh,
-                NgaySinh = pet.NgaySinh?.ToString("yyyy-MM-dd"),
-                CanNang = pet.CanNang,
-                GhiChu = pet.GhiChu,
-                TrangThaiHoatDong = pet.TrangThaiHoatDong
-            });
+            .Select(ToDto);
 
         return Ok(ApiResponseDto<IEnumerable<ThuCungDto>>.Ok(pets));
     }
@@ -61,41 +50,29 @@ public class ThuCungController : ControllerBase
             TenThuCung = request.TenThuCung.Trim(),
             LoaiThuCung = request.LoaiThuCung.Trim(),
             Giong = request.Giong.Trim(),
-            GioiTinh = string.IsNullOrWhiteSpace(request.GioiTinh) ? null : request.GioiTinh.Trim(),
+            GioiTinh = NormalizeGender(request.GioiTinh),
             NgaySinh = DateTime.TryParse(request.NgaySinh, out var ngaySinh) ? ngaySinh : null,
             CanNang = request.CanNang,
             GhiChu = string.IsNullOrWhiteSpace(request.GhiChu) ? null : request.GhiChu.Trim()
         };
 
         var id = await _petRepository.CreateAsync(pet);
-        var result = new ThuCungDto
-        {
-            MaThuCung = id,
-            MaNguoiDung = pet.MaNguoiDung,
-            TenThuCung = pet.TenThuCung,
-            LoaiThuCung = pet.LoaiThuCung,
-            Giong = pet.Giong,
-            GioiTinh = pet.GioiTinh,
-            NgaySinh = pet.NgaySinh?.ToString("yyyy-MM-dd"),
-            CanNang = pet.CanNang,
-            GhiChu = pet.GhiChu,
-            TrangThaiHoatDong = pet.TrangThaiHoatDong
-        };
+        pet.MaThuCung = id;
 
-        return Created($"/api/thucung/{id}", ApiResponseDto<ThuCungDto>.Ok(result, "Thêm thú cưng thành công."));
+        return Created($"/api/thucung/{id}", ApiResponseDto<ThuCungDto>.Ok(ToDto(pet), "Thêm thú cưng thành công."));
     }
 
     [HttpPut("{maThuCung:int}")]
     public async Task<IActionResult> Update(int maThuCung, [FromBody] UpdateThuCungDto request)
     {
         var currentUserId = GetCurrentUserId();
-        var pet = await _petRepository.GetByIdAsync(maThuCung);
-        if (pet is null)
+        var existingPet = await _petRepository.GetByIdAsync(maThuCung);
+        if (existingPet is null)
         {
             return NotFound(ApiResponseDto<ThuCungDto>.Fail("Không tìm thấy thú cưng."));
         }
 
-        if (!User.IsInRole("Admin") && pet.MaNguoiDung != currentUserId)
+        if (!User.IsInRole("Admin") && existingPet.MaNguoiDung != currentUserId)
         {
             return Forbid();
         }
@@ -108,37 +85,25 @@ public class ThuCungController : ControllerBase
 
         var updatedPet = new ThuCung
         {
-            MaNguoiDung = pet.MaNguoiDung,
+            MaThuCung = maThuCung,
+            MaNguoiDung = existingPet.MaNguoiDung,
             TenThuCung = request.TenThuCung.Trim(),
             LoaiThuCung = request.LoaiThuCung.Trim(),
             Giong = request.Giong.Trim(),
-            GioiTinh = string.IsNullOrWhiteSpace(request.GioiTinh) ? null : request.GioiTinh.Trim(),
+            GioiTinh = NormalizeGender(request.GioiTinh),
             NgaySinh = DateTime.TryParse(request.NgaySinh, out var ngaySinh) ? ngaySinh : null,
             CanNang = request.CanNang,
-            GhiChu = string.IsNullOrWhiteSpace(request.GhiChu) ? null : request.GhiChu.Trim()
+            GhiChu = string.IsNullOrWhiteSpace(request.GhiChu) ? null : request.GhiChu.Trim(),
+            TrangThaiHoatDong = true
         };
 
-        var updated = await _petRepository.UpdateAsync(maThuCung, pet.MaNguoiDung, updatedPet);
+        var updated = await _petRepository.UpdateAsync(maThuCung, existingPet.MaNguoiDung, updatedPet);
         if (!updated)
         {
             return NotFound(ApiResponseDto<ThuCungDto>.Fail("Không tìm thấy thú cưng."));
         }
 
-        var result = new ThuCungDto
-        {
-            MaThuCung = maThuCung,
-            MaNguoiDung = updatedPet.MaNguoiDung,
-            TenThuCung = updatedPet.TenThuCung,
-            LoaiThuCung = updatedPet.LoaiThuCung,
-            Giong = updatedPet.Giong,
-            GioiTinh = updatedPet.GioiTinh,
-            NgaySinh = updatedPet.NgaySinh?.ToString("yyyy-MM-dd"),
-            CanNang = updatedPet.CanNang,
-            GhiChu = updatedPet.GhiChu,
-            TrangThaiHoatDong = true
-        };
-
-        return Ok(ApiResponseDto<ThuCungDto>.Ok(result, "Cập nhật thú cưng thành công."));
+        return Ok(ApiResponseDto<ThuCungDto>.Ok(ToDto(updatedPet), "Cập nhật thú cưng thành công."));
     }
 
     [HttpDelete("{maThuCung:int}")]
@@ -164,8 +129,29 @@ public class ThuCungController : ControllerBase
 
     private string GetCurrentUserId()
     {
-        var value = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return value ?? string.Empty;
+        return User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+    }
+
+    private static ThuCungDto ToDto(ThuCung pet)
+    {
+        return new ThuCungDto
+        {
+            MaThuCung = pet.MaThuCung,
+            MaNguoiDung = pet.MaNguoiDung,
+            TenThuCung = pet.TenThuCung,
+            LoaiThuCung = pet.LoaiThuCung,
+            Giong = pet.Giong,
+            GioiTinh = pet.GioiTinh,
+            NgaySinh = pet.NgaySinh?.ToString("yyyy-MM-dd"),
+            CanNang = pet.CanNang,
+            GhiChu = pet.GhiChu,
+            TrangThaiHoatDong = pet.TrangThaiHoatDong
+        };
+    }
+
+    private static string? NormalizeGender(string? value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
     }
 
     private static string? ValidatePet(string tenThuCung, string giong, string? ngaySinh, decimal? canNang)

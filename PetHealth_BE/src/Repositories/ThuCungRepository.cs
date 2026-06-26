@@ -21,7 +21,7 @@ public class ThuCungRepository
                 TenThuCung,
                 GiongLoai AS Giong,
                 GiongLoai AS LoaiThuCung,
-                NULL AS GioiTinh,
+                GioiTinh,
                 NgaySinh,
                 CanNang,
                 GhiChu,
@@ -45,7 +45,7 @@ public class ThuCungRepository
                 TenThuCung,
                 GiongLoai AS Giong,
                 GiongLoai AS LoaiThuCung,
-                NULL AS GioiTinh,
+                GioiTinh,
                 NgaySinh,
                 CanNang,
                 GhiChu,
@@ -62,9 +62,9 @@ public class ThuCungRepository
     public async Task<int> CreateAsync(ThuCung pet)
     {
         const string sql = """
-            INSERT INTO ThuCung (MaChuNhan, TenThuCung, GiongLoai, NgaySinh, CanNang, GhiChu, TrangThaiHoatDong)
+            INSERT INTO ThuCung (MaChuNhan, TenThuCung, GiongLoai, GioiTinh, NgaySinh, CanNang, GhiChu, TrangThaiHoatDong)
             OUTPUT INSERTED.MaThuCung
-            VALUES (@MaNguoiDung, @TenThuCung, @Giong, @NgaySinh, @CanNang, @GhiChu, 1);
+            VALUES (@MaNguoiDung, @TenThuCung, @Giong, @GioiTinh, @NgaySinh, @CanNang, @GhiChu, 1);
             """;
 
         using var connection = _connectionFactory.CreateConnection();
@@ -77,6 +77,7 @@ public class ThuCungRepository
             UPDATE ThuCung
             SET TenThuCung = @TenThuCung,
                 GiongLoai = @Giong,
+                GioiTinh = @GioiTinh,
                 NgaySinh = @NgaySinh,
                 CanNang = @CanNang,
                 GhiChu = @GhiChu
@@ -91,6 +92,7 @@ public class ThuCungRepository
             MaNguoiDung = maNguoiDung,
             pet.TenThuCung,
             pet.Giong,
+            pet.GioiTinh,
             pet.NgaySinh,
             pet.CanNang,
             pet.GhiChu
