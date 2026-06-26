@@ -121,7 +121,7 @@ export function MedicalRecordsPage({ session, bookings }: MedicalRecordsPageProp
         <div className="section-head">
           <div>
             <p className="eyebrow">Lịch sử sức khỏe</p>
-            <h2>Hồ sơ bệnh án thú cưng</h2>
+            <h2>Hồ sơ sức khỏe thú cưng</h2>
           </div>
         </div>
         <div className="stack-list">
