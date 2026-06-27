@@ -11,7 +11,8 @@ import {
   updateAdminAppointmentStatus,
   assignAdminAppointmentStaff,
   updateAdminService,
-  updateUserRole
+  updateUserRole,
+  uploadAdminServiceImage
 } from '../api/managementApi';
 import type { AuthResponseDto } from '../types/auth';
 import { LICH_HEN_STATUS, type LichHenDto, type LichHenStatus } from '../types/booking';
@@ -43,6 +44,7 @@ export function AdminPage({ session, onServicesChanged }: AdminPageProps) {
   const [form, setForm] = useState<ServiceUpsertDto>(emptyService);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [message, setMessage] = useState<string>('');
+  const [uploadingImage, setUploadingImage] = useState<boolean>(false);
 
   useEffect(() => {
     if (session?.user.vaiTro !== 'Admin') {
@@ -82,6 +84,25 @@ export function AdminPage({ session, onServicesChanged }: AdminPageProps) {
     }
   }
 
+  async function handleServiceImageChange(file: File | undefined): Promise<void> {
+    if (!file) {
+      return;
+    }
+
+    setUploadingImage(true);
+    setMessage('');
+
+    try {
+      const imageUrl = await uploadAdminServiceImage(file);
+      setForm((current) => ({ ...current, anhDichVuUrl: imageUrl }));
+      setMessage('Đã tải ảnh dịch vụ.');
+    } catch (error) {
+      setMessage(getApiErrorMessage(error));
+    } finally {
+      setUploadingImage(false);
+    }
+  }
+
   async function handleStatus(maLichHen: number, trangThai: LichHenStatus): Promise<void> {
     await updateAdminAppointmentStatus(maLichHen, { trangThai });
     await refresh();
@@ -113,7 +134,21 @@ export function AdminPage({ session, onServicesChanged }: AdminPageProps) {
           <label>Giá tiền<input min="0" type="number" value={form.giaTien} onChange={(event) => setForm((current) => ({ ...current, giaTien: Number(event.target.value) }))} /></label>
           <label>Thời lượng phút<input min="1" type="number" value={form.thoiGianThucHien} onChange={(event) => setForm((current) => ({ ...current, thoiGianThucHien: Number(event.target.value) }))} /></label>
           <label>Loại thú cưng<input placeholder="Chó, mèo, tất cả..." value={form.loaiThuCung ?? ''} onChange={(event) => setForm((current) => ({ ...current, loaiThuCung: event.target.value }))} /></label>
-          <label className="full-span">Ảnh dịch vụ<input value={form.anhDichVuUrl ?? ''} onChange={(event) => setForm((current) => ({ ...current, anhDichVuUrl: event.target.value }))} /></label>
+          <label className="full-span">
+            Ảnh dịch vụ
+            <input
+              accept="image/jpeg,image/png,image/webp"
+              disabled={uploadingImage}
+              onChange={(event) => void handleServiceImageChange(event.target.files?.[0])}
+              type="file"
+            />
+          </label>
+          {form.anhDichVuUrl ? (
+            <div className="full-span service-image-preview">
+              <img alt="Ảnh dịch vụ đã tải lên" src={form.anhDichVuUrl} />
+              <span>{uploadingImage ? 'Đang tải ảnh...' : 'Ảnh đã sẵn sàng để lưu cùng dịch vụ.'}</span>
+            </div>
+          ) : null}
           <label className="full-span">Mô tả<textarea rows={3} value={form.moTa ?? ''} onChange={(event) => setForm((current) => ({ ...current, moTa: event.target.value }))} /></label>
           <label className="check-row"><input checked={form.trangThaiHoatDong} onChange={(event) => setForm((current) => ({ ...current, trangThaiHoatDong: event.target.checked }))} type="checkbox" /> Đang bật dịch vụ</label>
           <button className="primary-button" type="submit">{editingId ? 'Cập nhật' : 'Thêm dịch vụ'}</button>

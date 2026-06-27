@@ -173,7 +173,7 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
                   {item.ghiChu ? <p>Ghi chú lịch hẹn: {item.ghiChu}</p> : null}
                   {item.maHoSo ? (
                     <div className="medical-summary">
-                      <strong>Hồ sơ bệnh án</strong>
+                      <strong>Hồ sơ sức khỏe</strong>
                       <p><b>Chẩn đoán:</b> {item.chanDoan || 'Chưa cập nhật'}</p>
                       {item.dieuTri ? <p><b>Điều trị:</b> {item.dieuTri}</p> : null}
                       {item.thuoc ? <p><b>Thuốc:</b> {item.thuoc}</p> : null}
@@ -182,7 +182,7 @@ export function StaffWorkPage({ session }: StaffWorkPageProps) {
                       <p><b>Cập nhật:</b> {item.ngayCapNhatBenhAn ?? 'Chưa rõ'}{item.tenNhanVienCapNhat ? ` - ${item.tenNhanVienCapNhat}` : ''}</p>
                     </div>
                   ) : (
-                    <p className="muted-text">Lịch hẹn này chưa có hồ sơ bệnh án.</p>
+                    <p className="muted-text">Lịch hẹn này chưa có hồ sơ sức khỏe.</p>
                   )}
                 </div>
                 <span>{item.trangThai}</span>

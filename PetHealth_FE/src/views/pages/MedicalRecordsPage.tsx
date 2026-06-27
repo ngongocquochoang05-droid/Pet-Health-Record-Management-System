@@ -51,7 +51,7 @@ export function MedicalRecordsPage({ session, bookings }: MedicalRecordsPageProp
     try {
       await saveMedicalRecord(form);
       setForm(emptyForm);
-      setMessage('Đã lưu hồ sơ bệnh án.');
+      setMessage('Đã lưu hồ sơ sức khỏe.');
       await refresh();
     } catch (error) {
       setMessage(getApiErrorMessage(error));
@@ -61,7 +61,7 @@ export function MedicalRecordsPage({ session, bookings }: MedicalRecordsPageProp
   if (!session) {
     return (
       <section className="content-panel">
-        <p className="empty-state">Đăng nhập để xem hồ sơ bệnh án.</p>
+        <p className="empty-state">Đăng nhập để xem hồ sơ sức khỏe.</p>
       </section>
     );
   }
@@ -73,7 +73,7 @@ export function MedicalRecordsPage({ session, bookings }: MedicalRecordsPageProp
           <div className="section-head">
             <div>
               <p className="eyebrow">Khám và điều trị</p>
-              <h2>Cập nhật hồ sơ bệnh án</h2>
+              <h2>Cập nhật hồ sơ sức khỏe</h2>
             </div>
           </div>
           <form className="form-grid medical-record-form" onSubmit={submit}>
@@ -135,7 +135,7 @@ export function MedicalRecordsPage({ session, bookings }: MedicalRecordsPageProp
               <span>{record.tenNhanVien}</span>
             </article>
           ))}
-          {!records.length ? <p className="empty-state">Chưa có hồ sơ bệnh án.</p> : null}
+          {!records.length ? <p className="empty-state">Chưa có hồ sơ sức khỏe.</p> : null}
         </div>
       </section>
 

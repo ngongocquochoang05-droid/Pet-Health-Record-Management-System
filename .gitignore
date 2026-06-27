@@ -12,3 +12,4 @@ PetHealth_FE/.vite.log
 PetHealth_FE/.vite.err.log
 PetHealth_BE/*.mdf
 PetHealth_BE/*.ldf
+PetHealth_BE/src/wwwroot/uploads/
